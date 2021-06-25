@@ -1158,21 +1158,26 @@ static int da7213_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_component *component = dai->component;
 	struct da7213_priv *da7213 = snd_soc_component_get_drvdata(component);
 	u8 dai_ctrl = 0;
+	u8 dai_clk_mode = 0;
 	u8 fs;
 
 	/* Set DAI format */
 	switch (params_width(params)) {
 	case 16:
 		dai_ctrl |= DA7213_DAI_WORD_LENGTH_S16_LE;
+		dai_clk_mode = DA7213_DAI_BCLKS_PER_WCLK_32;
 		break;
 	case 20:
 		dai_ctrl |= DA7213_DAI_WORD_LENGTH_S20_LE;
+		dai_clk_mode = DA7213_DAI_BCLKS_PER_WCLK_32;
 		break;
 	case 24:
 		dai_ctrl |= DA7213_DAI_WORD_LENGTH_S24_LE;
+		dai_clk_mode = DA7213_DAI_BCLKS_PER_WCLK_32;
 		break;
 	case 32:
 		dai_ctrl |= DA7213_DAI_WORD_LENGTH_S32_LE;
+		dai_clk_mode = DA7213_DAI_BCLKS_PER_WCLK_64;
 		break;
 	default:
 		return -EINVAL;
@@ -1227,6 +1232,9 @@ static int da7213_hw_params(struct snd_pcm_substream *substream,
 	snd_soc_component_update_bits(component, DA7213_DAI_CTRL, DA7213_DAI_WORD_LENGTH_MASK,
 			    dai_ctrl);
 	snd_soc_component_write(component, DA7213_SR, fs);
+
+	snd_soc_component_update_bits(component, DA7213_DAI_CLK_MODE, DA7213_DAI_BCLKS_PER_WCLK_MASK,
+			dai_clk_mode);
 
 	return 0;
 }
