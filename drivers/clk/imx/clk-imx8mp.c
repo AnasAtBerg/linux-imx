@@ -785,6 +785,78 @@ static int __init imx_clockout_init(void)
 	return 0;
 }
 
+static void __init imx8mp_video_pll1_spread_spectrum_init(struct device_node *np,
+		void __iomem *anatop_base)
+{
+	u32 val = readl_relaxed(anatop_base + 0x2c);
+	u32 ffin, mf, mr, pre_div, m_div, mfr, mrr;
+	const char *mr_str;
+
+	pr_info("i.MX8MP: Video PLL1 spread spectrum:\n");
+
+	pre_div = (val >> 4) & 0x3f;
+	m_div = (val >> 12) & 0x3ff;
+
+	if (of_property_read_u32(np, "video-pll1-ss,ffin_MHz", &ffin)) {
+		ffin = 24;
+	}
+
+	if (of_property_read_u32(np, "video-pll1-ss,mf_kHz", &mf)) {
+		mf = 30;
+	}
+
+	if (of_property_read_u32(np, "video-pll1-ss,mr", &mr)) {
+		mr = VIDEO_PLL1_SPREAD_DEPTH_1_0_PERCENT;
+	}
+
+	mfr = (ffin * 1000) / (mf * pre_div * 32);
+	mrr =  (m_div * 64) / (25 * 100);
+
+	switch (mr)
+	{
+	case VIDEO_PLL1_SPREAD_DEPTH_0_5_PERCENT:
+		mr_str = "0.5%";
+		mrr = mrr/2;
+		break;
+	case VIDEO_PLL1_SPREAD_DEPTH_1_0_PERCENT:
+		mr_str = "1.0%";
+		mrr = mrr * 1;
+		break;
+	case VIDEO_PLL1_SPREAD_DEPTH_2_0_PERCENT:
+		mr_str = "2.0%";
+		mrr = mrr * 2;
+		break;
+	default:
+		pr_info("   invalid spread depth 'video-pll1-ss,mr' value (%d) \n", mr);return;
+	}
+
+	pr_info(
+		"   ffin=%dMHz, mf=%dkHz, mr=%s, pre_div=%d, m_div=%d \n", ffin, mf,
+		mr_str, pre_div, m_div);pr_info("   mfr=%d, mrr=%d\n", mfr, mrr);
+
+	val = (1 << 31)
+			| ((mfr & 0xff) << 12)
+			| ((mrr & 0x3f) << 4)
+			| 0x2;
+
+	writel_relaxed(val, anatop_base + 0x34);
+}
+
+static void __init imx8mp_spread_spectrum_init(void)
+{
+	struct device_node *np =
+			of_find_compatible_node(NULL, NULL, "fsl,imx8mp-anatop");
+	void __iomem *anatop_base = of_iomap(np, 0);
+
+	if (of_property_read_bool(np, "video-pll1-ss,enable")) {
+		imx8mp_video_pll1_spread_spectrum_init(np, anatop_base);
+	}
+	else
+		pr_info("i.MX8MP: Video PLL1 spread spectrum disabled.\n");
+
+	iounmap(anatop_base);
+}
+
 static int imx8mp_clocks_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -1097,6 +1169,8 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
 	imx_register_uart_clocks(4);
 
 	imx_clockout_init();
+
+	imx8mp_spread_spectrum_init();
 
 	return 0;
 }
