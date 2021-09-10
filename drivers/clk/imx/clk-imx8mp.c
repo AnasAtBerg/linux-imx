@@ -715,6 +715,76 @@ static int imx_clk_init_on(struct device_node *np,
 	return 0;
 }
 
+#define IMX8MP_CLKOUT1_DIV_OFF	0
+#define IMX8MP_CLKOUT1_SEL_OFF	4
+#define IMX8MP_CLKOUT1_CKE_OFF	8
+#define IMX8MP_CLKOUT2_DIV_OFF	16
+#define IMX8MP_CLKOUT2_SEL_OFF	20
+#define IMX8MP_CLKOUT2_CKE_OFF	24
+
+static int __init imx_clockout_init(void)
+{
+	u32 val = 0, src = 0, div = 0;
+	struct device_node *np = of_find_compatible_node(NULL, NULL, "fsl,imx8mp-anatop");
+	void __iomem *anatop_base = of_iomap(np, 0);
+
+	if (WARN_ON(!anatop_base))
+		return -ENOMEM;
+
+	if (of_property_read_u32(np, "clkout1,source", &src) == 0) {
+		if (src > IMX8MP_CLK_CLKOUT_OUTPUT_SEL_OSC_32K) {
+			pr_err("i.MX8MP: invalid 'clkout1,source' value\n");
+			return -EINVAL;
+		}
+		val |= (src << IMX8MP_CLKOUT1_SEL_OFF);
+	}
+
+	if (of_property_read_u32(np, "clkout1,div", &div) == 0) {
+		if ((div > 15)) {
+			pr_err("i.MX8MP: invalid 'clkout1,div' value\n");
+			return -EINVAL;
+		}
+		val |= (div << IMX8MP_CLKOUT1_DIV_OFF);
+	}
+
+	if (of_property_read_bool(np, "clkout1,enable")) {
+		val |= (1 << IMX8MP_CLKOUT1_CKE_OFF);
+		pr_info("i.MX8MP: clkout1 active, source: 0x%x, divider: %d.\n",
+				src, div);
+	}
+
+	src = 0;
+	div = 0;
+
+	if (of_property_read_u32(np, "clkout2,source", &src) == 0) {
+		if (src > IMX8MP_CLK_CLKOUT_OUTPUT_SEL_OSC_32K) {
+			pr_err("i.MX8MP: invalid 'clkout2,source' value\n");
+			return -EINVAL;
+		}
+		val |= (src << IMX8MP_CLKOUT2_SEL_OFF);
+	}
+
+	if (of_property_read_u32(np, "clkout2,div", &div) == 0) {
+		if ((div > 15)) {
+			pr_err("i.MX8MP: invalid 'clkout2,div' value\n");
+			return -EINVAL;
+		}
+		val |= (div << IMX8MP_CLKOUT2_DIV_OFF);
+	}
+
+	if (of_property_read_bool(np, "clkout2,enable")) {
+		val |= (1 << IMX8MP_CLKOUT2_CKE_OFF);
+		pr_info("i.MX8MP: clkout2 active, source: 0x%x, divider: %d.\n",
+				src, div);
+	}
+
+	writel_relaxed(val, anatop_base + 0x128);
+
+	iounmap(anatop_base);
+
+	return 0;
+}
+
 static int imx8mp_clocks_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -1025,6 +1095,8 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
 	imx_clk_init_on(np, hws);
 	
 	imx_register_uart_clocks(4);
+
+	imx_clockout_init();
 
 	return 0;
 }
