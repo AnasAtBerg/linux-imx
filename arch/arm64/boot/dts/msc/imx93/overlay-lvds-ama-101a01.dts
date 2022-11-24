@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@4000 {
+		target-path = "/";
+		__overlay__ {
+			lvds_panel {
+				// __TODO__ waldemar Nov 17, 2022 11:38:22 AM :
+				compatible = "ampire,am-1280800n3tzqw-t00h";
+				backlight = <&lcd0_backlight>;
+				enable-gpios = <&ioexpander 8 GPIO_ACTIVE_HIGH>;
+
+				port {
+					panel_lvds_in: endpoint {
+						remote-endpoint = <&lvds_out>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@4001 {
+		target = <&lcdif>;
+		__overlay__ {
+			assigned-clock-rates = <498000000>, <71142857>, <400000000>, <133333333>;
+			status = "okay";
+		};
+	};
+
+	fragment@4002 {
+		target = <&ldb>;
+		__overlay__ {
+			status = "okay";
+
+			lvds-channel@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				status = "okay";
+
+				port@1 {
+					reg = <1>;
+					lvds_out: endpoint {
+						remote-endpoint = <&panel_lvds_in>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@4003 {
+		target = <&ldb_phy>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4004 {
+		target = <&tpm5>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4005 {
+		target = <&lcd0_backlight>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};
