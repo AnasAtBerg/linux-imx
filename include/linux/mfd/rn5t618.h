@@ -265,6 +265,11 @@ enum {
 	RN5T618_NR_IRQS,
 };
 
+struct rn5t618_pm_sequence {
+	void *seq;
+	int size;
+};
+
 struct rn5t618 {
 	struct regmap *regmap;
 	struct device *dev;
@@ -272,6 +277,10 @@ struct rn5t618 {
 
 	int irq;
 	struct regmap_irq_chip_data *irq_data;
+
+	struct rn5t618_pm_sequence suspend_seq;
+	struct rn5t618_pm_sequence resume_seq;
+	int repower_time;
 };
 
 #endif /* __LINUX_MFD_RN5T618_H */
