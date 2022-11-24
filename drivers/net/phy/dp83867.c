@@ -25,6 +25,8 @@
 #define MII_DP83867_MICR	0x12
 #define MII_DP83867_ISR		0x13
 #define DP83867_CFG2		0x14
+#define MII_DP83867_LEDCR1	0x18
+#define MII_DP83867_LEDCR2	0x19
 #define DP83867_CFG3		0x1e
 #define DP83867_CTRL		0x1f
 
@@ -70,6 +72,86 @@
 #define MII_DP83867_MICR_POL_CHNG_INT_EN	BIT(1)
 #define MII_DP83867_MICR_JABBER_INT_EN		BIT(0)
 
+/* LEDCR1 */
+#define MII_DP83867_LEDCR1_LED_GPIO_SEL_OFF		(12)
+#define MII_DP83867_LEDCR1_LED_GPIO_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_GPIO_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_GPIO_SEL_OFF; \
+	} while(0)
+#define MII_DP83867_LEDCR1_LED_2_SEL_OFF		(8)
+#define MII_DP83867_LEDCR1_LED_2_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_2_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_2_SEL_OFF; \
+	} while(0)
+#define MII_DP83867_LEDCR1_LED_1_SEL_OFF		(4)
+#define MII_DP83867_LEDCR1_LED_1_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_1_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_1_SEL_OFF; \
+	} while(0)
+#define MII_DP83867_LEDCR1_LED_0_SEL_OFF		(0)
+#define MII_DP83867_LEDCR1_LED_0_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_0_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_0_SEL_OFF; \
+	} while(0)
+
+/* LEDCR2 bits */
+#define MII_DP83867_LEDCR2_LED_GPIO_POLARITY		BIT(14)
+#define MII_DP83867_LEDCR2_LED_GPIO_DRV_VAL		BIT(13)
+#define MII_DP83867_LEDCR2_LED_GPIO_DRV_EN		BIT(12)
+#define MII_DP83867_LEDCR2_LED_2_POLARITY		BIT(10)
+#define MII_DP83867_LEDCR2_LED_2_DRV_VAL		BIT(9)
+#define MII_DP83867_LEDCR2_LED_2_DRV_EN			BIT(8)
+#define MII_DP83867_LEDCR2_LED_1_POLARITY		BIT(6)
+#define MII_DP83867_LEDCR2_LED_1_DRV_VAL		BIT(5)
+#define MII_DP83867_LEDCR2_LED_1_DRV_EN			BIT(4)
+#define MII_DP83867_LEDCR2_LED_0_POLARITY		BIT(2)
+#define MII_DP83867_LEDCR2_LED_0_DRV_VAL		BIT(1)
+#define MII_DP83867_LEDCR2_LED_0_DRV_EN			BIT(0)
+
+/* LEDCR1 */
+#define MII_DP83867_LEDCR1_LED_GPIO_SEL_OFF		(12)
+#define MII_DP83867_LEDCR1_LED_GPIO_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_GPIO_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_GPIO_SEL_OFF; \
+	} while(0)
+#define MII_DP83867_LEDCR1_LED_2_SEL_OFF		(8)
+#define MII_DP83867_LEDCR1_LED_2_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_2_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_2_SEL_OFF; \
+	} while(0)
+#define MII_DP83867_LEDCR1_LED_1_SEL_OFF		(4)
+#define MII_DP83867_LEDCR1_LED_1_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_1_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_1_SEL_OFF; \
+	} while(0)
+#define MII_DP83867_LEDCR1_LED_0_SEL_OFF		(0)
+#define MII_DP83867_LEDCR1_LED_0_SET_SEL(reg, val) \
+	do{ \
+		reg &= ~(0x0f << MII_DP83867_LEDCR1_LED_0_SEL_OFF); \
+		reg |= (val & 0x0f) << MII_DP83867_LEDCR1_LED_0_SEL_OFF; \
+	} while(0)
+
+/* LEDCR2 bits */
+#define MII_DP83867_LEDCR2_LED_GPIO_POLARITY		BIT(14)
+#define MII_DP83867_LEDCR2_LED_GPIO_DRV_VAL		BIT(13)
+#define MII_DP83867_LEDCR2_LED_GPIO_DRV_EN		BIT(12)
+#define MII_DP83867_LEDCR2_LED_2_POLARITY		BIT(10)
+#define MII_DP83867_LEDCR2_LED_2_DRV_VAL		BIT(9)
+#define MII_DP83867_LEDCR2_LED_2_DRV_EN			BIT(8)
+#define MII_DP83867_LEDCR2_LED_1_POLARITY		BIT(6)
+#define MII_DP83867_LEDCR2_LED_1_DRV_VAL		BIT(5)
+#define MII_DP83867_LEDCR2_LED_1_DRV_EN			BIT(4)
+#define MII_DP83867_LEDCR2_LED_0_POLARITY		BIT(2)
+#define MII_DP83867_LEDCR2_LED_0_DRV_VAL		BIT(1)
+#define MII_DP83867_LEDCR2_LED_0_DRV_EN			BIT(0)
+
 /* RGMIICTL bits */
 #define DP83867_RGMII_TX_CLK_DELAY_EN		BIT(1)
 #define DP83867_RGMII_RX_CLK_DELAY_EN		BIT(0)
@@ -103,6 +185,7 @@
 #define DP83867_PHYCR_RX_FIFO_DEPTH_MASK	GENMASK(13, 12)
 #define DP83867_PHYCR_RESERVED_MASK		BIT(11)
 #define DP83867_PHYCR_FORCE_LINK_GOOD		BIT(10)
+#define DP83867_PHYCR_DEEP_POWER_DOWN_EN	BIT(7)
 
 /* RGMIIDCTL bits */
 #define DP83867_RGMII_TX_CLK_DELAY_MAX		0xf
@@ -166,6 +249,7 @@ struct dp83867_private {
 	bool set_clk_output;
 	u32 clk_output_sel;
 	bool sgmii_ref_clk_en;
+	bool deep_pwr_down_en;
 };
 
 static int dp83867_ack_interrupt(struct phy_device *phydev)
@@ -615,10 +699,147 @@ static int dp83867_of_init(struct phy_device *phydev)
 		return -EINVAL;
 	}
 
+	dp83867->deep_pwr_down_en =
+			of_property_read_bool(of_node, "ti,deep-power-down-mode-enable") ?
+					true : false;
+
 	return 0;
 }
+
+static int dp83867_of_init_leds(struct phy_device *phydev)
+{
+	struct device *dev = &phydev->mdio.dev;
+	struct device_node *of_node = dev->of_node;
+	int ret;
+	u32 val;
+	u16 reg;
+
+	reg = phy_read_mmd(phydev, DP83867_DEVADDR, MII_DP83867_LEDCR1);
+
+	ret = of_property_read_u32(of_node, "ti,led-gpio-sel", &val);
+	if (ret == 0)
+	{
+		MII_DP83867_LEDCR1_LED_GPIO_SET_SEL(reg, val);
+	}
+	else if (ret != -EINVAL)
+	{
+		phydev_err(phydev, "failed to set led-gpio selector\n");
+		return -EINVAL;
+	}
+
+	ret = of_property_read_u32(of_node, "ti,led-2-sel", &val);
+	if (ret == 0)
+	{
+		MII_DP83867_LEDCR1_LED_2_SET_SEL(reg, val);
+	}
+	else if (ret != -EINVAL)
+	{
+		phydev_err(phydev, "failed to set led-2 selector\n");
+		return -EINVAL;
+	}
+
+	ret = of_property_read_u32(of_node, "ti,led-1-sel", &val);
+	if (ret == 0)
+	{
+		MII_DP83867_LEDCR1_LED_1_SET_SEL(reg, val);
+	}
+	else if (ret != -EINVAL)
+	{
+		phydev_err(phydev, "failed to set led-1 selector\n");
+		return -EINVAL;
+	}
+
+	ret = of_property_read_u32(of_node, "ti,led-0-sel", &val);
+	if (ret == 0)
+	{
+		MII_DP83867_LEDCR1_LED_0_SET_SEL(reg, val);
+	}
+	else if (ret != -EINVAL)
+	{
+		phydev_err(phydev, "failed to set led-0 selector\n");
+		return -EINVAL;
+	}
+
+	phy_write_mmd(phydev, DP83867_DEVADDR, MII_DP83867_LEDCR1, reg);
+
+	reg = phy_read_mmd(phydev, DP83867_DEVADDR, MII_DP83867_LEDCR2);
+
+	/* LED GPIO */
+	if (of_property_read_bool(of_node, "ti,led-gpio-polarity-active-low"))
+		reg &= ~MII_DP83867_LEDCR2_LED_GPIO_POLARITY;
+	else
+		reg |= MII_DP83867_LEDCR2_LED_GPIO_POLARITY;
+
+	if (of_property_read_bool(of_node, "ti,led-gpio-drive-value-high"))
+		reg |= MII_DP83867_LEDCR2_LED_GPIO_DRV_VAL;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_GPIO_DRV_VAL;
+
+	if (of_property_read_bool(of_node, "ti,led-gpio-drive-enable"))
+		reg |= MII_DP83867_LEDCR2_LED_GPIO_DRV_EN;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_GPIO_DRV_EN;
+
+	/* LED 2 */
+	if (of_property_read_bool(of_node, "ti,led-2-polarity-active-low"))
+		reg &= ~MII_DP83867_LEDCR2_LED_2_POLARITY;
+	else
+		reg |= MII_DP83867_LEDCR2_LED_2_POLARITY;
+
+	if (of_property_read_bool(of_node, "ti,led-2-drive-value-high"))
+		reg |= MII_DP83867_LEDCR2_LED_2_DRV_VAL;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_2_DRV_VAL;
+
+	if (of_property_read_bool(of_node, "ti,led-2-drive-enable"))
+		reg |= MII_DP83867_LEDCR2_LED_2_DRV_EN;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_2_DRV_EN;
+
+	/* LED 1 */
+	if (of_property_read_bool(of_node, "ti,led-1-polarity-active-low"))
+		reg &= ~MII_DP83867_LEDCR2_LED_1_POLARITY;
+	else
+		reg |= MII_DP83867_LEDCR2_LED_1_POLARITY;
+
+	if (of_property_read_bool(of_node, "ti,led-1-drive-value-high"))
+		reg |= MII_DP83867_LEDCR2_LED_1_DRV_VAL;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_1_DRV_VAL;
+
+	if (of_property_read_bool(of_node, "ti,led-1-drive-enable"))
+		reg |= MII_DP83867_LEDCR2_LED_1_DRV_EN;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_1_DRV_EN;
+
+	/* LED 0 */
+	if (of_property_read_bool(of_node, "ti,led-0-polarity-active-low"))
+		reg &= ~MII_DP83867_LEDCR2_LED_0_POLARITY;
+	else
+		reg |= MII_DP83867_LEDCR2_LED_0_POLARITY;
+
+	if (of_property_read_bool(of_node, "ti,led-0-drive-value-high"))
+		reg |= MII_DP83867_LEDCR2_LED_0_DRV_VAL;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_0_DRV_VAL;
+
+	if (of_property_read_bool(of_node, "ti,led-0-drive-enable"))
+		reg |= MII_DP83867_LEDCR2_LED_0_DRV_EN;
+	else
+		reg &= ~MII_DP83867_LEDCR2_LED_0_DRV_EN;
+
+	phy_write_mmd(phydev, DP83867_DEVADDR, MII_DP83867_LEDCR2, reg);
+
+	return 0;
+}
+
 #else
 static int dp83867_of_init(struct phy_device *phydev)
+{
+	return 0;
+}
+
+static int dp83867_of_init_leds(struct phy_device *phydev)
 {
 	return 0;
 }
@@ -820,6 +1041,10 @@ static int dp83867_config_init(struct phy_device *phydev)
 			       mask, val);
 	}
 
+	ret = dp83867_of_init_leds(phydev);
+	if (ret)
+		return ret;
+
 	return 0;
 }
 
@@ -863,6 +1088,27 @@ static void dp83867_link_change_notify(struct phy_device *phydev)
 	}
 }
 
+int dp83867_phy_suspend(struct phy_device *phydev)
+{
+	struct dp83867_private *dp83867 = phydev->priv;
+	int val, ret;
+
+	if (dp83867->deep_pwr_down_en) 	{
+
+		val = phy_read(phydev, MII_DP83867_PHYCTRL);
+		if (val < 0)
+			return val;
+
+		val |= DP83867_PHYCR_DEEP_POWER_DOWN_EN;
+
+		ret = phy_write(phydev, MII_DP83867_PHYCTRL, val);
+		if (ret)
+			return ret;
+	}
+
+	return genphy_suspend(phydev);
+}
+
 static struct phy_driver dp83867_driver[] = {
 	{
 		.phy_id		= DP83867_PHY_ID,
@@ -885,7 +1131,7 @@ static struct phy_driver dp83867_driver[] = {
 		.config_intr	= dp83867_config_intr,
 		.handle_interrupt = dp83867_handle_interrupt,
 
-		.suspend	= genphy_suspend,
+		.suspend	= dp83867_phy_suspend,
 		.resume		= genphy_resume,
 
 		.link_change_notify = dp83867_link_change_notify,

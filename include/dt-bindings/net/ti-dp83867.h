@@ -50,4 +50,35 @@
 #define DP83867_CLK_O_SEL_REF_CLK		0xC
 /* Special flag to indicate clock should be off */
 #define DP83867_CLK_O_SEL_OFF			0xFFFFFFFF
+
+/* LED mode selelctor (LEDCR1) */
+/* Receive Error */
+#define MII_DP83867_LEDCR1_LED_SEL_RX_ERR			(14)
+/* Receive Error or Transmit Error */
+#define MII_DP83867_LEDCR1_LED_SEL_RX_TX_ERR		(13)
+/* Link established, blink for transmit or receive activity */
+#define MII_DP83867_LEDCR1_LED_SEL_LE_RX_TX_ACT		(11)
+/* Full duplex */
+#define MII_DP83867_LEDCR1_LED_SEL_FDX				(10)
+/* 100/1000BT link established */
+#define MII_DP83867_LEDCR1_LED_SEL_100_1000BT_LE	(9)
+/* 10/100BT link established */
+#define MII_DP83867_LEDCR1_LED_SEL_10_100BT_LE		(8)
+/* 10BT link established */
+#define MII_DP83867_LEDCR1_LED_SEL_10BT_LE			(7)
+/* 100 BTX link established */
+#define MII_DP83867_LEDCR1_LED_SEL_100BTX_LE		(6)
+/* 1000BT link established */
+#define MII_DP83867_LEDCR1_LED_SEL_1000BT_LE		(5)
+/* Collision detected */
+#define MII_DP83867_LEDCR1_LED_SEL_COL_DET			(4)
+/* Receive activity */
+#define MII_DP83867_LEDCR1_LED_SEL_RX_ACT			(3)
+/* Transmit activity */
+#define MII_DP83867_LEDCR1_LED_SEL_TX_ACT			(2)
+/* Receive or Transmit activity */
+#define MII_DP83867_LEDCR1_LED_SEL_RX_TX_ACT		(1)
+/* Link established */
+#define MII_DP83867_LEDCR1_LED_SEL_LE				(0)
+
 #endif
