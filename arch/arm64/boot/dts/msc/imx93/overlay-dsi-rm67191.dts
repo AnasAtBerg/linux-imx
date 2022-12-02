@@ -27,14 +27,9 @@
 			panel@0 {
 				compatible = "raydium,rm67191";
 				reg = <0>;
-				reset-gpios = <&ioexpander 8 GPIO_ACTIVE_LOW>;
+				reset-gpio = <&ioexpander 8 GPIO_ACTIVE_LOW>;
 				dsi-lanes = <4>;
-
-#if 1
 				video-mode = <2>;
-#else
-				video-mode = <1>;
-#endif
 				/* 0: burst mode
 				 * 1: non-burst mode with sync event
 				 * 2: non-burst mode with sync pulse
@@ -67,7 +62,7 @@
 	fragment@4001 {
 		target = <&lcdif>;
 		__overlay__ {
-			assigned-clock-rates = <498000000>, <71142857>, <400000000>, <133333333>;
+			assigned-clock-rates = <484000000>, <121000000>, <400000000>, <133333333>;
 			status = "okay";
 		};
 	};

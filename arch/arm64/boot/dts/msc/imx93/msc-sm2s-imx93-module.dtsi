@@ -229,6 +229,7 @@
 
 &lcdif {
 	status = "disabled";
+	assigned-clock-rates = <445333333>, <148444444>, <400000000>, <133333333>;
 };
 
 &ldb {
@@ -236,7 +237,7 @@
 };
 
 &ldb_phy {
-	status = "okay";
+	status = "disabled";
 };
 
 /* I2C_GP */
