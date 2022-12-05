@@ -17,6 +17,7 @@
 #include <linux/pm_wakeirq.h>
 #include <linux/mfd/syscon.h>
 #include <linux/regmap.h>
+#include <dt-bindings/input/bbnsm_pwrkey.h>
 
 #define BBNSM_CTRL		0x8
 #define BBNSM_INT_EN		0x10
@@ -29,6 +30,7 @@
 #define BBNSM_EMG_OFF		BIT(4)
 #define BBNSM_PWRKEY_EVENTS	(BBNSM_PWR_ON | BBNSM_BTN_OFF | BBNSM_EMG_OFF)
 #define BBNSM_DP_EN		BIT(24)
+#define BBNSM_TURN_ON_TIME_MASK		(BIT(21) | BIT(20))
 
 #define DEBOUNCE_TIME		30
 #define REPEAT_INTERVAL		60
@@ -41,6 +43,7 @@ struct bbnsm_pwrkey {
 	int wakeup;
 	struct timer_list check_timer;
 	struct input_dev *input;
+	u32 turn_on_time;
 };
 
 static void bbnsm_pwrkey_check_for_events(struct timer_list *t)
@@ -126,6 +129,10 @@ static int bbnsm_pwrkey_probe(struct platform_device *pdev)
 
 	/* config the BBNSM power related register */
 	regmap_update_bits(bbnsm->regmap, BBNSM_CTRL, BBNSM_DP_EN, BBNSM_DP_EN);
+
+	if (!of_property_read_u32(np, "turn-on-time", &bbnsm->turn_on_time)) {
+		regmap_update_bits(bbnsm->regmap, BBNSM_CTRL, BBNSM_TURN_ON_TIME_MASK, bbnsm->turn_on_time);
+	}
 
 	/* clear the unexpected interrupt before driver ready */
 	regmap_write_bits(bbnsm->regmap, BBNSM_EVENTS, BBNSM_PWRKEY_EVENTS, BBNSM_PWRKEY_EVENTS);
