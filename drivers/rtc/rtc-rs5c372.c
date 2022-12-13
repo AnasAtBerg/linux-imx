@@ -50,6 +50,7 @@
 #define RS5C_REG_CTRL2		15
 #	define RS5C372_CTRL2_24		(1 << 5)
 #	define RS5C_CTRL2_XSTP		(1 << 4)	/* only if !R2x2x */
+#	define R2223x_CTRL2_ECO		(1 << 7)	/* only if  R2223x */
 #	define R2x2x_CTRL2_VDET		(1 << 6)	/* only if  R2x2x */
 #	define R2x2x_CTRL2_XSTP		(1 << 5)	/* only if  R2x2x */
 #	define R2x2x_CTRL2_PON		(1 << 4)	/* only if  R2x2x */
@@ -66,6 +67,7 @@ enum rtc_type {
 	rtc_undef = 0,
 	rtc_r2025sd,
 	rtc_r2221tl,
+	rtc_r2223x,
 	rtc_rs5c372a,
 	rtc_rs5c372b,
 	rtc_rv5c386,
@@ -75,6 +77,7 @@ enum rtc_type {
 static const struct i2c_device_id rs5c372_id[] = {
 	{ "r2025sd", rtc_r2025sd },
 	{ "r2221tl", rtc_r2221tl },
+	{ "r2223x",  rtc_r2223x },
 	{ "rs5c372a", rtc_rs5c372a },
 	{ "rs5c372b", rtc_rs5c372b },
 	{ "rv5c386", rtc_rv5c386 },
@@ -91,6 +94,10 @@ static const __maybe_unused struct of_device_id rs5c372_of_match[] = {
 	{
 		.compatible = "ricoh,r2221tl",
 		.data = (void *)rtc_r2221tl
+	},
+	{
+		.compatible = "ricoh,r2223x",
+		.data = (void *)rtc_r2223x
 	},
 	{
 		.compatible = "ricoh,rs5c372a",
@@ -219,8 +226,10 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
 	switch (rs5c->type) {
 	case rtc_r2025sd:
 	case rtc_r2221tl:
+	case rtc_r2223x:
 		if ((rs5c->type == rtc_r2025sd && !(ctrl2 & R2x2x_CTRL2_XSTP)) ||
-		    (rs5c->type == rtc_r2221tl &&  (ctrl2 & R2x2x_CTRL2_XSTP))) {
+		    ((rs5c->type == rtc_r2221tl || rs5c->type == rtc_r2223x) &&
+		    		(ctrl2 & R2x2x_CTRL2_XSTP))) {
 			dev_warn(&client->dev, "rtc oscillator interruption detected. Please reset the rtc clock.\n");
 			return -EINVAL;
 		}
@@ -290,6 +299,7 @@ static int rs5c372_rtc_set_time(struct device *dev, struct rtc_time *tm)
 	switch (rs5c->type) {
 	case rtc_r2025sd:
 	case rtc_r2221tl:
+	case rtc_r2223x:
 		ctrl2 &= ~(R2x2x_CTRL2_VDET | R2x2x_CTRL2_PON);
 		if (rs5c->type == rtc_r2025sd)
 			ctrl2 |= R2x2x_CTRL2_XSTP;
@@ -571,6 +581,7 @@ static int rs5c_oscillator_setup(struct rs5c372 *rs5c372)
 			return ret;
 		break;
 	case rtc_r2221tl:
+	case rtc_r2223x:
 		if (!(buf[1] & R2x2x_CTRL2_XSTP))
 			return ret;
 		break;
@@ -589,6 +600,7 @@ static int rs5c_oscillator_setup(struct rs5c372 *rs5c372)
 		break;
 	case rtc_r2025sd:
 	case rtc_r2221tl:
+	case rtc_r2223x:
 	case rtc_rv5c386:
 	case rtc_rv5c387a:
 		buf[0] |= RV5C387_CTRL1_24;
@@ -608,6 +620,33 @@ static int rs5c_oscillator_setup(struct rs5c372 *rs5c372)
 
 	rs5c372->regs[RS5C_REG_CTRL1] = buf[0];
 	rs5c372->regs[RS5C_REG_CTRL2] = buf[1];
+
+	return 0;
+}
+
+static int rs5c_rtc_set_eco_mode(struct rs5c372 *rs5c372, bool eco)
+{
+	struct i2c_client *client = rs5c372->client;
+	unsigned char	ctrl2;
+	int		addr;
+
+	if (rs5c372->type != rtc_r2223x)
+		return -ENODEV;
+
+	addr = RS5C_ADDR(RS5C_REG_CTRL2);
+
+	ctrl2 = i2c_smbus_read_byte_data(client, addr);
+
+	if (eco)
+		ctrl2 |= R2223x_CTRL2_ECO;
+	else
+		ctrl2 &= ~R2223x_CTRL2_ECO;
+
+	if (i2c_smbus_write_byte_data(client, addr, ctrl2) < 0) {
+		dev_dbg(&client->dev, "%s: write error in line %i\n",
+			__func__, __LINE__);
+		return -EIO;
+	}
 
 	return 0;
 }
@@ -673,6 +712,7 @@ static int rs5c372_probe(struct i2c_client *client,
 		break;
 	case rtc_r2025sd:
 	case rtc_r2221tl:
+	case rtc_r2223x:
 	case rtc_rv5c386:
 	case rtc_rv5c387a:
 		if (rs5c372->regs[RS5C_REG_CTRL1] & RV5C387_CTRL1_24)
@@ -702,6 +742,7 @@ static int rs5c372_probe(struct i2c_client *client,
 			({ char *s; switch (rs5c372->type) {
 			case rtc_r2025sd:	s = "r2025sd"; break;
 			case rtc_r2221tl:	s = "r2221tl"; break;
+			case rtc_r2223x:	s = "r2223x"; break;
 			case rtc_rs5c372a:	s = "rs5c372a"; break;
 			case rtc_rs5c372b:	s = "rs5c372b"; break;
 			case rtc_rv5c386:	s = "rv5c386"; break;
@@ -710,6 +751,20 @@ static int rs5c372_probe(struct i2c_client *client,
 			}; s;}),
 			rs5c372->time24 ? "24hr" : "am/pm"
 			);
+
+	if (of_property_read_bool(client->dev.of_node, "r2223x.eco-mode")) {
+		switch (rs5c372->type) {
+		case rtc_r2223x:
+			err = rs5c_rtc_set_eco_mode(rs5c372, true);
+			if (unlikely(err < 0))
+				return err;
+			dev_info(&client->dev, "eco mode enabled \n");
+			break;
+		default:
+			dev_warn(&client->dev, "eco mode not supported\n");
+			break;
+		}
+	}
 
 	/* REVISIT use client->irq to register alarm irq ... */
 	rs5c372->rtc = devm_rtc_device_register(&client->dev,
