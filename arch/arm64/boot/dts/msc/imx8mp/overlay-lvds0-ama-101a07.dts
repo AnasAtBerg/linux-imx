@@ -1,0 +1,136 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@4000 {
+		target-path = "/";
+		__overlay__ {
+			lvds0_panel {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_lcd0_panel>;
+				compatible = "ama-101a01-du2511-g020", "panel-lvds";
+				backlight = <&lcd0_backlight>;
+				enable-gpios =  <&gpio1 0 GPIO_ACTIVE_HIGH>;
+
+				label = "AMA-101A01-DU2511-G020";
+				width-mm = <217>;
+				height-mm = <136>;
+				data-mapping = "vesa-24";
+
+				panel-timing {
+					clock-frequency = <74250000>;
+					hactive = <1280>;
+					vactive = <800>;
+					hback-porch = <48>;
+					hfront-porch = <48>;
+					vback-porch = <18>;
+					vfront-porch = <18>;
+					hsync-len = <64>;
+					vsync-len = <4>;
+					hsync-active = <0>;
+					vsync-active = <0>;
+					de-active = <1>;
+					pixelclk-active = <0>;
+				};
+
+				port {
+					panel_lvds_in: endpoint {
+						remote-endpoint = <&lvds_out>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@4001 {
+		target = <&lcdif2>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4002 {
+		target = <&ldb>;
+		__overlay__ {
+			status = "okay";
+
+			lvds-channel@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				status = "okay";
+
+				port@1 {
+					reg = <1>;
+
+					lvds_out: endpoint {
+						remote-endpoint = <&panel_lvds_in>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@4003 {
+		target = <&ldb_phy>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4004 {
+		target = <&pwm1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4005 {
+		target = <&lcd0_backlight>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4006 {
+		target = <&gpu_3d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4007 {
+		target = <&gpu_2d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4008 {
+		target = <&ml_vipsi>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4009 {
+		target = <&mix_gpu_ml>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

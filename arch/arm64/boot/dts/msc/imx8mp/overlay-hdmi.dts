@@ -1,0 +1,102 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@4500 {
+		target-path = "/sound-hdmi";
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4501 {
+		target = <&aud2htx>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4502 {
+		target = <&irqsteer_hdmi>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4503 {
+		target = <&hdmi_blk_ctrl>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4504 {
+		target = <&hdmi_pavi>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4505 {
+		target = <&hdmi>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4506 {
+		target = <&hdmiphy>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4507 {
+		target = <&lcdif3>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4508 {
+		target = <&gpu_3d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4509 {
+		target = <&gpu_2d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4510 {
+		target = <&ml_vipsi>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4511 {
+		target = <&mix_gpu_ml>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};
+
