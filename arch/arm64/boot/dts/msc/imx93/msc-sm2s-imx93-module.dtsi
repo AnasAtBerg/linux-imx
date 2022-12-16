@@ -130,6 +130,24 @@
 		enable-gpios = <&ioexpander 9 GPIO_ACTIVE_HIGH>;
 		status = "disabled";
 	};
+
+	user_gpios {
+		compatible = "msc,user-gpios";
+		GPIO0-gpios = <&gpio2 16 GPIO_ACTIVE_HIGH>;
+		GPIO1-gpios = <&gpio2 17 GPIO_ACTIVE_HIGH>;
+		GPIO2-gpios = <&gpio2 18 GPIO_ACTIVE_HIGH>;
+		GPIO3-gpios = <&gpio2 19 GPIO_ACTIVE_HIGH>;
+		GPIO4-gpios = <&gpio2 20 GPIO_ACTIVE_HIGH>;
+		GPIO5-gpios = <&gpio2 21 GPIO_ACTIVE_HIGH>;
+		GPIO6-gpios = <&gpio2 26 GPIO_ACTIVE_HIGH>;
+		GPIO7-gpios = <&ioexpander 16 GPIO_ACTIVE_HIGH>;
+		GPIO8-gpios = <&ioexpander 17 GPIO_ACTIVE_HIGH>;
+		GPIO9-gpios = <&ioexpander 18 GPIO_ACTIVE_HIGH>;
+		GPIO10-gpios = <&ioexpander 19 GPIO_ACTIVE_HIGH>;
+		GPIO11-gpios = <&ioexpander 20 GPIO_ACTIVE_HIGH>;
+		GPIO12-gpios = <&ioexpander 21 GPIO_ACTIVE_HIGH>;
+		GPIO13-gpios = <&ioexpander 22 GPIO_ACTIVE_HIGH>;
+	};
 };
 
 &sai1 {
@@ -274,6 +292,8 @@
 	status = "okay";
 
 	ioexpander: gpio@22 {
+		#gpio-cells = <2>;
+		#interrupt-cells = <2>;
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_ioexpander>;
 		compatible = "ti,tca6424";
@@ -281,9 +301,15 @@
 		interrupt-parent = <&gpio2>;
 		interrupts = <15 IRQ_TYPE_EDGE_RISING>;
 		interrupt-controller;
-		#interrupt-cells = <2>;
 		gpio-controller;
-		#gpio-cells = <2>;
+		gpio-line-names =
+				"boot_sel0", "boot_sel1", "boot_sel2", "pmic_int",
+				"tpm_int", "wifi_int", "gbe0_int", "gbe1_int",
+				"lcd0_vdd_en", "lcd0_bklt_en", "wifi_en", "gbe0_rst",
+				"gbe1_rst", "usb_rst", "charging", "batlow",
+				"gpio7", "gpio8", "gpio9", "gpio10",
+				"gpio11", "gpio12", "gpio13", "sleep";
+		status = "okay";
 
 		/* P0.0 -> boot_sel0 */
 		boot_sel0 {
@@ -641,7 +667,31 @@
 	turn-on-time = <BBNSM_TURN_ON_TIME_0MS>;
 };
 
+&gpio2 {
+	gpio-line-names =
+		"", "", "", "", "", "", "", "", "", "",
+		"", "", "", "", "", "", "gpio0", "gpio1", "gpio2", "gpio3",
+		"gpio4", "gpio5", "", "", "", "", "gpio6", "", "", "",
+		"", "";
+};
+
 &iomuxc {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_smarc_gpio>;
+	status = "okay";
+
+	pinctrl_smarc_gpio: smarcgpiogrp {
+		fsl,pins = <
+			MX93_PAD_GPIO_IO16__GPIO2_IO16	0x4000031e	/* GPIO0 */
+			MX93_PAD_GPIO_IO17__GPIO2_IO17	0x4000031e	/* GPIO1 */
+			MX93_PAD_GPIO_IO18__GPIO2_IO18	0x4000031e	/* GPIO2 */
+			MX93_PAD_GPIO_IO19__GPIO2_IO19	0x4000031e	/* GPIO3 */
+			MX93_PAD_GPIO_IO20__GPIO2_IO20	0x4000031e	/* GPIO4 */
+			MX93_PAD_GPIO_IO21__GPIO2_IO21	0x4000031e	/* GPIO5 */
+			MX93_PAD_GPIO_IO26__GPIO2_IO26	0x4000031e	/* GPIO6 */
+		>;
+	};
+
 	pinctrl_eqos: eqosgrp {
 		fsl,pins = <
 			MX93_PAD_ENET1_MDC__ENET_QOS_MDC			0x57e
