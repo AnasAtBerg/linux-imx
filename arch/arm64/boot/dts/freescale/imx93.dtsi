@@ -1115,7 +1115,7 @@
 			clocks = <&clk IMX93_CLK_GPIO2_GATE>,
 				 <&clk IMX93_CLK_GPIO2_GATE>;
 			clock-names = "gpio", "port";
-			gpio-ranges = <&iomuxc 0 32 32>;
+			gpio-ranges = <&iomuxc 0 4 30>;
 		};
 
 		gpio3: gpio@43820080 {
@@ -1129,7 +1129,8 @@
 			clocks = <&clk IMX93_CLK_GPIO3_GATE>,
 				 <&clk IMX93_CLK_GPIO3_GATE>;
 			clock-names = "gpio", "port";
-			gpio-ranges = <&iomuxc 0 64 32>;
+			gpio-ranges = <&iomuxc 0 84 8>, <&iomuxc 8 66 18>,
+				      <&iomuxc 26 34 2>, <&iomuxc 28 0 4>;
 		};
 
 		gpio4: gpio@43830080 {
@@ -1143,7 +1144,7 @@
 			clocks = <&clk IMX93_CLK_GPIO4_GATE>,
 				 <&clk IMX93_CLK_GPIO4_GATE>;
 			clock-names = "gpio", "port";
-			gpio-ranges = <&iomuxc 0 96 32>;
+			gpio-ranges = <&iomuxc 0 38 28>, <&iomuxc 28 36 2>;
 		};
 
 		gpio1: gpio@47400080 {
@@ -1157,7 +1158,7 @@
 			clocks = <&clk IMX93_CLK_GPIO1_GATE>,
 				 <&clk IMX93_CLK_GPIO1_GATE>;
 			clock-names = "gpio", "port";
-			gpio-ranges = <&iomuxc 0 0 32>;
+			gpio-ranges = <&iomuxc 0 92 16>;
 		};
 
 		ocotp: efuse@47510000 {
@@ -1371,10 +1372,9 @@
 			clocks = <&clk IMX93_CLK_USB_CONTROLLER_GATE>,
 				 <&clk IMX93_CLK_HSIO_32K_GATE>;
 			clock-names = "usb_ctrl_root_clk", "usb_wakeup_clk";
-			assigned-clocks = <&clk IMX93_CLK_USB_CONTROLLER_GATE>,
-					  <&clk IMX93_CLK_HSIO_32K_GATE>;
-			assigned-clock-parents = <&clk IMX93_CLK_HSIO>,
-						 <&clk IMX93_CLK_32K>;
+			assigned-clocks = <&clk IMX93_CLK_HSIO>;
+			assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
+			assigned-clock-rates = <133000000>;
 			fsl,usbphy = <&usbphynop1>;
 			fsl,usbmisc = <&usbmisc1 0>;
 			status = "disabled";
@@ -1399,10 +1399,9 @@
 			clocks = <&clk IMX93_CLK_USB_CONTROLLER_GATE>,
 				 <&clk IMX93_CLK_HSIO_32K_GATE>;
 			clock-names = "usb_ctrl_root_clk", "usb_wakeup_clk";
-			assigned-clocks = <&clk IMX93_CLK_USB_CONTROLLER_GATE>,
-					  <&clk IMX93_CLK_HSIO_32K_GATE>;
-			assigned-clock-parents = <&clk IMX93_CLK_HSIO>,
-						 <&clk IMX93_CLK_32K>;
+			assigned-clocks = <&clk IMX93_CLK_HSIO>;
+			assigned-clock-parents = <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
+			assigned-clock-rates = <133000000>;
 			fsl,usbphy = <&usbphynop2>;
 			fsl,usbmisc = <&usbmisc2 0>;
 			status = "disabled";
