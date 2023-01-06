@@ -319,7 +319,7 @@ static int fsl_lpspi_set_bitrate(struct fsl_lpspi_data *fsl_lpspi)
 	}
 
 	for (prescale = 0; prescale < 8; prescale++) {
-		scldiv = perclk_rate / config.speed_hz / (1 << prescale) - 2;
+		scldiv = (perclk_rate + (config.speed_hz>>1)) / config.speed_hz / (1 << prescale) - 2;
 		if (scldiv < 256) {
 			fsl_lpspi->config.prescale = prescale;
 			break;
@@ -925,7 +925,8 @@ static int fsl_lpspi_probe(struct platform_device *pdev)
 
 	ret = devm_spi_register_controller(&pdev->dev, controller);
 	if (ret < 0) {
-		dev_err(&pdev->dev, "spi_register_controller error.\n");
+		if (ret != -EPROBE_DEFER)
+			dev_err(&pdev->dev, "spi_register_controller error. ret=%d\n", ret);
 		goto out_dma_init;
 	}
 
