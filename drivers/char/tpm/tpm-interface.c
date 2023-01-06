@@ -51,10 +51,11 @@ MODULE_PARM_DESC(suspend_pcr,
  */
 unsigned long tpm_calc_ordinal_duration(struct tpm_chip *chip, u32 ordinal)
 {
-	if (chip->flags & TPM_CHIP_FLAG_TPM2)
+	if (chip->flags & TPM_CHIP_FLAG_TPM2) {
 		return tpm2_calc_ordinal_duration(chip, ordinal);
-	else
+	} else {
 		return tpm1_calc_ordinal_duration(chip, ordinal);
+	}
 }
 EXPORT_SYMBOL_GPL(tpm_calc_ordinal_duration);
 
@@ -64,6 +65,7 @@ static ssize_t tpm_try_transmit(struct tpm_chip *chip, void *buf, size_t bufsiz)
 	int rc;
 	ssize_t len = 0;
 	u32 count, ordinal;
+	unsigned int delay_msec = TPM_TIMEOUT_POLL;
 	unsigned long stop;
 
 	if (bufsiz < TPM_HEADER_SIZE)
@@ -114,7 +116,8 @@ static ssize_t tpm_try_transmit(struct tpm_chip *chip, void *buf, size_t bufsiz)
 			return -ECANCELED;
 		}
 
-		tpm_msleep(TPM_TIMEOUT_POLL);
+		tpm_msleep(delay_msec);
+		delay_msec *= 2;
 		rmb();
 	} while (time_before(jiffies, stop));
 
@@ -157,6 +160,7 @@ ssize_t tpm_transmit(struct tpm_chip *chip, u8 *buf, size_t bufsiz)
 	u8 save[TPM_HEADER_SIZE + 3*sizeof(u32)];
 	unsigned int delay_msec = TPM2_DURATION_SHORT;
 	u32 rc = 0;
+	u32 i = TPM_RETRY;
 	ssize_t ret;
 	const size_t save_size = min(sizeof(save), bufsiz);
 	/* the command code is where the return code will be */
@@ -172,28 +176,32 @@ ssize_t tpm_transmit(struct tpm_chip *chip, u8 *buf, size_t bufsiz)
 	for (;;) {
 		ret = tpm_try_transmit(chip, buf, bufsiz);
 		if (ret < 0)
-			break;
-		rc = be32_to_cpu(header->return_code);
-		if (rc != TPM2_RC_RETRY && rc != TPM2_RC_TESTING)
-			break;
-		/*
-		 * return immediately if self test returns test
-		 * still running to shorten boot time.
-		 */
-		if (rc == TPM2_RC_TESTING && cc == TPM2_CC_SELF_TEST)
-			break;
+		{
+			i--;
+			if (i<0)
+				break;
+		} else {
+			rc = be32_to_cpu(header->return_code);
+			if (rc != TPM2_RC_RETRY && rc != TPM2_RC_TESTING)
+				break;
+			/*
+			 * return immediately if self test returns test
+			 * still running to shorten boot time.
+			 */
+			if (rc == TPM2_RC_TESTING && cc == TPM2_CC_SELF_TEST)
+				break;
 
-		if (delay_msec > TPM2_DURATION_LONG) {
-			if (rc == TPM2_RC_RETRY)
-				dev_err(&chip->dev, "in retry loop\n");
-			else
-				dev_err(&chip->dev,
-					"self test is still running\n");
-			break;
+			if (delay_msec > TPM2_DURATION_LONG) {
+				if (rc == TPM2_RC_RETRY)
+					dev_err(&chip->dev, "in retry loop\n");
+				else
+					dev_err(&chip->dev, "self test is still running\n");
+				break;
+			}
+			tpm_msleep(delay_msec);
+			delay_msec *= 2;
+			memcpy(buf, save, save_size);
 		}
-		tpm_msleep(delay_msec);
-		delay_msec *= 2;
-		memcpy(buf, save, save_size);
 	}
 	return ret;
 }
