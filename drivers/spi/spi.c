@@ -848,6 +848,9 @@ int spi_register_board_info(struct spi_board_info const *info, unsigned n)
 
 	return 0;
 }
+#ifdef CONFIG_SPI_EXPORT_BOARD_INFO
+EXPORT_SYMBOL_GPL(spi_register_board_info);
+#endif
 
 /*-------------------------------------------------------------------------*/
 
@@ -4351,3 +4354,7 @@ err0:
  * include needing to have boardinfo data structures be much more public.
  */
 postcore_initcall(spi_init);
+
+#ifdef CONFIG_SPI_EXPORT_BOARD_INFO
+MODULE_LICENSE("GPL");
+#endif
