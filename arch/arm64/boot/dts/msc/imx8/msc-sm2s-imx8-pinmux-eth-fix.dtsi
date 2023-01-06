@@ -1,0 +1,9 @@
+/* This pinmux configuration can't be set in the pinmux config tool v7, therefore we have to separate it and include it manually
+   It fixes eth0 problems with VCC.
+*/
+
+        pinctrl_fec1_fix: fec1grp_fix {
+            fsl,pins = <
+                SC_P_COMP_CTL_GPIO_1V8_3V3_ENET_ENETB_PAD   0x00000148
+            >;
+        };

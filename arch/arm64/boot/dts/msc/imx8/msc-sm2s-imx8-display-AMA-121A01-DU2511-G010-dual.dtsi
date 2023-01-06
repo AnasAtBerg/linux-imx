@@ -1,0 +1,139 @@
+/** @file      msc-sm2s-imx8-display-AMA-121A01-DU2511-G010.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   For single-channel Ampire AMA-121A01-DU2511-G010 connected to LVDS0
+	           https://www.avnet.com/wps/wcm/connect/onesite/c5c5bceb-73d5-4b96-951c-5aaf8abfd0b8/AMA-121A01-DU2511-G010.pdf?MOD=AJPERES&CVID=myXazHN&id=1551396272684
+*/
+
+
+/dts-v1/;
+/plugin/;
+
+#define LVDS_DISPLAY_0_BACKLIGHT
+#define LVDS_DISPLAY_0_TOUCH
+#define LVDS_DISPLAY_1_BACKLIGHT
+#define LVDS_DISPLAY_1_TOUCH
+
+// table 5.4, page 9 https://www.avnet.com/wps/wcm/connect/onesite/c5c5bceb-73d5-4b96-951c-5aaf8abfd0b8/AMA-121A01-DU2511-G010.pdf?MOD=AJPERES&CVID=myXazHN&id=1551396272684
+#define LVDS_BACKLIGHT_POST_PWM_ON_DELAY_MS 211 // Tp3+max(Tp5+Tp6_min,Tp2)
+#define LVDS_BACKLIGHT_PWM_OFF_DELAY_MS 10 // Tp12
+
+#include "msc-sm2s-imx8-display.dtsi"
+#include "msc-sm2s-imx8-touch.dtsi"
+
+/ {
+	fragment@2001 {
+		target = <&ldb1>;
+		__overlay__ {
+			status = "okay";
+
+			lvds-channel@0 {
+				fsl,data-mapping = "spwg";
+				fsl,data-width = <24>;
+				status = "okay";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@1 {
+					reg = <1>;
+					lvds1_out: endpoint {
+						remote-endpoint = <&panel_lvds1_in>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@2002 {
+		target-path = "/";
+		__overlay__ {
+			lvds1_panel {
+				compatible = "ama-121a01-du2511-g010","panel-lvds";
+				backlight = <&lvds_backlight0>;
+
+				label = "AMA-121A01-DU2511-G010";
+				width-mm = <261>;
+				height-mm = <163>;
+				data-mapping = "vesa-24"; // is SPWG
+
+				panel-timing {
+					// from arch/arm64/boot/dts/msc/common/panel-lvds-ama121a01.dtsi
+					clock-frequency = <70000000>;
+					hactive = <1280>;
+					vactive = <800>;
+					hback-porch = <78>;
+					hfront-porch = <78>;
+					vback-porch = <10>;
+					vfront-porch = <10>;
+					hsync-len = <4>;
+					vsync-len = <4>;
+				};
+
+				port {
+					panel_lvds1_in: endpoint {
+						remote-endpoint = <&lvds1_out>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@2011 {
+		target = <&ldb2>;
+		__overlay__ {
+			status = "okay";
+
+			lvds-channel@0 {
+				fsl,data-mapping = "spwg";
+				fsl,data-width = <24>;
+				status = "okay";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@1 {
+					reg = <1>;
+					lvds2_out: endpoint {
+						remote-endpoint = <&panel_lvds2_in>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@2012 {
+		target-path = "/";
+		__overlay__ {
+			lvds2_panel {
+				compatible = "ama-121a01-du2511-g010","panel-lvds";
+				backlight = <&lvds_backlight0>;
+
+				label = "AMA-121A01-DU2511-G010";
+				width-mm = <261>;
+				height-mm = <163>;
+				data-mapping = "vesa-24"; // is SPWG
+
+				panel-timing {
+					// from arch/arm64/boot/dts/msc/common/panel-lvds-ama121a01.dtsi
+					clock-frequency = <70000000>;
+					hactive = <1280>;
+					vactive = <800>;
+					hback-porch = <78>;
+					hfront-porch = <78>;
+					vback-porch = <10>;
+					vfront-porch = <10>;
+					hsync-len = <4>;
+					vsync-len = <4>;
+				};
+
+				port {
+					panel_lvds2_in: endpoint {
+						remote-endpoint = <&lvds2_out>;
+					};
+				};
+			};
+		};
+	};
+};

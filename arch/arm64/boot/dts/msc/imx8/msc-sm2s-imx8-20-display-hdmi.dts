@@ -1,0 +1,2 @@
+#define MODULE_MES_REVISION 20
+#include "msc-sm2s-imx8-display-hdmi.dtsi"

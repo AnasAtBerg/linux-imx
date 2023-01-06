@@ -1,0 +1,214 @@
+/** @file      msc-sm2s-imx8-baseboard-sm2s-mb-ep5.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   Provides baseboard mappings that are merged at runtime with the CPU device tree.
+*/
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/firmware/imx/rsrc.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+
+/* USB mapping on EP5, Module and EP1
+   | SM2 Port        | EP5 Connector                            | i.MX8 24N06E1I             | i.MX8 2406A0I | i.MX8 240CF0I | EP1            |
+   |-----------------|------------------------------------------|----------------------------|---------------|---------------|----------------|
+   | USB0            | X0803 OTG micro (1st from right/corner)  | USB_OTG1                   | X             | X             | X1901/3 Client |
+   | USB1            | X0802 2.0       (3rd from right)         | Hub U1001/USB_OTG2         | X             | n.c.          | X2001 Mini PCI |
+   | USB2, USB2_SSTX | X0801 3.0       (4th from right, center) | Hub U1001/USB_OTG2/USB_SS3 | X             | n.c.          | X702B USB 3.0  |
+   | USB5, USB3_SSTX | X0901 Type C    (2nd from right)         | n.c.                       | n.c.          | n.c.          | X1201C         |
+   | USB3            | Feature Connector 1                      | Hub U1001                  | X             | n.c.          | X1201C         |
+   | USB4            | X0502 Mini PCI                           | Hub U1001                  | X             | n.c.          | X1201B         |
+*/
+
+/ {
+	fragment@0 {
+		target-path = "/";
+
+		__overlay__ {
+			baseboard-dtb = EP5_NAME;
+		};
+	};
+
+	fragment@1 {
+		target-path = "/";
+		__overlay__ {
+			user_gpios {
+				compatible = "msc,user-gpios";
+				pinctrl-names = "default";
+				pinctrl-0 =
+					<&pinctrl_smarc_gpio_gpio5_gpio>, // FAN is not connected, so configure pins as GPIOs even when we don't connect them to feature connector
+					<&pinctrl_smarc_gpio_gpio6_gpio>; // should be couting pulses, but pins is neither connected to GPT nor TPM
+					// <&pinctrl_smarc_gpio>; already done in hog grp to be earlier - needed for DSI displays
+
+#ifdef EP5_FC_GPIOS_0_TO_7_FROM_MODULE
+				FC_GPIO_0-gpios = <&lsio_gpio0 0 0>;
+				FC_GPIO_1-gpios = <&lsio_gpio0 2 0>;
+				FC_GPIO_2-gpios = <&lsio_gpio0 1 0>;
+				FC_GPIO_3-gpios = <&lsio_gpio0 5 0>;
+				FC_GPIO_4-gpios = <&lsio_gpio4 2 0>;
+				FC_GPIO_5-gpios = <&lsio_gpio0 19 0>;
+				FC_GPIO_6-gpios = <&lsio_gpio0 16 0>;
+				FC_GPIO_7-gpios = <&lsio_gpio4 1 0>;
+#endif // EP5_FC_GPIOS_0_TO_7_FROM_MODULE
+#if MODULE_MES_REVISION != 20
+				FC_GPIO_8-gpios = <&lsio_gpio2 27 0>;
+				FC_GPIO_9-gpios = <&lsio_gpio1 18 0>;
+				FC_GPIO_10-gpios = <&lsio_gpio2 29 0>;
+				FC_GPIO_11-gpios = <&lsio_gpio1 17 0>;
+#else
+				FC_GPIO_8-gpios = <&lsio_gpio0 30 0>;
+				FC_GPIO_9-gpios = <&lsio_gpio0 31 0>;
+				FC_GPIO_10-gpios = <&lsio_gpio1 0 0>;
+				FC_GPIO_11-gpios = <&lsio_gpio1 1 0>;
+#endif
+			};
+
+			gpio-keys {
+				compatible = "gpio-keys";
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_gpio_keys>;
+
+				sleep-key {
+					label = "BTN SLEEP"; // signal SLEEP#
+					gpios = <&lsio_gpio2 5 GPIO_ACTIVE_LOW>;
+					linux,code = <KEY_SLEEP>;
+					linux,can-disable;
+					debounce-interval = <5>;
+				};
+
+				lid-switch {
+					label = "BTN LID"; // signal LID#
+					gpios = <&lsio_gpio2 4 GPIO_ACTIVE_LOW>;
+					linux,input-type = <EV_SW>;
+					linux,code = <SW_LID>;
+					linux,can-disable;
+					debounce-interval = <5>;
+					wakeup-source;
+				};
+			};
+		};
+	};
+
+#ifdef EP5_NO_FEC2
+	fragment@2 {
+		target = <&fec2>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+#endif // EP5_NO_FEC2
+
+#ifdef EP5_NO_PCIEA
+	fragment@3 {
+		target = <&pciea>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+#endif // EP5_NO_PCIEA
+
+#ifdef EP5_NO_PCIEB
+	fragment@4 {
+		target = <&pcieb>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+#endif // EP5_NO_PCIEB
+
+#ifdef EP5_NO_SATA
+	fragment@5 {
+		target = <&sata>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+#endif // EP5_NO_SATA
+
+	fragment@6 {
+		target = <&i2c2>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			baseboard_eeprom@57 {
+				compatible = "atmel,24c04";
+				reg = <0x57>;
+			};
+		};
+	};
+
+#ifndef EP5_NO_DA7212
+	fragment@11 {
+		target = <&i2c2>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			da7213_codec: da7212@1a {
+				compatible = "dlg,da7213";
+				reg = <0x1a>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_audio_mclk>;
+
+				clocks = <&mclkout0_lpcg 0>;
+				clock-names = "mclk";
+				assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+					<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+					<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+					<&mclkout0_lpcg 0>;
+
+				/* asrc0 seems to be configured to use IMX8QM_AUD_ACM_AUD_REC_CLK0_DIV as MCLK_OUT0
+				   Therefore IMX8QM_AUD_MCLKOUT0 is not actually configured by this value (is noop) but mirrors the setting
+				   IMX8QM_AUD_ACM_AUD_REC_CLK0_DIV
+				   IMX8QM_AUD_PLL0_DIV and IMX8QM_AUD_ACM_AUD_PLL_CLK0_DIV are used by other devices like HDMI as well, therefore
+				   we don't touch these numbers.
+				   IMX8QM_AUD_ACM_AUD_REC_CLK0_DIV and therefore IMX8QM_AUD_MCLKOUT0 must be 256*fs with fs=48kHz
+				*/
+				assigned-clock-rates = <786432000>, <49152000>, <12288000>;
+			};
+		};
+	};
+
+	fragment@12 {
+		target = <&sai1>;
+		__overlay__ {
+		/* MEK Board has these clocks also assigned. But on the SM2-MB-EP1
+		   the clocks assigned to the codec are sufficient, therefore we
+		   have disabled them. */
+/*
+			clocks = <&mclkout0_lpcg 0>;
+			clock-names = "mclk";
+			assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+				<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+				<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+				<&sai1_lpcg 0>;
+*/
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_i2s0>;
+			status = "okay";
+		};
+	};
+
+	fragment@13 {
+		target-path = "/";
+		__overlay__ {
+			da7213_sound: da7213-sound {
+				compatible = "fsl,imx-audio-da7213";
+				card-name = "imx-da7212-audio";
+				fsl,no-audmux;
+				cbs_cfs;
+				ssi-controller = <&sai1>;
+				audio-codec = <&da7213_codec>;
+				audio-routing = "Headphone Jack", "LINE";
+			};
+		};
+	};
+#endif // EP5_NO_DA7212
+
+};

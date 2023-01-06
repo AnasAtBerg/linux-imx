@@ -1,0 +1,2 @@
+#define MODULE_MES_REVISION A0
+#include "msc-sm2s-imx8-baseboard-sm2s-mb-ep5-102.dtsi"

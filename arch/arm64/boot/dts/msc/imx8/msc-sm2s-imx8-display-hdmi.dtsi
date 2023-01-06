@@ -1,0 +1,67 @@
+/** @file      msc-sm2s-imx8-display-hdmi.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   Provides baseboard mappings that are merged at runtime with the CPU device tree.
+*/
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+
+#include "msc-sm2s-imx8-display.dtsi"
+
+/ {
+	fragment@2000 {
+		target = <&hdmi>;
+		__overlay__ {
+			compatible = "cdn,imx8qm-hdmi";
+			firmware-name = "hdmitxfw.bin";
+			lane-mapping = <0x93>;
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_hdmi_switch>;
+
+			status = "okay";
+
+			/* Setup U1201 TS3DV642 multiplexer */
+			hdmi-switch-en-gpios = <&lsio_gpio4 26 GPIO_ACTIVE_HIGH>;
+			hdmi-switch-sel1-gpios = <&lsio_gpio4 25 GPIO_ACTIVE_HIGH>;
+			hdmi-switch-sel2-gpios = <&lsio_gpio4 24 GPIO_ACTIVE_HIGH>;
+			hdmi-switch-on-delay = <140>; // file://destsm3is12fs01/MesData/MesDatasheets/ts3dv642.pdf, tON, chapter 6.7
+		};
+	};
+
+	fragment@2001 {
+		target-path = "/";
+		__overlay__ {
+			sound-hdmi-tx {
+				compatible = "fsl,imx-audio-cdnhdmi";
+				model = "imx-audio-hdmi-tx";
+				audio-cpu = <&sai5>;
+				constraint-rate = <48000>;
+				protocol = <1>;
+				hdmi-out;
+			};
+		};
+	};
+
+	ENABLE_TARGET(2002, &irqsteer_hdmi);
+	ENABLE_TARGET(2003, &hdmi_lpcg_i2c0);
+	ENABLE_TARGET(2004, &sai5);
+	ENABLE_TARGET(2005, &sai5_lpcg);
+	ENABLE_TARGET(2006, &hdmi_lpcg_lis_ipg);
+	ENABLE_TARGET(2007, &hdmi_lpcg_pwm_ipg);
+	ENABLE_TARGET(2008, &hdmi_lpcg_i2s);
+	ENABLE_TARGET(2009, &hdmi_lpcg_gpio_ipg);
+	ENABLE_TARGET(2010, &hdmi_lpcg_msi_hclk);
+	ENABLE_TARGET(2011, &hdmi_lpcg_pxl);
+	ENABLE_TARGET(2012, &hdmi_lpcg_phy);
+	ENABLE_TARGET(2013, &hdmi_lpcg_apb_mux_csr);
+	ENABLE_TARGET(2014, &hdmi_lpcg_apb_mux_ctrl);
+	ENABLE_TARGET(2015, &hdmi_lpcg_apb);
+};

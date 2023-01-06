@@ -1,0 +1,44 @@
+/** @file      msc-sm2s-imx8-touch.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Dieer Hermanns
+
+    @details   Additional setting for touches
+*/
+
+/ {
+#ifdef LVDS_DISPLAY_0_TOUCH
+	fragment@2100 {
+		target = <&i2c2>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			touch0@5c {
+				compatible = "sis,i2c_touch_driver";
+				reg = <0x5c>;
+				sis,rst-gpio = <&lsio_gpio0 0 0>;
+				sis,int-gpio = <&lsio_gpio1 0 0>;
+			};
+		};
+	};
+#endif
+
+#ifdef LVDS_DISPLAY_1_TOUCH
+	fragment@2101 {
+		target = <&i2c3>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			touch1@5c {
+				compatible = "sis,i2c_touch_driver";
+				reg = <0x5c>;
+				sis,rst-gpio = <&lsio_gpio0 2 0>;
+				sis,int-gpio = <&lsio_gpio1 1 0>;
+			};
+		};
+	};
+#endif
+};

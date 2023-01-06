@@ -1,0 +1,85 @@
+/** @file      msc-sm2s-imx8-display-xinli-x078dtlt-119.dtsi
+
+    @copyright Copyright (C) 2021 by MSC Technologies GmbH
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author	Dieter Hermanns
+
+    @details	For XinLi X078dtlt-119
+		GPIO 1.06/LCD0_BKLT_EN is not used for xinli, therefore we don't have a regulator.
+*/
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/pinctrl/pads-imx8qm-pintool-compatible.h>
+
+/dts-v1/;
+/plugin/;
+
+#define HAS_DSI
+
+#define LVDS_DISPLAY_0_BACKLIGHT
+#define LVDS_BACKLIGHT_POST_PWM_ON_DELAY_MS 60 // Tp1+Tp2
+#define LVDS_BACKLIGHT_PWM_OFF_DELAY_MS     50 // Tp13
+
+#include "msc-sm2s-imx8-display.dtsi"
+
+/ {
+	fragment@2000 {
+		target = <&reg_lvds0_power>;
+		 __overlay__ {
+			gpio = <&lsio_gpio1 12 0>;
+		};
+	};
+	fragment@2001 {
+		target-path = "/";
+		__overlay__ {
+			user_gpios {
+				GPIO9-ignore;
+			};
+		};
+	};
+	fragment@2002 {
+		target = <&mipi0_dsi_host>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			fsl,clock-drop-level = <2>;
+			panel@0 {
+				compatible = "xinli,x078dtlt-119";
+				reg = <0>;
+				backlight = <&lvds_backlight0>;
+				mipi-dsi.continuous-clock;
+				enable-gpios = <&lsio_gpio1 6 GPIO_ACTIVE_HIGH>;
+#if MODULE_MES_REVISION != 20
+				reset-gpios = <&lsio_gpio1 18 GPIO_ACTIVE_HIGH>;
+#else
+				enable-gpios = <&lsio_gpio0 31 GPIO_ACTIVE_LOW>;
+#endif
+				reset-delay-us    = <25000>;
+				reset-duration-us = <60000>;
+				status = "okay";
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@0 {
+					reg = <0>;
+					panel0_in: endpoint {
+						remote-endpoint = <&mipi0_panel_out>;
+					};
+				};
+			};
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				/delete-node/ port@1;
+				port@1 {
+					reg = <1>;
+					mipi0_panel_out: endpoint {
+						remote-endpoint = <&panel0_in>;
+					};
+				};
+			};
+		};
+	};
+};

@@ -1,0 +1,192 @@
+/** @file      msc-sm2s-imx8-display.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   Common settings for enabling graphic engine.
+*/
+
+// U-Boot device trees are included into the module.dts while kernel device trees are overlay files
+#ifndef UBOOT
+
+#include <dt-bindings/gpio/gpio.h>
+
+/dts-v1/;
+/plugin/;
+
+#define ENABLE_TARGET(_fragment, _target) \
+	fragment@_fragment { \
+		target = <_target>; \
+		__overlay__ { \
+			status = "okay"; \
+		}; \
+	}
+
+/ {
+	ENABLE_TARGET(0, &gpu_3d0);
+	ENABLE_TARGET(1, &gpu_3d1);
+	ENABLE_TARGET(2, &imx8_gpu_ss);
+	ENABLE_TARGET(3, &dc0_pc);
+	ENABLE_TARGET(4, &dc1_pc);
+	ENABLE_TARGET(5, &dpu1);
+	ENABLE_TARGET(6, &dpu2);
+
+	ENABLE_TARGET(100, &dc0_prg1);
+	ENABLE_TARGET(101, &dc0_prg2);
+	ENABLE_TARGET(102, &dc0_prg3);
+	ENABLE_TARGET(103, &dc0_prg4);
+	ENABLE_TARGET(104, &dc0_prg5);
+	ENABLE_TARGET(105, &dc0_prg6);
+	ENABLE_TARGET(106, &dc0_prg7);
+	ENABLE_TARGET(107, &dc0_prg8);
+	ENABLE_TARGET(108, &dc0_prg9);
+
+	ENABLE_TARGET(110, &dc1_prg1);
+	ENABLE_TARGET(111, &dc1_prg2);
+	ENABLE_TARGET(112, &dc1_prg3);
+	ENABLE_TARGET(113, &dc1_prg4);
+	ENABLE_TARGET(114, &dc1_prg5);
+	ENABLE_TARGET(115, &dc1_prg6);
+	ENABLE_TARGET(116, &dc1_prg7);
+	ENABLE_TARGET(117, &dc1_prg8);
+	ENABLE_TARGET(118, &dc1_prg9);
+
+	ENABLE_TARGET(201, &dc0_dpr1_channel1);
+	ENABLE_TARGET(202, &dc0_dpr1_channel2);
+	ENABLE_TARGET(203, &dc0_dpr1_channel3);
+	ENABLE_TARGET(211, &dc0_dpr2_channel1);
+	ENABLE_TARGET(212, &dc0_dpr2_channel2);
+	ENABLE_TARGET(213, &dc0_dpr2_channel3);
+	ENABLE_TARGET(221, &dc1_dpr1_channel1);
+	ENABLE_TARGET(222, &dc1_dpr1_channel2);
+	ENABLE_TARGET(223, &dc1_dpr1_channel3);
+	ENABLE_TARGET(231, &dc1_dpr2_channel1);
+	ENABLE_TARGET(232, &dc1_dpr2_channel2);
+	ENABLE_TARGET(233, &dc1_dpr2_channel3);
+
+# ifdef LVDS_DISPLAY_0_BACKLIGHT
+	fragment@1000 {
+		target-path = "/";
+		__overlay__ {
+			lvds_backlight0: lvds_backlight@0 {
+				compatible = "pwm-backlight";
+
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_lvds0_backlight>;
+
+				power-supply = <&reg_lvds0_power>;
+				enable-gpios = <&lsio_gpio1 5 GPIO_ACTIVE_HIGH>; // LCD0_BLKT_EN
+
+				pwms = <&pwm_lvds0 0 5000000>;
+
+				post-pwm-on-delay-ms = <LVDS_BACKLIGHT_POST_PWM_ON_DELAY_MS>;
+				pwm-off-delay-ms = <LVDS_BACKLIGHT_PWM_OFF_DELAY_MS>;
+
+				brightness-levels = < 0  1  2  3  4  5  6  7  8  9
+								10 11 12 13 14 15 16 17 18 19
+								20 21 22 23 24 25 26 27 28 29
+								30 31 32 33 34 35 36 37 38 39
+								40 41 42 43 44 45 46 47 48 49
+								50 51 52 53 54 55 56 57 58 59
+								60 61 62 63 64 65 66 67 68 69
+								70 71 72 73 74 75 76 77 78 79
+								80 81 82 83 84 85 86 87 88 89
+								90 91 92 93 94 95 96 97 98 99
+							100>;
+				default-brightness-level = <100>;
+			};
+		};
+	};
+
+	ENABLE_TARGET(1001, &ldb1_phy);
+
+	fragment@1002 {
+		target = <&pwm_lvds0>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_lvds0_pwm>;
+			status = "okay";
+		};
+	};
+
+	fragment@1003 {
+		target = <&i2c3>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_i2c_lvds0>;
+			clock-frequency = <100000>;
+			no-dma;
+			status = "okay";
+		};
+	};
+
+	fragment@1004 {
+		target-path = "/i2c_ids";
+		__overlay__ {
+			i2c_lcd {
+				label = "lcd";
+				bus = <&i2c3>;
+			};
+		};
+	};
+# endif // LVDS_DISPLAY_0_BACKLIGHT
+# ifdef LVDS_DISPLAY_1_BACKLIGHT
+	fragment@1100 {
+		target-path = "/";
+		__overlay__ {
+			lvds_backlight@1 {
+				compatible = "pwm-backlight";
+
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_lvds1_backlight>;
+
+				power-supply = <&reg_lvds1_power>;
+				enable-gpios = <&lsio_gpio1 11 GPIO_ACTIVE_HIGH>; // LCD1_BLKT_EN
+
+				pwms = <&pwm_lvds1 0 5000000>;
+
+				post-pwm-on-delay-ms = <LVDS_BACKLIGHT_POST_PWM_ON_DELAY_MS>;
+				pwm-off-delay-ms = <LVDS_BACKLIGHT_PWM_OFF_DELAY_MS>;
+
+				brightness-levels = < 0  1  2  3  4  5  6  7  8  9
+								10 11 12 13 14 15 16 17 18 19
+								20 21 22 23 24 25 26 27 28 29
+								30 31 32 33 34 35 36 37 38 39
+								40 41 42 43 44 45 46 47 48 49
+								50 51 52 53 54 55 56 57 58 59
+								60 61 62 63 64 65 66 67 68 69
+								70 71 72 73 74 75 76 77 78 79
+								80 81 82 83 84 85 86 87 88 89
+								90 91 92 93 94 95 96 97 98 99
+							100>;
+				default-brightness-level = <100>;
+			};
+		};
+	};
+
+	ENABLE_TARGET(1101, &ldb2_phy);
+
+	fragment@1102 {
+		target = <&pwm_lvds1>;
+		__overlay__ {
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_lvds1_pwm>;
+			status = "okay";
+		};
+	};
+#endif
+};
+#else // UBOOT
+
+&dpu1 {
+	status = "okay";
+};
+
+&ldb1_phy {
+	status = "okay";
+};
+
+#endif // UBOOT

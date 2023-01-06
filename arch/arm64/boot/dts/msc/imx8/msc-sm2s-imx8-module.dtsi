@@ -1,0 +1,882 @@
+/** @file      msc-sm2s-imx8-module.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   Derived from fsl-imx8qm-mek.dts.
+	           Shared in U-Boots arch/arm/dts and Linux arch/arm64/boot/dts/msc/imx8
+*/
+
+
+#include <dt-bindings/usb/pd.h>
+#include <dt-bindings/net/ti-dp83867.h>
+#include "../../freescale/imx8qm.dtsi"
+
+#ifndef ROOT_MODEL
+	#define ROOT_MODEL "MSC-SM2S-IMX8"
+#endif
+
+#ifndef ROOT_COMPATIBLE
+	#define ROOT_COMPATIBLE "msc,sm2s-imx8", "fsl,imx8qm"
+#endif
+
+#ifndef HAS_PCIE_X2
+# define HAS_PCIE_X1
+#endif
+
+#if MODULE_MES_REVISION == A0
+# ifdef HAS_TPM
+#  define HAS_TPM_I2C
+# endif
+#elif MODULE_MES_REVISION == 20
+#else
+# error Unsupported MES revision
+#endif
+
+/*
+#		Automot   Industrial
+#------------------------------------
+# A72		1,6 GHz    1,3 GHz
+# A53		1,2 GHz    1,0 GHz
+# GPU overdrive 800 MHz    625 MHz
+# GPU nominal	625 MHz    625 MHz
+*/
+
+#ifdef CPU_IS_AUTOMOTIVE
+#  define TRIP0_TEMP 110000
+#  define TRIP1_TEMP 125000
+#else
+#  define TRIP0_TEMP  90000
+#  define TRIP1_TEMP 105000
+#endif
+
+/ {
+	model = ROOT_MODEL;
+	compatible = ROOT_COMPATIBLE;
+
+	chosen {
+		stdout-path = &lpuart0;
+	};
+
+#ifndef NO_RESERVED_MEMORY
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		decoder_boot: decoder_boot@0x84000000 {
+			no-map;
+			reg = <0 0x84000000 0 0x2000000>;
+		};
+
+		encoder1_boot: encoder1_boot@0x86000000 {
+			no-map;
+			reg = <0 0x86000000 0 0x200000>;
+		};
+
+		encoder2_boot: encoder2_boot@0x86200000 {
+			no-map;
+			reg = <0 0x86200000 0 0x200000>;
+		};
+
+		/*
+		 * reserved-memory layout
+		 * 0x8800_0000 ~ 0x8FFF_FFFF is reserved for M4
+		 * Shouldn't be used at A core and Linux side.
+		 *
+		 */
+		/* Is internal reserved - only for documentation
+		m4_reserved: m4@0x88000000 {
+			no-map;
+			reg = <0 0x88000000 0 0x8000000>;
+		};
+		*/
+		rpmsg_reserved: rpmsg@0x90000000 {
+			no-map;
+			reg = <0 0x90200000 0 0x200000>;
+		};
+		decoder_rpc: decoder_rpc@0x92000000 {
+			no-map;
+			reg = <0 0x92000000 0 0x100000>;
+		};
+		dsp_reserved: dsp@0x92400000 {
+			no-map;
+			reg = <0 0x92400000 0 0x2000000>;
+		};
+		encoder1_rpc: encoder1_rpc@0x94400000 {
+			no-map;
+			reg = <0 0x94400000 0 0x700000>;
+		};
+		encoder2_rpc: encoder2_rpc@0x94b00000 {
+			no-map;
+			reg = <0 0x94b00000 0 0x700000>;
+		};
+		ts_boot: ts_boot@0x95200000 {
+			no-map;
+			reg = <0 0x95200000 0 0x400000>;
+		};
+
+		/* global autoconfigured region for contiguous allocations */
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			size = <0 0x3c000000>;
+			alloc-ranges = <0 0x96000000 0 0x3c000000>;
+			linux,cma-default;
+		};
+	};
+#endif
+
+	a53_opp_table: a53-opp-table {
+#ifndef CPU_IS_AUTOMOTIVE
+		/delete-node/opp-1200000000;
+#endif
+	};
+
+	a72_opp_table: a72-opp-table {
+#ifndef CPU_IS_AUTOMOTIVE
+		/delete-node/opp-1596000000;
+#endif
+	};
+
+	regulators: regulators {
+		compatible = "simple-bus";
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		reg_usb_hub_rst: usb_hub_rst {
+			compatible = "regulator-fixed";
+			regulator-name = "usb_hub_rst#";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_usb_hub_rst>;
+			gpio = <&lsio_gpio3 10 GPIO_ACTIVE_LOW>; // USB_HUB_RST#
+			enable-active-low;
+		};
+
+		reg_usdhc2_vmmc: usdhc2_vmmc { // labeled usdhc1 in HW, usdhc2 in freescale's devicetree
+			compatible = "regulator-fixed";
+			regulator-name = "usdhc1_reset_1v8"; // usdhc1 is the official HW name
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			gpio = <&lsio_gpio4 7 GPIO_ACTIVE_HIGH>; // USDHC1_RESET_B
+			enable-active-high;
+			startup-delay-us = <100>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_sdio_reg_vmmc>;
+		};
+
+		reg_pciea: fixedregulator@0 {
+			compatible = "regulator-fixed";
+			regulator-name = "pciea_supply";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-always-on;
+		};
+
+		reg_pcieb: fixedregulator@1 {
+			compatible = "regulator-fixed";
+			regulator-name = "pcieb_supply";
+			regulator-min-microvolt = <3300000>;
+			regulator-max-microvolt = <3300000>;
+			regulator-always-on;
+		};
+
+		reg_3p0: usbphy {
+			compatible = "regulator-fixed";
+			regulator-name = "phy-3p0-supply";
+			regulator-min-microvolt = <3000000>;
+			regulator-max-microvolt = <3000000>;
+			always-on;
+		};
+
+		vgen2_reg: vgen2 {
+			compatible = "regulator-fixed";
+			regulator-name = "vgen2-supply";
+			regulator-min-microvolt = <1500000>;
+			regulator-max-microvolt = <1500000>;
+			always-on;
+		};
+
+		vgen3_reg: vgen3 {
+			compatible = "regulator-fixed";
+			regulator-name = "vgen3-supply";
+			regulator-min-microvolt = <3000000>;
+			regulator-max-microvolt = <3000000>;
+			always-on;
+		};
+
+		vgen4_reg: vgen4 {
+			compatible = "regulator-fixed";
+			regulator-name = "vgen4-supply";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			always-on;
+		};
+
+#if defined(HAS_LVDS) || defined(HAS_DSI)
+		reg_lvds0_power: adc_lvds0_power {
+			compatible = "regulator-fixed";
+			regulator-name = "lvds0_power";
+			regulator-min-microvolt = <3300000>; // actual value depends on baseboard/LVDS display
+			regulator-max-microvolt = <3300000>; // actual value depends on baseboard/LVDS display
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_lvds0_power>;
+			gpio = <&lsio_gpio1 6 GPIO_ACTIVE_HIGH>; // LCD0_PWR_EN
+			enable-active-high;
+		};
+
+		reg_lvds1_power: adc_lvds1_power {
+			compatible = "regulator-fixed";
+			regulator-name = "lvds1_power";
+			regulator-min-microvolt = <3300000>; // actual value depends on baseboard/LVDS display
+			regulator-max-microvolt = <3300000>; // actual value depends on baseboard/LVDS display
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_lvds1_power>;
+			gpio = <&lsio_gpio1 12 GPIO_ACTIVE_HIGH>; // LCD1_PWR_EN
+			enable-active-high;
+		};
+#endif
+	};
+
+#ifndef NO_I2C_IDS
+	i2c_ids {
+		compatible = "msc,i2c-ids";
+		i2c_dev {
+			label = "dev";
+			bus = <&i2c0>;
+		};
+		i2c_pm {
+			label = "pm";
+			bus = <&i2c1>;
+		};
+		i2c_gp {
+			label = "gp";
+			bus = <&i2c2>;
+		};
+		i2c_smbus { // for compatiblity with x86 boards, e.g. on AFTS 2019
+			label = "smbus";
+			bus = <&i2c1>;
+		};
+		i2c_user { // for compatiblity with x86 boards, e.g. on AFTS 2019
+			label = "user";
+			bus = <&i2c2>;
+		};
+	};
+#endif
+
+	leds {
+		compatible = "gpio-leds";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_leds>;
+
+		SW_LED {
+			label = "SW_LED";
+			gpios = <&lsio_gpio2 9 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+#ifdef HAS_TPM_I2C
+	tpm_reset: gpio-reset {
+		compatible = "gpio-reset";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_tpm_rst>;
+		reset-gpios = <&lsio_gpio3 19 GPIO_ACTIVE_LOW>;
+		reset-delay-us = <100000>;
+		reset-post-delay-ms= <1>;
+		#reset-cells = <0>;
+		status = "okay";
+	};
+#endif
+
+	module-input-events {
+		compatible = "gpio-keys";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_module_input_events>;
+
+		batlow {
+			label = "BAT_LOW#"; // displayed in /sys/class/gpio
+			gpios = <&lsio_gpio3 20 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_BATTERY>;
+			linux,can-disable;
+			debounce-interval = <50>; // sufficient to test BAT_LOW with jumper on MSC-SM2S-MB-EP1's X2801 9-10
+		};
+	};
+
+	scu {
+		watchdog {
+			reset_board; // when not present, only the partition would be reset, not triggering WDOG_OUT signal
+		};
+	};
+
+#ifndef NO_DTB_IDENTIFICATION
+	dtb {
+# ifdef CPU_IS_QCP
+		cpu-variant = "qcp";
+# else
+		cpu-variant = "qcm";
+# endif
+		module-feature = XSTR(MODULE_FEATURE);
+	};
+#endif
+};
+
+&iomuxc {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_hog>, <&pinctrl_smarc_gpio>;
+
+	sm2s-imx8 {
+		/* pinmux.dtsi is generated by NXP's PinMuxTool. It's output needs to be processed first.
+		   To create it, follow http://destsm3ux05bbct.emea.avnet.com/projects/MSC_01032/repos/pin-muxing/browse/README.md
+		*/
+#if MODULE_MES_REVISION == A0
+		#include "msc-sm2s-imx8-A0-pinmux.dtsi"
+#elif MODULE_MES_REVISION == 20
+		#include "msc-sm2s-imx8-20-pinmux.dtsi"
+#endif
+
+		/* adjust these whenever EMMC or SDIO pinmux configurations for low speed are changed */
+		#include "msc-sm2s-imx8-pinmux-sd-freq.dtsi"
+		#include "msc-sm2s-imx8-pinmux-eth-fix.dtsi"
+	};
+};
+
+
+&lsio_gpio1 {
+	status = "okay";
+};
+
+&lsio_gpio2 {
+	status = "okay";
+};
+
+&lsio_gpio4 {
+	status = "okay";
+};
+
+&lsio_gpio5 {
+	status = "okay";
+};
+
+#ifdef HAS_USB2_DEV
+&usbotg1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usb_otg>;
+	dr_mode = "otg";
+	srp-disable;
+	hnp-disable;
+	adp-disable;
+	power-active-high;
+	over-current-active-high;
+	status = "okay";
+};
+#endif
+
+#ifdef HAS_USB2
+&usbphy1 {
+	phy-3p0-supply = <&reg_3p0>;
+	status = "okay";
+};
+#endif
+
+#ifdef HAS_USB3
+// USB 3.0
+&usb3_phy {
+	status = "okay";
+
+	/* We don't use USB1_EN and USB1_OC with the hub, therefore we configure the
+	   pins as GPIO inputs so nothing can go wrong. If the hub is not present on the variant,
+	   use pinctrl_usb_hw instead. */
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usb>;
+};
+
+&usbotg3 {
+	status = "okay";
+};
+
+&usbotg3_cdns3 {
+	dr_mode = "host";
+	status = "okay";
+};
+#endif
+
+&usdhc1 { /* EMMC, labeled EMMC in HW */
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-0 = <&pinctrl_emmc>;
+	pinctrl-1 = <&pinctrl_emmc_100mhz>;
+	pinctrl-2 = <&pinctrl_emmc_200mhz>;
+	bus-width = <8>;
+	voltage-ranges = <1800 1800>;
+	non-removable;
+	no-sd;
+	no-sdio;
+	status = "okay";
+};
+
+&usdhc2 { /* SD, labeled usdhc1 in HW */
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-0 = <&pinctrl_sdio>, <&pinctrl_sdio_gpio>;
+	pinctrl-1 = <&pinctrl_sdio_100mhz>, <&pinctrl_sdio_gpio>;
+	pinctrl-2 = <&pinctrl_sdio_200mhz>, <&pinctrl_sdio_gpio>;
+	bus-width = <4>;
+	cd-gpios = <&lsio_gpio5 22 GPIO_ACTIVE_LOW>;
+	wp-gpios = <&lsio_gpio5 21 GPIO_ACTIVE_HIGH>;
+	vmmc-supply = <&reg_usdhc2_vmmc>;
+	voltage-ranges = <3300 3300>;
+	status = "okay";
+
+	/* test it by running this command in U-Boot: setenv optargs $optargs 'dyndbg=\\\\"module sdhci +p\\\\"'
+	   and in Linux: dmesg | grep quirk | grep mmc
+	*/
+	sdhci-extra-quirks  = <0x0>;
+	sdhci-extra-quirks2 = <0x04000000>; /* SDHCI_QUIRK2_BROKEN_SDR104 */
+};
+
+#ifdef HAS_WIFI
+&usdhc3 {  // WIFI, labeled usdhc2 in HW
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_sdio2_wifi>, <&pinctrl_wifi>;
+	bus-width = <4>;
+	voltage-ranges = <1800 3300>;
+	no-sd;
+	no-mmc;
+	keep-power-in-suspend;
+	non-removable;
+	status = "okay";
+};
+#endif
+
+#ifdef HAS_ETH_DUAL
+&fec1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_fec1>, <&pinctrl_fec1_fix>;
+	fsl,magic-packet;
+	fsl,mii-exclusive;
+
+	phy-mode = "rgmii-id";
+	phy-handle = <&ethphy1>;
+
+	phy-reset-gpios = <&lsio_gpio2 12 GPIO_ACTIVE_LOW>; /* GBE0_IO_RST */
+	phy-reset-duration = <1>; /* ms, actually it needs 1us */
+	phy-reset-post-delay = <1>; /* ms, actually it needs 195 us */
+
+	status = "okay";
+
+	/* taken and adapted from 0102901's u-boot msc-imx_v2019.04_4.19.35_1.1.0-develop:arch/arm/dts/msc-sm2s-imx8m-qc-base.dts
+	   with git commit db3d1ca6207ba1e57175fc375fff99e76d180f0d
+	*/
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		// MDC is 2.4 MHz (ENET0_RGMII_DIV)
+		ethphy1: ethernet-phy@1 {
+			reg = <1>;
+			compatible = "ethernet-phy-id2000.a231";
+			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+			ti,led-2-sel = <MII_DP83867_LEDCR1_LED_SEL_LE_RX_TX_ACT>;
+			ti,led-1-sel = <MII_DP83867_LEDCR1_LED_SEL_1000BT_LE>;
+			ti,led-0-sel = <MII_DP83867_LEDCR1_LED_SEL_100BTX_LE>;
+			ti,led-gpio-polarity-active-high;
+			ti,led-2-polarity-active-high;
+			ti,led-1-polarity-active-high;
+			ti,led-0-polarity-active-high;
+		};
+	};
+};
+
+&fec2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_fec2>;
+	fsl,magic-packet;
+	fsl,mii-exclusive;
+
+	phy-mode = "rgmii-id";
+	phy-handle = <&ethphy2>;
+
+	phy-reset-gpios = <&lsio_gpio2 13 GPIO_ACTIVE_LOW>; /* GBE1_IO_RST */
+	phy-reset-duration = <1>; /* ms, actually it needs 1us */
+	phy-reset-post-delay = <1>; /* ms, actually it needs 195 us */
+
+	status = "okay";
+
+	/* taken and adapted from 0102901's u-boot msc-imx_v2019.04_4.19.35_1.1.0-develop:arch/arm/dts/msc-sm2s-imx8m-qc-base.dts
+	   with git commit db3d1ca6207ba1e57175fc375fff99e76d180f0d
+	*/
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		ethphy2: ethernet-phy@1 {
+			reg = <1>;
+			compatible = "ethernet-phy-id2000.a231";
+			ti,rx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+			ti,tx-internal-delay = <DP83867_RGMIIDCTL_2_25_NS>;
+			ti,fifo-depth = <DP83867_PHYCR_FIFO_DEPTH_4_B_NIB>;
+			ti,led-2-sel = <MII_DP83867_LEDCR1_LED_SEL_LE_RX_TX_ACT>;
+			ti,led-1-sel = <MII_DP83867_LEDCR1_LED_SEL_1000BT_LE>;
+			ti,led-0-sel = <MII_DP83867_LEDCR1_LED_SEL_100BTX_LE>;
+			ti,led-gpio-polarity-active-high;
+			ti,led-2-polarity-active-high;
+			ti,led-1-polarity-active-high;
+			ti,led-0-polarity-active-high;
+		};
+	};
+};
+#endif // HAS_ETH_DUAL
+
+#ifdef HAS_QSPI
+&flexspi0 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_flexspi0>;
+	status = "okay";
+
+	flash0: gd25lq64b@0 {
+		reg = <0>;
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "jedec,spi-nor";
+		spi-max-frequency = <120000000>;
+		spi-tx-bus-width = <4>;
+		spi-rx-bus-width = <4>;
+	};
+};
+#endif // HAS_QSPI
+
+/* don't disable lpuartN on baseboards, as other ports are not working then, too.
+   e.g. when lpuart1 is disabled, lpuart3 is no longer working */
+
+&lpuart0 { // console, CPU UART0, module SER0, baseboard MSC SM2-MB-EP1 COM0 X2301
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart0>;
+	status = "okay";
+};
+
+&lpuart1 { // CPU UART1, module SER2, baseboard MSC SM2-MB-EP1 COM1 n.c., baseboard MSC SM2S-MB-EP5 RS485
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart1>;
+	status = "okay";
+};
+
+&lpuart3 { // CPU M41_GPIO0_00/UART3, module SER1, baseboard MSC-SM2-MB-EP1 COM1 X2302, MSC-SM2S-MB-EP5 Feature Connector 3 UART1
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart3>;
+	status = "okay";
+};
+
+&lpuart4 { // CPU M40_GPIO0_00/UART4, module SER3, baseboard MSC SM2-MB-EP1 n.c., baseboard MSC-SM2S-MB-EP5 Feature Connector 3 UART3 //
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_lpuart4>;
+	status = "okay";
+};
+
+&tsens {
+	tsens-num = <6>;
+};
+
+&thermal_zones {
+	pmic-thermal0 {
+		polling-delay-passive = <250>;
+		polling-delay = <2000>;
+		thermal-sensors = <&tsens 5>;
+		trips {
+			pmic_alert0: trip0 {
+				temperature = <TRIP0_TEMP>;
+				hysteresis = <2000>;
+				type = "passive";
+			};
+			pmic_crit0: trip1 {
+				temperature = <TRIP1_TEMP>;
+				hysteresis = <2000>;
+				type = "critical";
+			};
+		};
+		cooling-maps {
+			map0 {
+				trip = <&pmic_alert0>;
+				cooling-device =
+				<&A53_0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+			};
+			map1 {
+				trip = <&pmic_alert0>;
+				cooling-device =
+				<&A72_0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+			};
+		};
+	};
+};
+
+&hsio_refa_clk {
+	compatible = "fixed-clock";
+};
+
+&hsio_refb_clk {
+	compatible = "fixed-clock";
+};
+
+#ifndef NO_PCIE
+&pciea {
+	ext_osc = <1>;
+	pinctrl-names = "default";
+# ifdef HAS_PCIE_X1
+	pinctrl-0 = <&pinctrl_pciea>;
+# elif defined(HAS_PCIE_X2)
+	pinctrl-0 = <&pinctrl_pciea>, <&pinctrl_pcieb>;
+	num-lanes = <2>;
+	hsio-cfg = <PCIEAX2SATA>;
+# endif
+	reset-gpio = <&lsio_gpio4 29 GPIO_ACTIVE_LOW>; /* PCIE0.PERST_B */
+	clkreq-gpio = <&lsio_gpio4 27 GPIO_ACTIVE_LOW>; /* PCIE0.CLKREQ_B */
+	reserved-region = <&rpmsg_reserved>;
+	epdev_on-supply = <&vgen3_reg>;
+	status = "okay";
+};
+
+# ifdef HAS_PCIE_X1
+&pcieb {
+	ext_osc = <1>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_pcieb>;
+	reset-gpio = <&lsio_gpio5 0 GPIO_ACTIVE_LOW>; /* PCIE1.PERST_B */
+	clkreq-gpio = <&lsio_gpio4 30 GPIO_ACTIVE_LOW>; /* PCIE1.CLKREQ_B */
+	epdev_on-supply = <&vgen3_reg>;
+	status = "okay";
+};
+# endif
+#endif
+
+&i2c0 { /* I2C_DEV */
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c_dev>;
+	no-dma;
+	status = "okay";
+
+#ifdef HAS_TPM_I2C
+	tpm: st33tphf20@2e {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_tpm>;
+		compatible = "st,st33htpm-i2c";
+		resets = <&tpm_reset>;   /* active low GPIO3_19, 10ms delay */
+		reg = <0x2e>;
+		interrupt-parent = <&lsio_gpio3>;
+		interrupts = <18 IRQ_TYPE_LEVEL_LOW>;
+	};
+#endif
+
+	rtc2: rtc@32 {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_rtc>;
+		compatible = "ricoh,r2223x";
+		r2223x.eco-mode;
+		reg = <0x32>;
+	};
+
+	tmp103: tmp@71 {
+		compatible = "ti,tmp103";
+		reg = <0x71>;
+		label = "BOARD_TEMP";
+	};
+
+	pci_clk: pci_clk@6b { /* so far this is a no-op to document the I2C address of the PCIe clock generator. */
+		compatible = "si,52144";
+		reg = <0x6b>;
+	};
+};
+
+&i2c1 { /* I2C_PM */
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c_pm>;
+	no-dma;
+	status = "okay";
+};
+
+&i2c2 { /* I2C_GP */
+	#address-cells = <1>;
+	#size-cells = <0>;
+
+	clock-frequency = <100000>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_i2c_gp>;
+	no-dma;
+	status = "okay";
+
+	module_eeprom@50 {
+		compatible = "msc,eapi-nvram"; // atmel,24c64
+		reg = <0x50>;
+		address-width = <16>;
+		st-offset = <128>;
+		st-size = <8064>;
+		st-blocksize = <1>;
+	};
+};
+
+/delete-node/ &adc1_lpcg;
+/delete-node/ &adc1;
+
+/* module-<variant>.dtsi defines the CPU features. Yet on U-Boot's devicetree
+   we have no flexcan, therefore we have to disable all variants there */
+#ifndef NO_FLEXCAN
+# ifdef HAS_CAN_DUAL
+&flexcan1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_can0>;
+	status = "okay";
+};
+
+&flexcan2 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_can1>;
+	status = "okay";
+};
+# endif
+#endif
+
+#ifndef NO_SATA
+&sata {
+	ext_osc = <1>;
+	status = "okay";
+};
+#endif
+
+#ifndef NO_SPI
+
+// module's SPI0
+&lpspi1 { // @ 5a010000
+	#address-cells = <1>;
+	#size-cells = <0>;
+	assigned-clock-rates = <100000000>; // to support spi clocks <50 MHz
+	fsl,spi-num-chipselects = <2>;
+	// hw chipselects will be raised after first transfer, therefore sw controlled chipselects are used
+	cs-gpios = /* cs0 */ <&lsio_gpio3 24 GPIO_ACTIVE_LOW>, /* cs1 */ <&lsio_gpio3 25 GPIO_ACTIVE_LOW>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_spi0>;
+	status = "okay";
+};
+
+// module's SPI1 (eSPI)
+&lpspi3 { // @ 5a030000
+	#address-cells = <1>;
+	#size-cells = <0>;
+	assigned-clock-rates = <100000000>;
+	fsl,spi-num-chipselects = <2>;
+	cs-gpios = /* cs0 */ <&lsio_gpio2 20 GPIO_ACTIVE_LOW>, /* cs1 */ <&lsio_gpio2 21 GPIO_ACTIVE_LOW>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_spi1>;
+	status = "okay";
+};
+#endif
+
+#ifdef HAS_DSI
+#include "../../freescale/imx8qm-ss-mipi.dtsi"
+&mipi0_dphy {
+	status = "okay";
+};
+&mipi1_dphy {
+	status = "okay";
+};
+#endif
+
+&mu_m0{
+	interrupts = <GIC_SPI 472 IRQ_TYPE_LEVEL_HIGH>;
+};
+
+&mu1_m0{
+	interrupts = <GIC_SPI 473 IRQ_TYPE_LEVEL_HIGH>;
+};
+
+&mu2_m0{
+	interrupts = <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
+	status = "okay";
+};
+
+#ifndef NO_MU3_M0
+&mu3_m0{
+	interrupts = <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
+	status = "okay";
+};
+#endif
+
+#ifndef NO_VPU
+&vpu_ts {
+	compatible = "nxp,imx8qm-b0-vpu-ts";
+	boot-region = <&ts_boot>;
+	reg-csr = <0x2d0b0000>;
+	status = "okay";
+};
+
+&vpu {
+	compatible = "nxp,imx8qm-vpu";
+	status = "okay";
+};
+
+&vpu_core0 {
+	reg = <0x2d080000 0x10000>;
+	memory-region = <&decoder_boot>, <&decoder_rpc>;
+	status = "okay";
+};
+
+&vpu_core1 {
+	reg = <0x2d090000 0x10000>;
+	memory-region = <&encoder1_boot>, <&encoder1_rpc>;
+	status = "okay";
+};
+
+&vpu_core2 {
+	reg = <0x2d0a0000 0x10000>;
+	memory-region = <&encoder2_boot>, <&encoder2_rpc>;
+	status = "okay";
+};
+#endif
+
+#ifdef CPU_IS_QCP
+&cpus {
+	cpu-map {
+		cluster1 {
+			/delete-node/ core1;
+		};
+	};
+	/delete-node/ cpu@101;
+};
+
+&gpu_3d0 {
+	assigned-clock-rates = <625000000>, <625000000>;
+};
+
+&gpu_3d1 {
+	assigned-clock-rates = <625000000>, <625000000>;
+};
+
+&imx8_gpu_ss {/*<freq-kHz vol-uV>*/
+	operating-points = <
+	/*nominal*/	625000  0
+			625000  0
+	/*underdrive*/	400000  0  /*core/shader clock share the same frequency on underdrive mode*/
+	>;
+};
+
+&thermal_zones {
+	cpu-thermal1 {
+		cooling-maps {
+			map0 {
+				cooling-device =
+				<&A72_0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+			};
+		};
+	};
+};
+#endif

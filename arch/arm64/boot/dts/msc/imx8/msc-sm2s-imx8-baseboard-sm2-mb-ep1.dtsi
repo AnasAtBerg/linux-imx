@@ -1,0 +1,209 @@
+/** @file      msc-sm2s-imx8-baseboard-sm2-mb-ep1.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   Provides baseboard mappings that are merged at runtime with the CPU device tree.
+*/
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/firmware/imx/rsrc.h>
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/pinctrl/pads-imx8qm-pintool-compatible.h>
+
+/ {
+	fragment@0 {
+		target-path = "/";
+
+		__overlay__ {
+			baseboard-dtb = "MSC-SM2-MB-EP1"; /* just informal */
+		};
+	};
+
+	fragment@1 {
+		target = <&regulators>;
+		__overlay__ {
+			reg_vcc_3v3_aud: vcc_3v3_aud_regulator {
+				compatible = "regulator-fixed";
+				regulator-name = "3V3_AUD";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+			};
+
+			reg_vcc_1v8_aud: vcc_1v8_aud_regulator {
+				compatible = "regulator-fixed";
+				regulator-name = "1V8_AUD";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&i2c2>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			sgtl5000_codec: sgtl5000@a {
+				compatible = "fsl,sgtl5000";
+				reg = <0x0a>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_audio_mclk>;
+
+				clocks = <&mclkout0_lpcg 0>;
+				clock-names = "mclk";
+				assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+						  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+						  <&mclkout0_lpcg 0>;
+
+				/* asrc0 seems to be configured to use IMX8QM_AUD_ACM_AUD_REC_CLK0_DIV as MCLK_OUT0
+				   Therefore IMX8QM_AUD_MCLKOUT0 is not actually configured by this value (is noop) but mirrors the setting
+				   IMX8QM_AUD_ACM_AUD_REC_CLK0_DIV */
+				assigned-clock-rates = <786432000>, <49152000>, <12288000>;
+				VDDA-supply = <&reg_vcc_3v3_aud>;
+				VDD-supply = <&reg_vcc_1v8_aud>;
+				VDDIO-supply = <&reg_vcc_1v8_aud>;
+			};
+		};
+	};
+
+	fragment@3 {
+		target = <&sai1>;
+		__overlay__ {
+		/* MEK Board has these clocks also assigned. But on the SM2-MB-EP1
+		   the clocks assigned to the codec are sufficient, therefore we
+		   have disabled them. */
+/*
+			clocks = <&mclkout0_lpcg 0>;
+			clock-names = "mclk";
+			assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
+				<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
+				<&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
+				<&sai1_lpcg 0>;
+*/
+
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_i2s0>;
+			status = "okay";
+		};
+	};
+
+	fragment@4 {
+		target-path = "/";
+		__overlay__ {
+			sgtl5000_sound: sgtl5000-sound {
+				compatible = "fsl,imx-audio-sgtl5000";
+				fsl,no-audmux;
+				ssi-controller = <&sai1>;
+				audio-codec = <&sgtl5000_codec>;
+				model = "imx-sgtl5000";
+				audio-routing =
+						"LINE_IN", "Line In Jack",
+						"MIC_IN", "Mic Jack",
+						"Mic Jack", "Mic Bias",
+						"Headphone Jack", "HP_OUT";
+			};
+		};
+	};
+
+	fragment@5 {
+		target-path = "/";
+		__overlay__ {
+			user_gpios {
+				compatible = "msc,user-gpios";
+				pinctrl-names = "default";
+				pinctrl-0 =
+					<&pinctrl_smarc_gpio_gpio6_gpio>; // should be counting pulses
+
+				// <&pinctrl_smarc_gpio>; already done in hog grp to be earlier - needed for DSI displays
+
+				CAM0_PWR-gpios = <&lsio_gpio0 0 0>; // GPIO0
+				GPIO1-gpios = <&lsio_gpio0 2 0>;
+				CAM0_RST-gpios = <&lsio_gpio0 1 0>; // GPIO2
+				GPIO3-gpios = <&lsio_gpio0 5 0>;
+				HDA_RST-gpios = <&lsio_gpio4 2 0>; // GPIO4
+				// GPIO5 is used as special function FAN_PWM
+				FAN_TACHIN-gpios = <&lsio_gpio0 16 0>; // GPIO6
+				GPIO7-gpios = <&lsio_gpio4 1 0>;
+#if MODULE_MES_REVISION != 20
+				GPIO8-gpios = <&lsio_gpio2 27 0>;
+				GPIO9-gpios = <&lsio_gpio1 18 0>;
+				GPIO10-gpios = <&lsio_gpio2 29 0>;
+				GPIO11-gpios = <&lsio_gpio1 17 0>;
+#else
+				GPIO8-gpios = <&lsio_gpio0 30 0>;
+				GPIO9-gpios = <&lsio_gpio0 31 0>;
+				GPIO10-gpios = <&lsio_gpio1 0 0>;
+				GPIO11-gpios = <&lsio_gpio1 1 0>;
+#endif
+			};
+
+			gpio-keys {
+				compatible = "gpio-keys";
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_gpio_keys>;
+
+				sleep-key {
+					label = "BTN SLEEP"; // signal SLEEP#
+					gpios = <&lsio_gpio2 5 GPIO_ACTIVE_LOW>;
+					linux,code = <KEY_SLEEP>;
+					linux,can-disable;
+					debounce-interval = <5>;
+				};
+
+				lid-switch {
+					label = "BTN LID"; // signal LID#
+					gpios = <&lsio_gpio2 4 GPIO_ACTIVE_LOW>;
+					linux,input-type = <EV_SW>;
+					linux,code = <SW_LID>;
+					linux,can-disable;
+					debounce-interval = <5>;
+					wakeup-source;
+				};
+			};
+		};
+	};
+
+	fragment@6 {
+		target = <&iomuxc>;
+		__overlay__ {
+			sm2s-imx8 {
+				#include "msc-sm2s-imx8-pinmux-gpio5-pwm.dtsi"
+			};
+		};
+	};
+
+	fragment@7 {
+		target = <&lsio_pwm2>;
+		__overlay__ {
+			status = "okay";
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_smarc_gpio_gpio5_pwm>;
+		};
+	};
+
+	fragment@8 {
+		target = <&i2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			baseboard_eeprom@57 {
+				compatible = "atmel,24c64";
+				reg = <0x57>;
+			};
+		};
+	};
+
+	fragment@9 {
+		target = <&lpuart4>;
+		__overlay__ {
+			status = "disabled";
+		};
+	};
+};
