@@ -28,6 +28,19 @@ lsio_subsys: bus@5d000000 {
 		clock-output-names = "lsio_bus_clk";
 	};
 
+	lsio_pwm2: pwm@5d020000 {
+		compatible = "fsl,imx8qm-pwm", "fsl,imx27-pwm";
+		reg = <0x5d020000 0x1000>;
+		clocks = <&pwm2_lpcg 0>,
+				<&pwm2_lpcg 1>;
+		clock-names = "per", "ipg";
+		assigned-clocks = <&clk IMX_SC_R_PWM_2 IMX_SC_PM_CLK_PER>;
+		assigned-clock-rates = <24000000>;
+		#pwm-cells = <2>;
+		power-domains = <&pd IMX_SC_R_PWM_2>;
+		status = "disabled";
+	};
+
 	lsio_gpio0: gpio@5d080000 {
 		reg = <0x5d080000 0x10000>;
 		interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
