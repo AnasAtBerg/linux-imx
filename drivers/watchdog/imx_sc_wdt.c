@@ -31,6 +31,7 @@
 #define IMX_SIP_TIMER_SET_PRETIME_WDOG	0x07
 
 #define SC_TIMER_WDOG_ACTION_PARTITION	0
+#define SC_TIMER_WDOG_ACTION_BOARD 		3
 
 static bool nowayout = WATCHDOG_NOWAYOUT;
 module_param(nowayout, bool, 0000);
@@ -40,6 +41,7 @@ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 struct imx_sc_wdt_device {
 	struct watchdog_device wdd;
 	struct notifier_block wdt_notifier;
+	int action;
 };
 
 static int imx_sc_wdt_ping(struct watchdog_device *wdog)
@@ -54,6 +56,7 @@ static int imx_sc_wdt_ping(struct watchdog_device *wdog)
 
 static int imx_sc_wdt_start(struct watchdog_device *wdog)
 {
+	struct imx_sc_wdt_device *imx_sc_wdd = container_of(wdog, struct imx_sc_wdt_device, wdd);
 	struct arm_smccc_res res;
 
 	arm_smccc_smc(IMX_SIP_TIMER, IMX_SIP_TIMER_START_WDOG,
@@ -62,7 +65,7 @@ static int imx_sc_wdt_start(struct watchdog_device *wdog)
 		return -EACCES;
 
 	arm_smccc_smc(IMX_SIP_TIMER, IMX_SIP_TIMER_SET_WDOG_ACT,
-		      SC_TIMER_WDOG_ACTION_PARTITION,
+		      imx_sc_wdd->action,
 		      0, 0, 0, 0, 0, &res);
 	return res.a0 ? -EACCES : 0;
 }
@@ -170,6 +173,10 @@ static int imx_sc_wdt_probe(struct platform_device *pdev)
 	wdog->max_timeout = MAX_TIMEOUT;
 	wdog->parent = dev;
 	wdog->timeout = DEFAULT_TIMEOUT;
+
+	imx_sc_wdd->action = device_property_read_bool(dev, "reset_board")
+		? SC_TIMER_WDOG_ACTION_BOARD
+		: SC_TIMER_WDOG_ACTION_PARTITION;
 
 	watchdog_init_timeout(wdog, 0, dev);
 
