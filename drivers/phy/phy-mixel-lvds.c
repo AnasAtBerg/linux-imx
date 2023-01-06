@@ -238,7 +238,7 @@ static int mixel_lvds_phy_probe(struct platform_device *pdev)
 
 	priv->phy_clk = devm_clk_get(dev, "phy");
 	if (IS_ERR(priv->phy_clk)) {
-		dev_err(dev, "cannot get phy clock\n");
+		dev_err(dev, "cannot get phy clock Error %ld\n", PTR_ERR(priv->phy_clk));
 		return PTR_ERR(priv->phy_clk);
 	}
 
