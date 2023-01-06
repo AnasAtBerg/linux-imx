@@ -1,0 +1,2 @@
+#define MODULE_MES_REVISION B0
+#include "msc-sm2s-imx8-display-arb-lvds-1366x768.dtsi"
