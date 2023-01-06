@@ -309,7 +309,6 @@ err_reg_read:
 	mutex_unlock(&mhdp->api_lock);
 	DRM_DEV_ERROR(mhdp->dev, "Failed to read register.\n");
 
-mutex_unlock(&mhdp->api_lock);
 	return ret;
 }
 EXPORT_SYMBOL(cdns_mhdp_reg_read);
@@ -460,7 +459,7 @@ int cdns_mhdp_apb_conf(struct cdns_mhdp_device *mhdp, u8 sel)
 
 err_apb_conf:
 	DRM_ERROR("apb conf failed: %d\n", ret);
-mutex_unlock(&mhdp->api_lock);
+	mutex_unlock(&mhdp->api_lock);
 	return ret;
 }
 EXPORT_SYMBOL(cdns_mhdp_apb_conf);
