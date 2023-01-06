@@ -106,7 +106,8 @@ static int imx_da7213_hw_free(struct snd_pcm_substream *substream)
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
 
-	snd_soc_component_write(codec_dai->component, DA7213_PLL_CTRL, 0x00); // PLL off, MCLK as source
+	snd_soc_component_update_bits(codec_dai->component, DA7213_PLL_CTRL, DA7213_PLL_EN, 0);
+
 	return 0;
 }
 
@@ -226,7 +227,7 @@ static int imx_da7213_probe(struct platform_device *pdev)
 	put_device(&ssi_pdev->dev);
 	codec_dev = of_find_i2c_device_by_node(codec_np);
 	if (!codec_dev) {
-		dev_err(&pdev->dev, "failed to find codec platform device\n");
+		dev_err(&pdev->dev, "failed to find codec platform device now. retrying....\n");
 		return -EPROBE_DEFER;
 	}
 
