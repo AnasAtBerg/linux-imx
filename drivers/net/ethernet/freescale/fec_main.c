@@ -154,6 +154,7 @@ static const struct fec_devinfo fec_imx8qm_info = {
 		  FEC_QUIRK_HAS_VLAN | FEC_QUIRK_HAS_AVB |
 		  FEC_QUIRK_ERR007885 | FEC_QUIRK_BUG_CAPTURE |
 		  FEC_QUIRK_HAS_RACC | FEC_QUIRK_HAS_COALESCE |
+		  FEC_QUIRK_SET_REQUIRED_BUT_UNDOCMENTED_BITS |
 		  FEC_QUIRK_CLEAR_SETUP_MII | FEC_QUIRK_HAS_MULTI_QUEUES |
 		  FEC_QUIRK_DELAYED_CLKS_SUPPORT,
 };
@@ -1171,6 +1172,9 @@ fec_restart(struct net_device *ndev)
 	/* Enable the MIB statistic event counters */
 	writel(0 << 31, fep->hwp + FEC_MIB_CTRLSTAT);
 #endif
+
+	if (fep->quirks & FEC_QUIRK_SET_REQUIRED_BUT_UNDOCMENTED_BITS)
+		ecntl |= 0x70000000;
 
 	/* And last, enable the transmit and receive processing */
 	writel(ecntl, fep->hwp + FEC_ECNTRL);
