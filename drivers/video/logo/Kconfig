@@ -68,4 +68,12 @@ config LOGO_SUPERH_CLUT224
 	depends on SUPERH
 	default y
 
+config LOGO_MSC_CLUT224
+	bool "224-color MSC Linux logo"
+	default y
+
+config LOGO_MSC_HW_TESTS_CLUT224
+	bool "224-color MSC (hardware tests) Linux logo"
+	default y
+
 endif # LOGO
