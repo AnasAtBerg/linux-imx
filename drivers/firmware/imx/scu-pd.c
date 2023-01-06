@@ -180,6 +180,7 @@ static const struct imx_sc_pd_range imx8qxp_scu_pd_ranges[] = {
 	{ "vpu-mu0", IMX_SC_R_VPU_MU_0, 1, false, 0 },
 	{ "vpu-mu1", IMX_SC_R_VPU_MU_1, 1, false, 0 },
 	{ "vpu-mu2", IMX_SC_R_VPU_MU_2, 1, false, 0 },
+	{ "vpu-mu3", IMX_SC_R_VPU_MU_3, 1, false, 0 },
 
 	/* GPU SS */
 	{ "gpu0-pid", IMX_SC_R_GPU_0_PID0, 4, true, 0 },
@@ -210,11 +211,6 @@ static const struct imx_sc_pd_range imx8qxp_scu_pd_ranges[] = {
 	{ "lvds1", IMX_SC_R_LVDS_1, 1, false, 0 },
 	{ "lvds1-pwm", IMX_SC_R_LVDS_1_PWM_0, 1, false, 0 },
 	{ "lvds1-lpi2c", IMX_SC_R_LVDS_1_I2C_0, 2, true, 0 },
-
-	{ "mipi1", IMX_SC_R_MIPI_1, 1, 0 },
-	{ "mipi1-pwm0", IMX_SC_R_MIPI_1_PWM_0, 1, 0 },
-	{ "mipi1-i2c", IMX_SC_R_MIPI_1_I2C_0, 2, 1 },
-	{ "lvds1", IMX_SC_R_LVDS_1, 1, 0 },
 
 	/* DC SS */
 	{ "dc0", IMX_SC_R_DC_0, 1, false, 0 },
