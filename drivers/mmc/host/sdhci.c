@@ -4004,11 +4004,23 @@ void __sdhci_read_caps(struct sdhci_host *host, const u16 *ver,
 	u16 v;
 	u64 dt_caps_mask = 0;
 	u64 dt_caps = 0;
+	u32 dt_quirks = 0;
+	u32 dt_quirks2 = 0;
 
 	if (host->read_caps)
 		return;
 
 	host->read_caps = true;
+
+	of_property_read_u32(mmc_dev(host->mmc)->of_node,
+			     "sdhci-extra-quirks", &dt_quirks);
+	host->quirks |= dt_quirks;
+	of_property_read_u32(mmc_dev(host->mmc)->of_node,
+			     "sdhci-extra-quirks2", &dt_quirks2);
+	host->quirks2 |= dt_quirks2;
+
+	if (dt_quirks || dt_quirks2)
+		dev_dbg(mmc_dev(host->mmc), "applying extra quirks: 0x%08x 0x%08x\n", dt_quirks, dt_quirks2);
 
 	if (debug_quirks)
 		host->quirks = debug_quirks;
@@ -4405,7 +4417,7 @@ int sdhci_setup_host(struct sdhci_host *host)
 	if (host->quirks2 & SDHCI_QUIRK2_HOST_NO_CMD23)
 		mmc->caps &= ~MMC_CAP_CMD23;
 
-	if (host->caps & SDHCI_CAN_DO_HISPD)
+	if (host->caps & SDHCI_CAN_DO_HISPD && !(host->quirks2 & SDHCI_QUIRK2_BROKEN_HIGHSPEED))
 		mmc->caps |= MMC_CAP_SD_HIGHSPEED | MMC_CAP_MMC_HIGHSPEED;
 
 	if ((host->quirks & SDHCI_QUIRK_BROKEN_CARD_DETECTION) &&
@@ -4472,8 +4484,10 @@ int sdhci_setup_host(struct sdhci_host *host)
 	}
 
 	if (host->quirks2 & SDHCI_QUIRK2_CAPS_BIT63_FOR_HS400 &&
-	    (host->caps1 & SDHCI_SUPPORT_HS400))
-		mmc->caps2 |= MMC_CAP2_HS400;
+	    (host->caps1 & SDHCI_SUPPORT_HS400)) {
+		if (!(host->quirks2 & SDHCI_QUIRK2_BROKEN_HS400))
+			mmc->caps2 |= MMC_CAP2_HS400;
+	}
 
 	if ((mmc->caps2 & MMC_CAP2_HSX00_1_2V) &&
 	    (IS_ERR(mmc->supply.vqmmc) ||
@@ -4496,6 +4510,14 @@ int sdhci_setup_host(struct sdhci_host *host)
 		mmc->caps |= MMC_CAP_DRIVER_TYPE_C;
 	if (host->caps1 & SDHCI_DRIVER_TYPE_D)
 		mmc->caps |= MMC_CAP_DRIVER_TYPE_D;
+	if (host->quirks2 & SDHCI_QUIRK2_BROKEN_SDR104)
+		mmc->caps &= ~MMC_CAP_UHS_SDR104;
+
+	if (host->quirks2 & SDHCI_QUIRK2_BROKEN_SDR50)
+		mmc->caps &= ~MMC_CAP_UHS_SDR50;
+
+	if (host->quirks2 & SDHCI_QUIRK2_BROKEN_SDR25)
+		mmc->caps &= ~MMC_CAP_UHS_SDR25;
 
 	/* Initial value for re-tuning timer count */
 	host->tuning_count = FIELD_GET(SDHCI_RETUNING_TIMER_COUNT_MASK,
