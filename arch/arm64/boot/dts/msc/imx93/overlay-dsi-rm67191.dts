@@ -87,4 +87,11 @@
 			status = "okay";
 		};
 	};
+
+	fragment@4006 {
+		target = <&epxp>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
 };
