@@ -21,20 +21,20 @@
 		target-path = "/";
 		__overlay__ {
 			lvds_panel {
-				compatible = "ampire,am-101a01-du2511-g020";
+				compatible = "ampire,am-070a04-du2511-g010";
 				backlight = <&lcd0_backlight>;
 				enable-gpios = <&ioexpander 8 GPIO_ACTIVE_HIGH>;
 
 				panel-timing {
-					clock-frequency = <71100000>;
-					hactive = <1280>;
-					vactive = <800>;
-					hfront-porch = <80>;
-					hback-porch = <79>;
-					hsync-len = <1>;
-					vfront-porch = <11>;
-					vback-porch = <11>;
-					vsync-len = <1>;
+					clock-frequency = <30000000>;
+					hactive = <800>;
+					vactive = <480>;
+					hfront-porch = <32>;
+					hback-porch = <32>;
+					hsync-len = <2>;
+					vfront-porch = <5>;
+					vback-porch = <5>;
+					vsync-len = <2>;
 					de-active = <1>;
 				};
 
@@ -50,7 +50,7 @@
 	fragment@4001 {
 		target = <&lcdif>;
 		__overlay__ {
-			assigned-clock-rates = <498000000>, <71100000>, <400000000>, <133333333>;
+			assigned-clock-rates = <210000000>, <30000000>, <400000000>, <133333333>;
 			status = "okay";
 		};
 	};

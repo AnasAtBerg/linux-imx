@@ -21,7 +21,7 @@
 		target-path = "/";
 		__overlay__ {
 			lvds_panel {
-				compatible = "ampire,am-101a01-du2511-g020";
+				compatible = "ampire,am-121a01-du2511-g020";
 				backlight = <&lcd0_backlight>;
 				enable-gpios = <&ioexpander 8 GPIO_ACTIVE_HIGH>;
 
