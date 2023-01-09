@@ -40,4 +40,32 @@
 			};
 		};
 	};
+
+	fragment@1002 {
+		target = <&spidev0_0>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+		};
+	};
+
+	fragment@1003 {
+		target = <&spidev0_1>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+		};
+	};
+
+	fragment@1004 {
+		target = <&spidev1_0>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+		};
+	};
+
+	fragment@1005 {
+		target = <&spidev1_1>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+		};
+	};
 };
