@@ -872,6 +872,84 @@ static const struct panel_desc ampire_am_1280800n3tzqw_t00h = {
 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
 };
 
+static const struct display_timing ampire_am_101a01_du2511_g020_timing = {
+	.pixelclock = { 68900000, 71100000, 73400000 },
+	.hactive = { 1280, 1280, 1280 },
+	.hfront_porch = { 30, 80, 95 },
+	.hback_porch = { 29, 79, 94 },
+	.hsync_len = { 1, 1, 1 },
+	.vactive = { 800, 800, 800 },
+	.vfront_porch = { 7, 11, 16 },
+	.vback_porch = { 7, 11, 16 },
+	.vsync_len = { 1, 1, 1 },
+	.flags = DISPLAY_FLAGS_DE_HIGH,
+};
+
+static const struct panel_desc ampire_am_101a01_du2511_g020 = {
+	.timings = &ampire_am_101a01_du2511_g020_timing,
+	.num_timings = 1,
+	.bpc = 8,
+	.size = {
+		.width = 217,
+		.height = 136,
+	},
+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
+	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+};
+
+static const struct display_timing ampire_am_101a07_du2511_g020_timing = {
+	.pixelclock = { 70000000, 72400000, 76600000 },
+	.hactive = { 1280, 1280, 1280 },
+	.hfront_porch = { 65, 80, 95 },
+	.hback_porch = { 64, 80, 94 },
+	.hsync_len = { 1, 1, 1 },
+	.vactive = { 800, 800, 800 },
+	.vfront_porch = { 13, 18, 34 },
+	.vback_porch = { 14, 19, 33 },
+	.vsync_len = { 1, 1, 1 },
+	.flags = DISPLAY_FLAGS_DE_HIGH,
+};
+
+static const struct panel_desc ampire_am_101a07_du2511_g020 = {
+	.timings = &ampire_am_101a07_du2511_g020_timing,
+	.num_timings = 1,
+	.bpc = 8,
+	.size = {
+		.width = 217,
+		.height = 136,
+	},
+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
+	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+};
+
+static const struct display_timing ampire_am_121a01_du2511_g020_timing = {
+	.pixelclock = { 67000000, 71000000, 75000000 },
+	.hactive = { 1280, 1280, 1280 },
+	.hfront_porch = { 5, 80, 80 },
+	.hback_porch = { 4, 79, 79 },
+	.hsync_len = { 1, 1, 1 },
+	.vactive = { 800, 800, 800 },
+	.vfront_porch = { 4, 11, 11 },
+	.vback_porch = { 5, 11, 11 },
+	.vsync_len = { 1, 1, 1 },
+	.flags = DISPLAY_FLAGS_DE_HIGH,
+};
+
+static const struct panel_desc ampire_am_121a01_du2511_g020 = {
+	.timings = &ampire_am_121a01_du2511_g020_timing,
+	.num_timings = 1,
+	.bpc = 8,
+	.size = {
+		.width = 261,
+		.height = 163,
+	},
+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
+	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+};
+
 static const struct drm_display_mode ampire_am_480272h3tmqw_t01h_mode = {
 	.clock = 9000,
 	.hdisplay = 480,
@@ -918,6 +996,32 @@ static const struct panel_desc ampire_am800480r3tmqwa1h = {
 		.height = 91,
 	},
 	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
+};
+
+static const struct display_timing ampire_am_070a04_du2511_g010_timing = {
+	.pixelclock = { 25200000, 25400000, 35700000 },
+	.hactive = { 800, 800, 800 },
+	.hfront_porch = { 28, 32, 142 },
+	.hback_porch = { 32, 32, 32 },
+	.hsync_len = { 1, 2, 40 },
+	.vactive = { 480, 480, 480 },
+	.vfront_porch = { 3, 5, 126 },
+	.vback_porch = { 5, 5, 5 },
+	.vsync_len = { 1, 2, 201 },
+	.flags = DISPLAY_FLAGS_DE_HIGH,
+};
+
+static const struct panel_desc ampire_am_070a04_du2511_g010 = {
+	.timings = &ampire_am_070a04_du2511_g010_timing,
+	.num_timings = 1,
+	.bpc = 8,
+	.size = {
+		.width = 152,
+		.height = 91,
+	},
+	.bus_flags = DRM_BUS_FLAG_DE_HIGH,
+	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_JEIDA,
+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
 };
 
 static const struct display_timing santek_st0700i5y_rbslw_f_timing = {
@@ -4539,11 +4643,23 @@ static const struct of_device_id platform_of_match[] = {
 		.compatible = "ampire,am-1280800n3tzqw-t00h",
 		.data = &ampire_am_1280800n3tzqw_t00h,
 	}, {
+		.compatible = "ampire,am-101a01-du2511-g020",
+		.data = &ampire_am_101a01_du2511_g020,
+	}, {
+		.compatible = "ampire,am-101a07-du2511-g020",
+		.data = &ampire_am_101a07_du2511_g020,
+	}, {
+		.compatible = "ampire,am-121a01-du2511-g020",
+		.data = &ampire_am_121a01_du2511_g020,
+	}, {
 		.compatible = "ampire,am-480272h3tmqw-t01h",
 		.data = &ampire_am_480272h3tmqw_t01h,
 	}, {
 		.compatible = "ampire,am800480r3tmqwa1h",
 		.data = &ampire_am800480r3tmqwa1h,
+	}, {
+		.compatible = "ampire,am-070a04-du2511-g010",
+		.data = &ampire_am_070a04_du2511_g010,
 	}, {
 		.compatible = "arm,rtsm-display",
 		.data = &arm_rtsm,
