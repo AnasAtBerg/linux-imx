@@ -40,7 +40,7 @@
 
 #define DFS_STATUS		0xF4
 
-#define LOCK_TIMEOUT_US		200
+#define LOCK_TIMEOUT_US		400
 
 #define PLL_FRACN_GP(_rate, _mfi, _mfn, _mfd, _rdiv, _odiv)	\
 	{							\
@@ -67,12 +67,15 @@ static const struct imx_fracn_gppll_rate_table fracn_tbl[] = {
 	PLL_FRACN_GP(650000000U, 81, 0, 1, 0, 3),
 	PLL_FRACN_GP(594000000U, 198, 0, 1, 0, 8),
 	PLL_FRACN_GP(560000000U, 70, 0, 1, 0, 3),
+	PLL_FRACN_GP(520800000U, 217, 0, 1, 1, 10),
+	PLL_FRACN_GP(504000000U, 42, 0, 1, 1, 2),
 	PLL_FRACN_GP(498000000U, 83, 0, 1, 0, 4),
 	PLL_FRACN_GP(484000000U, 121, 0, 1, 0, 6),
 	PLL_FRACN_GP(445333333U, 167, 0, 1, 0, 9),
 	PLL_FRACN_GP(400000000U, 50, 0, 1, 0, 3),
 	PLL_FRACN_GP(393216000U, 81, 92, 100, 0, 5),
-	PLL_FRACN_GP(300000000U, 150, 0, 1, 0, 12)
+	PLL_FRACN_GP(300000000U, 150, 0, 1, 0, 12),
+	PLL_FRACN_GP(210000000U, 175, 0, 1, 5, 4),
 };
 
 struct imx_fracn_gppll_clk imx_fracn_gppll = {
