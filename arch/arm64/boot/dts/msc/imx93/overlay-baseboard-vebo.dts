@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 Avnet Embedded
+ * Copyright (C) 2023 Avnet Embedded GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -13,6 +13,8 @@
 
 /dts-v1/;
 /plugin/;
+
+#include <dt-bindings/clock/imx93-clock.h>
 
 / {
 	fragment@1000 {
@@ -66,6 +68,60 @@
 		target = <&spidev1_1>;
 		__overlay__ {
 			compatible = "jedec,spi-nor";
+		};
+	};
+
+	fragment@1006 {
+		target-path = "/";
+		__overlay__ {
+			da7213_sound: da7213-sound {
+				compatible = "fsl,imx-audio-da7213";
+				card-name = "imx-da7212-audio";
+				fsl,no-audmux;
+				ssi-controller = <&sai1>;
+				audio-codec = <&da7213_codec>;
+				audio-routing =
+						"Mic1", "Mic Bias 1",
+						"MIC1", "Mic1",
+						"Headphone Jack", "HPL",
+						"Headphone Jack", "HPR",
+						"Speaker", "LINE";
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@1007 {
+		target = <&lpi2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			da7213_codec: da7212@1a {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_audio>;
+				compatible = "dlg,da7213";
+				reg = <0x1a>;
+				assigned-clocks = <&clk IMX93_CLK_CCM_CKO1>;
+				assigned-clock-parents = <&clk IMX93_CLK_24M>;
+				assigned-clock-rates = <24000000>;
+				clocks = <&clk IMX93_CLK_CCM_CKO1>;
+				clock-names = "mclk";
+				dlg,micbias1-lvl = <3000>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@1008 {
+		target = <&sai1>;
+		__overlay__ {
+			#sound-dai-cells = <0>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_sai1>;
+			assigned-clocks = <&clk IMX93_CLK_SAI1>;
+			assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
+			assigned-clock-rates = <12288000>;
+			status = "okay";
 		};
 	};
 };

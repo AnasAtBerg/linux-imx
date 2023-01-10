@@ -919,6 +919,12 @@
 		>;
 	};
 
+	pinctrl_audio: audiogrp {
+		fsl,pins = <
+			MX93_PAD_CCM_CLKO1__CCMSRCGPCMIX_CLKO1	0x31e
+		>;
+	};
+
 	pinctrl_cam: camgrp {
 		fsl,pins = <
 			MX93_PAD_CCM_CLKO2__CCMSRCGPCMIX_CLKO2	0x31e
