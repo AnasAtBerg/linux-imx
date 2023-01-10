@@ -1,0 +1,96 @@
+/*
+ * Copyright (C) 2023 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/imx93-clock.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@1000 {
+		target-path = "/";
+		__overlay__ {
+			sgtl5000_sound: sgtl5000-sound {
+				compatible = "fsl,imx-audio-sgtl5000";
+				model = "imx-sgtl5000";
+				audio-cpu = <&sai1>;
+				audio-codec = <&sgtl5000_codec>;
+				audio-routing =
+					"LINE_IN", "Line In Jack",
+					"MIC_IN", "Mic Jack",
+					"Mic Jack", "Mic Bias",
+					"Headphone Jack", "HP_OUT";
+			};
+		};
+	};
+
+	fragment@1001 {
+		target = <&lpi2c1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			sgtl5000_codec: sgtl5000@a {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_audio>;
+				compatible = "fsl,sgtl5000";
+				reg = <0x0a>;
+				assigned-clocks = <&clk IMX93_CLK_CCM_CKO1>;
+				assigned-clock-parents = <&clk IMX93_CLK_24M>;
+				assigned-clock-rates = <24000000>;
+				clocks = <&clk IMX93_CLK_CCM_CKO1>;
+				clock-names = "audio_mclk";
+				VDDA-supply = <&reg_vcc_3v3_audio>;
+				VDD-supply = <&reg_vcc_1v8_audio>;
+				VDDIO-supply = <&reg_vcc_1v8_audio>;
+			};
+		};
+	};
+
+	fragment@1002 {
+		target = <&sai1>;
+		__overlay__ {
+			#sound-dai-cells = <0>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_sai1>;
+			assigned-clocks = <&clk IMX93_CLK_SAI1>;
+			assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
+			assigned-clock-rates = <12288000>;
+			status = "okay";
+		};
+	};
+
+	fragment@1003 {
+		target-path = "/";
+		__overlay__ {
+			reg_vcc_3v3_audio: 3v3_audio_regulator {
+				compatible = "regulator-fixed";
+				regulator-name = "3V3_AUD";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+			};
+		};
+	};
+
+	fragment@1004 {
+		target-path = "/";
+		__overlay__ {
+			reg_vcc_1v8_audio: 1v8_audio_regulator {
+				compatible = "regulator-fixed";
+				regulator-name = "1V8_AUD";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+			};
+		};
+	};
+};
