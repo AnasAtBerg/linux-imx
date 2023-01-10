@@ -229,8 +229,7 @@
 				pinctrl-names = "default";
 				pinctrl-0 =
 					<&pinctrl_smarc_gpio_gpio5_gpio>, // FAN is not connected, so configure pins as GPIOs even when we don't connect them to feature connector
-					<&pinctrl_smarc_gpio_gpio6_gpio>, // should be couting pulses, but pins is neither connected to GPT nor TPM
-					<&pinctrl_smarc_gpio>;
+					<&pinctrl_smarc_gpio_gpio6_gpio>; // should be couting pulses, but pins is neither connected to GPT nor TPM
 
 				GPIO_0-gpios = <&lsio_gpio0 0 0>;
 				GPIO_1-gpios = <&lsio_gpio0 2 0>;

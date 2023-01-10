@@ -129,8 +129,7 @@
 				compatible = "msc,user-gpios";
 				pinctrl-names = "default";
 				pinctrl-0 =
-					<&pinctrl_smarc_gpio_gpio6_gpio>, // should be counting pulses
-					<&pinctrl_smarc_gpio>;
+					<&pinctrl_smarc_gpio_gpio6_gpio>; // should be counting pulses
 
 				CAM0_PWR-gpios = <&lsio_gpio0 0 0>; // GPIO0
 				GPIO1-gpios = <&lsio_gpio0 2 0>;

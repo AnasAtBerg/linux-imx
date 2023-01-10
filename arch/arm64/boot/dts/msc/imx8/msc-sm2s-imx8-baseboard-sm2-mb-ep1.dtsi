@@ -121,8 +121,6 @@
 				pinctrl-0 =
 					<&pinctrl_smarc_gpio_gpio6_gpio>; // should be counting pulses
 
-				// <&pinctrl_smarc_gpio>; already done in hog grp to be earlier - needed for DSI displays
-
 				CAM0_PWR-gpios = <&lsio_gpio0 0 0>; // GPIO0
 				GPIO1-gpios = <&lsio_gpio0 2 0>;
 				CAM0_RST-gpios = <&lsio_gpio0 1 0>; // GPIO2
