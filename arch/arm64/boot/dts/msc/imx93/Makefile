@@ -9,3 +9,4 @@ dtb-$(CONFIG_ARCH_MXC) += overlay-lvds-ama-070a04.dtb
 dtb-$(CONFIG_ARCH_MXC) += overlay-lvds-ama-101a01.dtb
 dtb-$(CONFIG_ARCH_MXC) += overlay-lvds-ama-101a07.dtb
 dtb-$(CONFIG_ARCH_MXC) += overlay-lvds-ama-121a01.dtb
+dtb-$(CONFIG_ARCH_MXC) += overlay-cam-ov5640.dtb

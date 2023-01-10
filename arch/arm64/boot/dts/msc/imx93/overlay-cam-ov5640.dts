@@ -1,0 +1,87 @@
+/*
+ * Copyright (C) 2023 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/imx93-clock.h>
+
+/ {
+	fragment@3000 {
+		target = <&lpi2c5>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			ov5640_cam: ov5640_mipi@3c {
+				compatible = "ovti,ov5640";
+				reg = <0x3c>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_cam>;
+				clocks = <&clk IMX93_CLK_CCM_CKO2>;
+				clock-names = "xclk";
+				assigned-clocks = <&clk IMX93_CLK_CCM_CKO2>;
+				assigned-clock-parents = <&clk IMX93_CLK_24M>;
+				assigned-clock-rates = <24000000>;
+				csi_id = <0>;
+				mclk = <24000000>;
+				mclk_source = <0>;
+				mipi_csi;
+				status = "okay";
+
+				port {
+					ov5640_mipi_ep: endpoint {
+						remote-endpoint = <&mipi_csi_ep>;
+						data-lanes = <1 2>;
+						clock-lanes = <0>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@3001 {
+		target = <&mipi_csi>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+
+			port@0 {
+				reg = <0>;
+				mipi_csi_ep: endpoint {
+					remote-endpoint = <&ov5640_mipi_ep>;
+					data-lanes = <1 2>;
+					bus-type = <4>;
+				};
+			};
+		};
+	};
+
+	fragment@3002 {
+		target = <&cameradev>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@3003 {
+		target = <&isi_0>;
+		__overlay__ {
+			status = "okay";
+
+			cap_device {
+				status = "okay";
+			};
+		};
+	};
+};
