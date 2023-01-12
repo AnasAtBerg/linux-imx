@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 AVNET Integrated, MSC Technologies GmbH
+ * Copyright (C) 2022 Avnet Embedded GmbH
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -11,7 +11,12 @@
  * GNU General Public License for more details.
  */
 
-#define SNVS_LPCR_ON_TIME_500ms	0
-#define SNVS_LPCR_ON_TIME_50ms	1
-#define SNVS_LPCR_ON_TIME_100ms	2
-#define SNVS_LPCR_ON_TIME_0ms	3
+#ifndef _DT_BINDINGS_BBNSM_PWRKEY_H
+#define _DT_BINDINGS_BBNSM_PWRKEY_H
+
+#define BBNSM_TURN_ON_TIME_500MS	(0)
+#define BBNSM_TURN_ON_TIME_50MS		(1 << 20)
+#define BBNSM_TURN_ON_TIME_100MS	(2 << 20)
+#define BBNSM_TURN_ON_TIME_0MS		(3 << 20)
+
+#endif /* _DT_BINDINGS_BBNSM_PWRKEY_H */

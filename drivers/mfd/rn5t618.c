@@ -17,6 +17,7 @@
 #include <linux/platform_device.h>
 #include <linux/reboot.h>
 #include <linux/regmap.h>
+#include <dt-bindings/mfd/ricoh-rn5t618.h>
 
 static const struct mfd_cell rn5t618_cells[] = {
 	{ .name = "rn5t618-regulator" },
@@ -178,10 +179,33 @@ static const struct of_device_id rn5t618_of_match[] = {
 };
 MODULE_DEVICE_TABLE(of, rn5t618_of_match);
 
+static int rn5t618_set_repower_time(struct i2c_client *i2c)
+{
+	struct rn5t618 *priv = i2c_get_clientdata(i2c);
+	int ret;
+
+	ret = i2c_smbus_read_byte_data(i2c, RN5T618_REPCNT);
+	if (ret < 0)
+		return ret;
+
+	ret |= priv->repower_time;
+
+	ret = i2c_smbus_write_byte_data(i2c, RN5T618_REPCNT, (u8)ret);
+	if (ret < 0)
+		return ret;
+
+	return 0;
+}
+
 static int rn5t618_i2c_probe(struct i2c_client *i2c)
 {
 	const struct of_device_id *of_id;
+	struct device_node *node = i2c->dev.of_node;
+	const void *prop;
+	int sz;
 	struct rn5t618 *priv;
+	u32 pmic_id;
+	bool slave = false;
 	int ret;
 
 	of_id = of_match_device(rn5t618_of_match, &i2c->dev);
@@ -206,13 +230,18 @@ static int rn5t618_i2c_probe(struct i2c_client *i2c)
 		return ret;
 	}
 
+	slave = of_property_read_bool(node, "slave-mode");
+
+	if (of_property_read_u32(node, "pmic-id", &pmic_id) != 0)
+		pmic_id = PLATFORM_DEVID_NONE;
+
 	if (priv->variant == RC5T619)
-		ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_NONE,
+		ret = devm_mfd_add_devices(&i2c->dev, pmic_id,
 					   rc5t619_cells,
 					   ARRAY_SIZE(rc5t619_cells),
 					   NULL, 0, NULL);
 	else
-		ret = devm_mfd_add_devices(&i2c->dev, PLATFORM_DEVID_NONE,
+		ret = devm_mfd_add_devices(&i2c->dev, pmic_id,
 					   rn5t618_cells,
 					   ARRAY_SIZE(rn5t618_cells),
 					   NULL, 0, NULL);
@@ -221,22 +250,65 @@ static int rn5t618_i2c_probe(struct i2c_client *i2c)
 		return ret;
 	}
 
-	rn5t618_pm_power_off = i2c;
-	if (of_device_is_system_power_controller(i2c->dev.of_node)) {
-		if (!pm_power_off)
-			pm_power_off = rn5t618_power_off;
-		else
-			dev_warn(&i2c->dev, "Poweroff callback already assigned\n");
-	}
+	if (of_property_read_u32(node, "repower-time", &priv->repower_time) != 0)
+		priv->repower_time = REPWRTIME_10MS;
 
-	rn5t618_restart_handler.notifier_call = rn5t618_restart;
-	rn5t618_restart_handler.priority = 192;
-
-	ret = register_restart_handler(&rn5t618_restart_handler);
+	ret = rn5t618_set_repower_time(i2c);
 	if (ret) {
-		dev_err(&i2c->dev, "cannot register restart handler, %d\n", ret);
+		dev_err(&i2c->dev, "failed to set 'repower-time': %d\n", ret);
 		return ret;
 	}
+
+	prop = of_get_property(node, "suspend-sequence", &sz);
+	if (prop) {
+		priv->suspend_seq.seq = devm_kzalloc(&i2c->dev, sz, GFP_KERNEL);
+		if (!priv->suspend_seq.seq) {
+			dev_err(&i2c->dev, "cannot allocate memory for 'suspend-sequence'\n");
+			return -ENOMEM;
+		}
+
+		memcpy(priv->suspend_seq.seq, prop, sz);
+		priv->suspend_seq.size = sz;
+	}
+	else
+		priv->suspend_seq.size = 0;
+
+	prop = of_get_property(node, "resume-sequence", &sz);
+	if (prop) {
+		priv->resume_seq.seq = devm_kzalloc(&i2c->dev, sz, GFP_KERNEL);
+		if (!priv->resume_seq.seq) {
+			dev_err(&i2c->dev, "cannot allocate memory for 'resume-sequence'\n");
+			return -ENOMEM;
+		}
+
+		memcpy(priv->resume_seq.seq, prop, sz);
+		priv->resume_seq.size = sz;
+	}
+	else
+		priv->resume_seq.size = 0;
+
+	if (!slave) {
+		rn5t618_pm_power_off = i2c;
+		if (of_device_is_system_power_controller(i2c->dev.of_node)) {
+			if (!pm_power_off)
+				pm_power_off = rn5t618_power_off;
+			else
+				dev_warn(&i2c->dev, "Poweroff callback already assigned\n");
+		}
+
+		rn5t618_restart_handler.notifier_call = rn5t618_restart;
+		rn5t618_restart_handler.priority = 192;
+
+		ret = register_restart_handler(&rn5t618_restart_handler);
+		if (ret) {
+			dev_err(&i2c->dev, "cannot register restart handler, %d\n", ret);
+			return ret;
+		}
+
+		dev_info(&i2c->dev, "running in single/master mode\n");
+	}
+	else
+		dev_info(&i2c->dev, "running in slave mode\n");
 
 	return rn5t618_irq_init(priv);
 }
@@ -253,6 +325,35 @@ static int rn5t618_i2c_remove(struct i2c_client *i2c)
 	return 0;
 }
 
+static int __maybe_unused rn5t618_i2c_send_sequence(struct device *dev,
+		struct rn5t618_pm_sequence *seq)
+{
+	struct rn5t618 *priv = dev_get_drvdata(dev);
+	struct rn5t618_reg_record {
+		u8 reg;
+		u8 value;
+	} *rec;
+	u8 idx, cnt;
+	int ret = 0;
+
+	cnt = seq->size / sizeof(struct rn5t618_reg_record);
+	rec = seq->seq;
+
+	for (idx=0; idx<cnt; idx++, rec++) {
+
+		dev_dbg(dev, "reg=0x%02x, value=0x%02x\n", rec->reg, rec->value);
+
+		ret = regmap_write(priv->regmap, rec->reg, rec->value);
+		if (ret < 0) {
+			dev_err(dev, "cannot set register 0x%04x to 0x%04x.\n",
+					rec->reg, rec->value);
+			return -EIO;
+		}
+	}
+
+	return 0;
+}
+
 static int __maybe_unused rn5t618_i2c_suspend(struct device *dev)
 {
 	struct rn5t618 *priv = dev_get_drvdata(dev);
@@ -260,7 +361,10 @@ static int __maybe_unused rn5t618_i2c_suspend(struct device *dev)
 	if (priv->irq)
 		disable_irq(priv->irq);
 
+	if (!priv->suspend_seq.size)
 	return 0;
+
+	return rn5t618_i2c_send_sequence(dev, &priv->suspend_seq);
 }
 
 static int __maybe_unused rn5t618_i2c_resume(struct device *dev)
@@ -270,7 +374,10 @@ static int __maybe_unused rn5t618_i2c_resume(struct device *dev)
 	if (priv->irq)
 		enable_irq(priv->irq);
 
+	if (!priv->resume_seq.size)
 	return 0;
+
+	return rn5t618_i2c_send_sequence(dev, &priv->resume_seq);
 }
 
 static SIMPLE_DEV_PM_OPS(rn5t618_i2c_dev_pm_ops,

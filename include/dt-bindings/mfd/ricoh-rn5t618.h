@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 AVNET Integrated, MSC Technologies GmbH
+ * Copyright (C) 2022 Avnet Embedded
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -11,7 +11,12 @@
  * GNU General Public License for more details.
  */
 
-#define SNVS_LPCR_ON_TIME_500ms	0
-#define SNVS_LPCR_ON_TIME_50ms	1
-#define SNVS_LPCR_ON_TIME_100ms	2
-#define SNVS_LPCR_ON_TIME_0ms	3
+#ifndef __DT_BINDINGS_RICOH_RN5T618_H__
+#define __DT_BINDINGS_RICOH_RN5T618_H__
+
+#define REPWRTIME_10MS		(0 << 1)
+#define REPWRTIME_100MS		(1 << 1)
+#define REPWRTIME_500MS		(2 << 1)
+#define REPWRTIME_1000MS	(3 << 1)
+
+#endif /* __DT_BINDINGS_RICOH_RN5T618_H__ */

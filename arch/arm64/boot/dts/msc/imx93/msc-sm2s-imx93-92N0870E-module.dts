@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 AVNET Integrated, MSC Technologies GmbH
+ * Copyright (C) 2022 Avnet Embedded
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -11,7 +11,19 @@
  * GNU General Public License for more details.
  */
 
-#define SNVS_LPCR_ON_TIME_500ms	0
-#define SNVS_LPCR_ON_TIME_50ms	1
-#define SNVS_LPCR_ON_TIME_100ms	2
-#define SNVS_LPCR_ON_TIME_0ms	3
+#include "msc-sm2s-imx93-module.dtsi"
+
+/ {
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		linux,cma {
+			compatible = "shared-dma-pool";
+			reusable;
+			size = <0 0x08000000>;  /* 128MiB  */
+			linux,cma-default;
+		};
+	};
+};
