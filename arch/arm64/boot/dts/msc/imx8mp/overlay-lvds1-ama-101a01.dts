@@ -1,0 +1,120 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@4100 {
+		target = <&mipi_dsi>;
+		__overlay__ {
+			status = "okay";
+			port@1 {
+				dsim_to_lvds_bridge: endpoint {
+					remote-endpoint = <&lvds_bridge_from_dsim>;
+					attach-bridge;
+				};
+			};
+		};
+	};
+
+	fragment@4101 {
+		target = <&dsi_lvds_bridge>;
+		__overlay__ {
+			ti,dsi-lanes = <4>;
+			ti,lvds-format = <0>;
+			ti,lvds-bpp = <24>;
+			ti,width-mm = <261>;
+			ti,height-mm = <163>;
+			ti,lvds-channels = <1>;
+			enable-panel-gpios =  <&gpio1 1 GPIO_ACTIVE_HIGH>;
+			backlight = <&lcd1_backlight>;
+			status = "okay";
+
+			port {
+				lvds_bridge_from_dsim: endpoint {
+					remote-endpoint = <&dsim_to_lvds_bridge>;
+				};
+			};
+
+			display-timings {
+				lvds {
+					clock-frequency = <69300000>;
+					hactive = <1280>;
+					vactive = <800>;
+					hback-porch = <48>;
+					hfront-porch = <48>;
+					vback-porch = <10>;
+					vfront-porch = <10>;
+					hsync-len = <64>;
+					vsync-len = <4>;
+					hsync-active = <0>;
+					vsync-active = <0>;
+					de-active = <1>;
+					pixelclk-active = <0>;
+				};
+			};
+		};
+	};
+
+	fragment@4102 {
+		target = <&lcdif1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4103 {
+		target = <&pwm2>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4104 {
+		target = <&lcd1_backlight>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4105 {
+		target = <&gpu_3d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4106 {
+		target = <&gpu_2d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4107 {
+		target = <&ml_vipsi>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4108 {
+		target = <&mix_gpu_ml>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

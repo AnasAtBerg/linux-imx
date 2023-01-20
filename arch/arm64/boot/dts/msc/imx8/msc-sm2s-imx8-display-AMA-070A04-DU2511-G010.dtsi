@@ -1,0 +1,80 @@
+/** @file      msc-sm2s-imx8-display-AMA-070A04-DU2511-G010.dtsi
+
+    @copyright Copyright (C) 2021 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   For single-channel Ampire AMA-070A04-DU2511-G010 connected to LVDS0
+               https://www.avnet.com/wps/wcm/connect/onesite/89008940-b29e-4b15-97af-8f4da760b8a0/AMA-070A04-DU2511-G010.pdf?MOD=AJPERES&CVID=myXatAt&id=1551391163507
+
+*/
+
+
+/dts-v1/;
+/plugin/;
+
+#define LVDS_DISPLAY_0_BACKLIGHT
+
+// table 5.4, page 9 https://www.avnet.com/wps/wcm/connect/onesite/89008940-b29e-4b15-97af-8f4da760b8a0/AMA-070A04-DU2511-G010.pdf?MOD=AJPERES&CVID=myXatAt&id=1551391163507
+#define LVDS_BACKLIGHT_POST_PWM_ON_DELAY_MS 60 // Tp1+Tp2
+#define LVDS_BACKLIGHT_PWM_OFF_DELAY_MS 50 // Tp13
+
+#include "msc-sm2s-imx8-display.dtsi"
+
+/ {
+	fragment@2001 {
+		target = <&ldb1>;
+		__overlay__ {
+			status = "okay";
+			lvds-channel@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				fsl,data-mapping = "jeida";
+				fsl,data-width = <24>;
+				status = "okay";
+				port@1 {
+					reg = <1>;
+					lvds1_out: endpoint {
+						remote-endpoint = <&panel_lvds1_in>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@2002 {
+		target-path = "/";
+		__overlay__ {
+			lvds1_panel {
+				compatible = "ama-070a04-du2511-g010","panel-lvds";
+				backlight = <&lvds_backlight0>;
+
+				label = "AMA-070A04-DU2511-G010";
+				width-mm = <152>;
+				height-mm = <91>;
+				data-mapping = "jeida-24"; // is SPWG
+
+				panel-timing {
+					// from arch/arm64/boot/dts/msc/common/panel-lvds-ama070A04.dtsi
+					clock-frequency = <26000000>;
+					hactive = <800>;
+					vactive = <480>;
+					hback-porch = <30>;
+					hfront-porch = <30>;
+					vback-porch = <4>;
+					vfront-porch = <4>;
+					hsync-len = <4>;
+					vsync-len = <4>;
+				};
+
+				port {
+					panel_lvds1_in: endpoint {
+						remote-endpoint = <&lvds1_out>;
+					};
+				};
+			};
+		};
+	};
+};

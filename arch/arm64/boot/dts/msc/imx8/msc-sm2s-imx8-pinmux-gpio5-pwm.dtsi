@@ -1,0 +1,6 @@
+
+		pinctrl_smarc_gpio_gpio5_pwm: smarc_gpiogrp_gpio_gpio5_pwm {
+            fsl,pins = <
+                SC_P_GPT1_COMPARE_LSIO_PWM2_OUT           0x08000060
+            >;
+        };

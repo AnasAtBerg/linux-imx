@@ -100,6 +100,14 @@ const struct linux_logo * __ref fb_find_logo(int depth)
 		/* SuperH Linux logo */
 		logo = &logo_superh_clut224;
 #endif
+#ifdef CONFIG_LOGO_MSC_CLUT224
+		/* MSC Linux logo */
+		logo = &logo_msc_clut224;
+#endif
+#ifdef CONFIG_LOGO_MSC_HW_TESTS_CLUT224
+		/* MSC Hardware Tests Linux logo */
+		logo = &logo_msc_hw_tests_clut224;
+#endif
 	}
 	return logo;
 }

@@ -1,0 +1,968 @@
+
+
+		pinctrl_hog: hoggrp {                              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_hog:
+- options: {callFromInitBoot: 'false', coreID: ca53_0}
+- pin_list:
+  - {pin_num: F10, peripheral: LSIO__GPIO4, signal: 'gpio_io, 21', pin_signal: QSPI1A_SCLK, direction: INPUT, PULL: PULL_2}
+  - {pin_num: J11, peripheral: LSIO__GPIO4, signal: 'gpio_io, 19', pin_signal: QSPI1A_SS0_B, direction: INPUT, PULL: PULL_2}
+  - {pin_num: G11, peripheral: LSIO__GPIO4, signal: 'gpio_io, 20', pin_signal: QSPI1A_SS1_B, direction: INPUT, PULL: PULL_2}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_QSPI1A_SCLK_LSIO_GPIO4_IO21            0x00000040
+                SC_P_QSPI1A_SS0_B_LSIO_GPIO4_IO19           0x00000040
+                SC_P_QSPI1A_SS1_B_LSIO_GPIO4_IO20           0x00000040
+            >;
+        };
+
+		pinctrl_fec1: fec1grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_fec1:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: A9, peripheral: CONN__ENET0, signal: enet_mdc, pin_signal: ENET0_MDC}
+  - {pin_num: D10, peripheral: CONN__ENET0, signal: enet_mdio, pin_signal: ENET0_MDIO}
+  - {pin_num: E41, peripheral: CONN__ENET0, signal: enet_rgmii_tx_ctl, pin_signal: ENET0_RGMII_TX_CTL}
+  - {pin_num: A43, peripheral: CONN__ENET0, signal: 'enet_rgmii_txd, 0', pin_signal: ENET0_RGMII_TXD0}
+  - {pin_num: B42, peripheral: CONN__ENET0, signal: 'enet_rgmii_txd, 1', pin_signal: ENET0_RGMII_TXD1}
+  - {pin_num: A45, peripheral: CONN__ENET0, signal: 'enet_rgmii_txd, 2', pin_signal: ENET0_RGMII_TXD2}
+  - {pin_num: D42, peripheral: CONN__ENET0, signal: 'enet_rgmii_txd, 3', pin_signal: ENET0_RGMII_TXD3}
+  - {pin_num: B44, peripheral: CONN__ENET0, signal: enet_rgmii_rxc, pin_signal: ENET0_RGMII_RXC}
+  - {pin_num: E43, peripheral: CONN__ENET0, signal: enet_rgmii_rx_ctl, pin_signal: ENET0_RGMII_RX_CTL}
+  - {pin_num: A47, peripheral: CONN__ENET0, signal: 'enet_rgmii_rxd, 0', pin_signal: ENET0_RGMII_RXD0}
+  - {pin_num: D44, peripheral: CONN__ENET0, signal: 'enet_rgmii_rxd, 1', pin_signal: ENET0_RGMII_RXD1}
+  - {pin_num: C45, peripheral: CONN__ENET0, signal: 'enet_rgmii_rxd, 2', pin_signal: ENET0_RGMII_RXD2}
+  - {pin_num: E45, peripheral: CONN__ENET0, signal: 'enet_rgmii_rxd, 3', pin_signal: ENET0_RGMII_RXD3}
+  - {pin_num: A41, peripheral: CONN__ENET0, signal: enet_rgmii_txc, pin_signal: ENET0_RGMII_TXC}
+  - {pin_num: AU11, peripheral: LSIO__GPIO2, signal: 'gpio_io, 10', pin_signal: ESAI1_TX2_RX3, direction: INPUT, PULL: PULL_1}
+  - {pin_num: AY12, peripheral: LSIO__GPIO2, signal: 'gpio_io, 12', pin_signal: ESAI1_TX4_RX1, direction: OUTPUT, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ENET0_MDC_CONN_ENET0_MDC               0x00000040
+                SC_P_ENET0_MDIO_CONN_ENET0_MDIO             0x00000020
+                SC_P_ENET0_RGMII_RXC_CONN_ENET0_RGMII_RXC   0x00000040
+                SC_P_ENET0_RGMII_RXD0_CONN_ENET0_RGMII_RXD0 0x00000040
+                SC_P_ENET0_RGMII_RXD1_CONN_ENET0_RGMII_RXD1 0x00000040
+                SC_P_ENET0_RGMII_RXD2_CONN_ENET0_RGMII_RXD2 0x00000040
+                SC_P_ENET0_RGMII_RXD3_CONN_ENET0_RGMII_RXD3 0x00000040
+                SC_P_ENET0_RGMII_RX_CTL_CONN_ENET0_RGMII_RX_CTL 0x00000040
+                SC_P_ENET0_RGMII_TXC_CONN_ENET0_RGMII_TXC   0x00000040
+                SC_P_ENET0_RGMII_TXD0_CONN_ENET0_RGMII_TXD0 0x00000040
+                SC_P_ENET0_RGMII_TXD1_CONN_ENET0_RGMII_TXD1 0x00000040
+                SC_P_ENET0_RGMII_TXD2_CONN_ENET0_RGMII_TXD2 0x00000040
+                SC_P_ENET0_RGMII_TXD3_CONN_ENET0_RGMII_TXD3 0x00000040
+                SC_P_ENET0_RGMII_TX_CTL_CONN_ENET0_RGMII_TX_CTL 0x00000040
+                SC_P_ESAI1_TX2_RX3_LSIO_GPIO2_IO10          0x00000020
+                SC_P_ESAI1_TX4_RX1_LSIO_GPIO2_IO12          0x00000020
+            >;
+        };
+
+		pinctrl_fec2: fec2grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_fec2:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: A13, peripheral: CONN__ENET1, signal: enet_mdc, pin_signal: ENET1_MDC}
+  - {pin_num: C13, peripheral: CONN__ENET1, signal: enet_mdio, pin_signal: ENET1_MDIO}
+  - {pin_num: D46, peripheral: CONN__ENET1, signal: enet_rgmii_txc, pin_signal: ENET1_RGMII_TXC}
+  - {pin_num: B48, peripheral: CONN__ENET1, signal: enet_rgmii_tx_ctl, pin_signal: ENET1_RGMII_TX_CTL}
+  - {pin_num: A49, peripheral: CONN__ENET1, signal: 'enet_rgmii_txd, 0', pin_signal: ENET1_RGMII_TXD0}
+  - {pin_num: C47, peripheral: CONN__ENET1, signal: 'enet_rgmii_txd, 1', pin_signal: ENET1_RGMII_TXD1}
+  - {pin_num: G47, peripheral: CONN__ENET1, signal: 'enet_rgmii_txd, 2', pin_signal: ENET1_RGMII_TXD2}
+  - {pin_num: D48, peripheral: CONN__ENET1, signal: 'enet_rgmii_txd, 3', pin_signal: ENET1_RGMII_TXD3}
+  - {pin_num: B50, peripheral: CONN__ENET1, signal: enet_rgmii_rxc, pin_signal: ENET1_RGMII_RXC}
+  - {pin_num: E49, peripheral: CONN__ENET1, signal: enet_rgmii_rx_ctl, pin_signal: ENET1_RGMII_RX_CTL}
+  - {pin_num: E51, peripheral: CONN__ENET1, signal: 'enet_rgmii_rxd, 0', pin_signal: ENET1_RGMII_RXD0}
+  - {pin_num: C51, peripheral: CONN__ENET1, signal: 'enet_rgmii_rxd, 1', pin_signal: ENET1_RGMII_RXD1}
+  - {pin_num: D52, peripheral: CONN__ENET1, signal: 'enet_rgmii_rxd, 2', pin_signal: ENET1_RGMII_RXD2}
+  - {pin_num: E53, peripheral: CONN__ENET1, signal: 'enet_rgmii_rxd, 3', pin_signal: ENET1_RGMII_RXD3}
+  - {pin_num: AV10, peripheral: LSIO__GPIO2, signal: 'gpio_io, 11', pin_signal: ESAI1_TX3_RX2, direction: INPUT, PULL: PULL_1}
+  - {pin_num: AT10, peripheral: LSIO__GPIO2, signal: 'gpio_io, 13', pin_signal: ESAI1_TX5_RX0, direction: OUTPUT, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ENET1_MDC_CONN_ENET1_MDC               0x00000040
+                SC_P_ENET1_MDIO_CONN_ENET1_MDIO             0x00000020
+                SC_P_ENET1_RGMII_RXC_CONN_ENET1_RGMII_RXC   0x00000040
+                SC_P_ENET1_RGMII_RXD0_CONN_ENET1_RGMII_RXD0 0x00000040
+                SC_P_ENET1_RGMII_RXD1_CONN_ENET1_RGMII_RXD1 0x00000040
+                SC_P_ENET1_RGMII_RXD2_CONN_ENET1_RGMII_RXD2 0x00000040
+                SC_P_ENET1_RGMII_RXD3_CONN_ENET1_RGMII_RXD3 0x00000040
+                SC_P_ENET1_RGMII_RX_CTL_CONN_ENET1_RGMII_RX_CTL 0x00000040
+                SC_P_ENET1_RGMII_TXC_CONN_ENET1_RGMII_TXC   0x00000040
+                SC_P_ENET1_RGMII_TXD0_CONN_ENET1_RGMII_TXD0 0x00000040
+                SC_P_ENET1_RGMII_TXD1_CONN_ENET1_RGMII_TXD1 0x00000040
+                SC_P_ENET1_RGMII_TXD2_CONN_ENET1_RGMII_TXD2 0x00000040
+                SC_P_ENET1_RGMII_TXD3_CONN_ENET1_RGMII_TXD3 0x00000040
+                SC_P_ENET1_RGMII_TX_CTL_CONN_ENET1_RGMII_TX_CTL 0x00000040
+                SC_P_ESAI1_TX3_RX2_LSIO_GPIO2_IO11          0x00000020
+                SC_P_ESAI1_TX5_RX0_LSIO_GPIO2_IO13          0x00000020
+            >;
+        };
+
+		pinctrl_flexspi0: flexspi0grp {                    /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_flexspi0:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: E17, peripheral: LSIO__QSPI0, signal: qspi_a_sclk, pin_signal: QSPI0A_SCLK}
+  - {pin_num: E15, peripheral: LSIO__QSPI0, signal: qspi_a_ss0_b, pin_signal: QSPI0A_SS0_B}
+  - {pin_num: G13, peripheral: LSIO__QSPI0, signal: 'qspi_a_data, 0', pin_signal: QSPI0A_DATA0}
+  - {pin_num: F14, peripheral: LSIO__QSPI0, signal: 'qspi_a_data, 1', pin_signal: QSPI0A_DATA1}
+  - {pin_num: H14, peripheral: LSIO__QSPI0, signal: 'qspi_a_data, 2', pin_signal: QSPI0A_DATA2}
+  - {pin_num: H16, peripheral: LSIO__QSPI0, signal: 'qspi_a_data, 3', pin_signal: QSPI0A_DATA3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_QSPI0A_DATA0_LSIO_QSPI0A_DATA0         0x00000040
+                SC_P_QSPI0A_DATA1_LSIO_QSPI0A_DATA1         0x00000040
+                SC_P_QSPI0A_DATA2_LSIO_QSPI0A_DATA2         0x00000040
+                SC_P_QSPI0A_DATA3_LSIO_QSPI0A_DATA3         0x00000040
+                SC_P_QSPI0A_SCLK_LSIO_QSPI0A_SCLK           0x00000040
+                SC_P_QSPI0A_SS0_B_LSIO_QSPI0A_SS0_B         0x00000020
+            >;
+        };
+
+		pinctrl_lpuart0: lpuart0grp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lpuart0:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AV48, peripheral: DMA__UART0, signal: uart_tx, pin_signal: UART0_TX, PULL: PULL_3}
+  - {pin_num: AV50, peripheral: DMA__UART0, signal: uart_rx, pin_signal: UART0_RX, PULL: PULL_3}
+  - {pin_num: AW49, peripheral: DMA__UART0, signal: uart_cts_b, pin_signal: UART0_CTS_B, PULL: PULL_3}
+  - {pin_num: AU45, peripheral: DMA__UART0, signal: uart_rts_b, pin_signal: UART0_RTS_B, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_UART0_CTS_B_DMA_UART0_CTS_B            0x00000060
+                SC_P_UART0_RTS_B_DMA_UART0_RTS_B            0x00000060
+                SC_P_UART0_RX_DMA_UART0_RX                  0x00000060
+                SC_P_UART0_TX_DMA_UART0_TX                  0x00000060
+            >;
+        };
+
+		pinctrl_lpuart1: lpuart1grp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lpuart1:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AT44, peripheral: DMA__UART1, signal: uart_rx, pin_signal: UART1_RX, PULL: PULL_3}
+  - {pin_num: AY48, peripheral: DMA__UART1, signal: uart_tx, pin_signal: UART1_TX, PULL: PULL_3}
+  - {pin_num: AR43, peripheral: DMA__UART1, signal: uart_cts_b, pin_signal: UART1_RTS_B, PULL: PULL_3}
+  - {pin_num: AV46, peripheral: DMA__UART1, signal: uart_rts_b, pin_signal: UART1_CTS_B, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_UART1_CTS_B_DMA_UART1_RTS_B            0x00000060
+                SC_P_UART1_RTS_B_DMA_UART1_CTS_B            0x00000060
+                SC_P_UART1_RX_DMA_UART1_RX                  0x00000060
+                SC_P_UART1_TX_DMA_UART1_TX                  0x00000060
+            >;
+        };
+
+		pinctrl_lpuart3: lpuart3grp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lpuart3:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AP44, peripheral: DMA__UART3, signal: uart_rx, pin_signal: M41_GPIO0_00}
+  - {pin_num: AU47, peripheral: DMA__UART3, signal: uart_tx, pin_signal: M41_GPIO0_01}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_M41_GPIO0_00_DMA_UART3_RX              0x00000040
+                SC_P_M41_GPIO0_01_DMA_UART3_TX              0x00000040
+            >;
+        };
+
+		pinctrl_lpuart4: lpuart4grp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lpuart4:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AR47, peripheral: DMA__UART4, signal: uart_rx, pin_signal: M40_GPIO0_00, PULL: PULL_3}
+  - {pin_num: AU53, peripheral: DMA__UART4, signal: uart_tx, pin_signal: M40_GPIO0_01, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_M40_GPIO0_00_DMA_UART4_RX              0x00000060
+                SC_P_M40_GPIO0_01_DMA_UART4_TX              0x00000060
+            >;
+        };
+
+		pinctrl_pciea: pcieagrp {                          /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_pciea:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: A17, peripheral: HSIO__PCIE1, signal: pcie_ctrl0_clkreq_b, pin_signal: PCIE_CTRL0_CLKREQ_B}
+  - {pin_num: D20, peripheral: HSIO__PCIE1, signal: pcie_ctrl0_perst_b, pin_signal: PCIE_CTRL0_PERST_B}
+  - {pin_num: A15, peripheral: HSIO__PCIE1, signal: pcie_ctrl0_wake_b, pin_signal: PCIE_CTRL0_WAKE_B}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_PCIE_CTRL0_CLKREQ_B_HSIO_PCIE0_CLKREQ_B 0x00000040
+                SC_P_PCIE_CTRL0_PERST_B_HSIO_PCIE0_PERST_B  0x00000040
+                SC_P_PCIE_CTRL0_WAKE_B_HSIO_PCIE0_WAKE_B    0x00000020
+            >;
+        };
+
+		pinctrl_pcieb: pciebgrp {                          /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_pcieb:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: G25, peripheral: HSIO__PCIE1, signal: pcie_ctrl1_perst_b, pin_signal: PCIE_CTRL1_PERST_B}
+  - {pin_num: A25, peripheral: HSIO__PCIE1, signal: pcie_ctrl1_clkreq_b, pin_signal: PCIE_CTRL1_CLKREQ_B}
+  - {pin_num: A27, peripheral: HSIO__PCIE1, signal: pcie_ctrl1_wake_b, pin_signal: PCIE_CTRL1_WAKE_B}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_PCIE_CTRL1_CLKREQ_B_HSIO_PCIE1_CLKREQ_B 0x00000040
+                SC_P_PCIE_CTRL1_PERST_B_HSIO_PCIE1_PERST_B  0x00000040
+                SC_P_PCIE_CTRL1_WAKE_B_HSIO_PCIE1_WAKE_B    0x00000020
+            >;
+        };
+
+		pinctrl_i2c_dev: i2c_devgrp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2c_dev:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BN9, peripheral: DMA__I2C0, signal: i2c_scl, pin_signal: HDMI_TX0_TS_SCL}
+  - {pin_num: BN7, peripheral: DMA__I2C0, signal: i2c_sda, pin_signal: HDMI_TX0_TS_SDA}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_HDMI_TX0_TS_SCL_DMA_I2C0_SCL           0x00000020
+                SC_P_HDMI_TX0_TS_SDA_DMA_I2C0_SDA           0x00000020
+            >;
+        };
+
+		pinctrl_i2c_pm: i2c_pmgrp {                        /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2c_pm:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AY52, peripheral: DMA__I2C1, signal: i2c_scl, pin_signal: GPT0_CLK, PULL: PULL_1}
+  - {pin_num: AV52, peripheral: DMA__I2C1, signal: i2c_sda, pin_signal: GPT0_CAPTURE, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_GPT0_CAPTURE_DMA_I2C1_SDA              0x00000020
+                SC_P_GPT0_CLK_DMA_I2C1_SCL                  0x00000020
+            >;
+        };
+
+		pinctrl_i2c_gp: i2c_gpgrp {                        /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2c_gp:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BA53, peripheral: DMA__I2C2, signal: i2c_scl, pin_signal: GPT1_CLK, PULL: PULL_1}
+  - {pin_num: AY50, peripheral: DMA__I2C2, signal: i2c_sda, pin_signal: GPT1_CAPTURE, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_GPT1_CAPTURE_DMA_I2C2_SDA              0x00000020
+                SC_P_GPT1_CLK_DMA_I2C2_SCL                  0x00000020
+            >;
+        };
+
+		pinctrl_i2c_mipi_csi0: i2c_mipi_csi0grp {          /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2c_mipi_csi0:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BN19, peripheral: MIPI_CSI0__I2C0, signal: i2c_sda, pin_signal: MIPI_CSI0_I2C0_SDA}
+  - {pin_num: BH24, peripheral: MIPI_CSI0__I2C0, signal: i2c_scl, pin_signal: MIPI_CSI0_I2C0_SCL}
+  - {pin_num: BJ23, peripheral: MIPI_CSI0__ACM, signal: mclk_out, pin_signal: MIPI_CSI0_MCLK_OUT}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_MIPI_CSI0_I2C0_SCL_MIPI_CSI0_I2C0_SCL  0x00000023
+                SC_P_MIPI_CSI0_I2C0_SDA_MIPI_CSI0_I2C0_SDA  0x00000023
+                SC_P_MIPI_CSI0_MCLK_OUT_MIPI_CSI0_ACM_MCLK_OUT 0x00000043
+            >;
+        };
+
+		pinctrl_i2c_mipi_csi1: i2c_mipi_csi1grp {          /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2c_mipi_csi1:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BN17, peripheral: MIPI_CSI1__I2C0, signal: i2c_scl, pin_signal: MIPI_CSI1_I2C0_SCL}
+  - {pin_num: BE15, peripheral: MIPI_CSI1__I2C0, signal: i2c_sda, pin_signal: MIPI_CSI1_I2C0_SDA}
+  - {pin_num: BN23, peripheral: MIPI_CSI1__ACM, signal: mclk_out, pin_signal: MIPI_CSI1_MCLK_OUT}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_MIPI_CSI1_I2C0_SCL_MIPI_CSI1_I2C0_SCL  0x00000023
+                SC_P_MIPI_CSI1_I2C0_SDA_MIPI_CSI1_I2C0_SDA  0x00000023
+                SC_P_MIPI_CSI1_MCLK_OUT_MIPI_CSI1_ACM_MCLK_OUT 0x00000043
+            >;
+        };
+
+		pinctrl_i2c_lvds0: i2c_lvds0grp {                  /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2c_lvds0:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AL43, peripheral: DMA__I2C3, signal: i2c_scl, pin_signal: SIM0_PD, PULL: PULL_1}
+  - {pin_num: AT48, peripheral: DMA__I2C3, signal: i2c_sda, pin_signal: SIM0_POWER_EN, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_SIM0_PD_DMA_I2C3_SCL                   0x00000020
+                SC_P_SIM0_POWER_EN_DMA_I2C3_SDA             0x00000020
+            >;
+        };
+
+		pinctrl_pmic: pmicgrp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_pmic:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AY46, peripheral: SCU__PMIC_I2C, signal: pmic_i2c_scl, pin_signal: PMIC_I2C_SCL}
+  - {pin_num: BG51, peripheral: SCU__PMIC_I2C, signal: pmic_i2c_sda, pin_signal: PMIC_I2C_SDA}
+  - {pin_num: BF50, peripheral: SCU__PMIC, signal: pmic_early_warning, pin_signal: PMIC_EARLY_WARNING}
+  - {pin_num: BH50, peripheral: SCU__DSC, signal: dsc_pmic_int_b, pin_signal: PMIC_INT_B}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_PMIC_EARLY_WARNING_SCU_PMIC_EARLY_WARNING 0x00000043
+                SC_P_PMIC_I2C_SCL_SCU_PMIC_I2C_SCL          0x00000023
+                SC_P_PMIC_I2C_SDA_SCU_PMIC_I2C_SDA          0x00000023
+                SC_P_PMIC_INT_B_SCU_DSC_PMIC_INT_B          0x00000023
+            >;
+        };
+
+		pinctrl_smarc_gpio: smarc_gpiogrp {                /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_smarc_gpio:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AL45, peripheral: LSIO__GPIO0, signal: 'gpio_io, 00', pin_signal: SIM0_CLK, direction: INPUT, PULL: PULL_3}
+  - {pin_num: AN45, peripheral: LSIO__GPIO0, signal: 'gpio_io, 02', pin_signal: SIM0_IO, direction: INPUT, PULL: PULL_3}
+  - {pin_num: AP48, peripheral: LSIO__GPIO0, signal: 'gpio_io, 01', pin_signal: SIM0_RST, direction: INPUT, PULL: PULL_3}
+  - {pin_num: AP46, peripheral: LSIO__GPIO0, signal: 'gpio_io, 05', pin_signal: SIM0_GPIO0_00, direction: INPUT}
+  - {pin_num: E7, peripheral: LSIO__GPIO4, signal: 'gpio_io, 02', pin_signal: FLEXCAN2_TX, direction: INPUT, PULL: PULL_3}
+  - {pin_num: C3, peripheral: LSIO__GPIO4, signal: 'gpio_io, 01', pin_signal: FLEXCAN2_RX, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BA7, peripheral: LSIO__GPIO2, signal: 'gpio_io, 27', pin_signal: ESAI0_TX1, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BD30, peripheral: LSIO__GPIO1, signal: 'gpio_io, 18', pin_signal: MIPI_DSI0_GPIO0_00, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BC5, peripheral: LSIO__GPIO2, signal: 'gpio_io, 29', pin_signal: ESAI0_TX3_RX2, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BE31, peripheral: LSIO__GPIO1, signal: 'gpio_io, 17', pin_signal: MIPI_DSI0_I2C0_SDA, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BE33, peripheral: LSIO__GPIO1, signal: 'gpio_io, 13', pin_signal: LVDS1_I2C0_SDA, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BD36, peripheral: LSIO__GPIO1, signal: 'gpio_io, 07', pin_signal: LVDS0_I2C0_SDA, direction: INPUT, PULL: PULL_3, PDRV: PDRV_0}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ESAI0_TX1_LSIO_GPIO2_IO27              0x00000060
+                SC_P_ESAI0_TX3_RX2_LSIO_GPIO2_IO29          0x00000060
+                SC_P_FLEXCAN2_RX_LSIO_GPIO4_IO01            0x00000060
+                SC_P_FLEXCAN2_TX_LSIO_GPIO4_IO02            0x00000060
+                SC_P_LVDS0_I2C0_SDA_LSIO_GPIO1_IO07         0x00000060
+                SC_P_LVDS1_I2C0_SDA_LSIO_GPIO1_IO13         0x00000060
+                SC_P_MIPI_DSI0_GPIO0_00_LSIO_GPIO1_IO18     0x00000060
+                SC_P_MIPI_DSI0_I2C0_SDA_LSIO_GPIO1_IO17     0x00000060
+                SC_P_SIM0_CLK_LSIO_GPIO0_IO00               0x00000060
+                SC_P_SIM0_GPIO0_00_LSIO_GPIO0_IO05          0x00000060
+                SC_P_SIM0_IO_LSIO_GPIO0_IO02                0x00000060
+                SC_P_SIM0_RST_LSIO_GPIO0_IO01               0x00000060
+            >;
+        };
+
+		pinctrl_smarc_gpio_gpio5_gpio: smarc_gpio_gpio5_gpiogrp {/*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_smarc_gpio_gpio5_gpio:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BA51, peripheral: LSIO__GPIO0, signal: 'gpio_io, 19', pin_signal: GPT1_COMPARE, direction: INPUT, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_GPT1_COMPARE_LSIO_GPIO0_IO19           0x00000060
+            >;
+        };
+
+		pinctrl_smarc_gpio_gpio6_gpio: smarc_gpio_gpio6_gpiogrp {/*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_smarc_gpio_gpio6_gpio:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AW53, peripheral: LSIO__GPIO0, signal: 'gpio_io, 16', pin_signal: GPT0_COMPARE, direction: INPUT, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_GPT0_COMPARE_LSIO_GPIO0_IO16           0x00000060
+            >;
+        };
+
+		pinctrl_gpios_internal: gpios_internalgrp {        /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_gpios_internal:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BA5, peripheral: LSIO__GPIO3, signal: 'gpio_io, 04', pin_signal: SPI0_SDI, direction: INPUT, PULL: PULL_1}
+  - {pin_num: BF48, peripheral: LSIO__GPIO1, signal: 'gpio_io, 03', pin_signal: SCU_GPIO0_07, direction: OUTPUT}
+  - {pin_num: BD12, peripheral: LSIO__GPIO2, signal: 'gpio_io, 06', pin_signal: ESAI1_SCKR, direction: INPUT, PULL: PULL_3}
+  - {pin_num: AY10, peripheral: LSIO__GPIO2, signal: 'gpio_io, 07', pin_signal: ESAI1_SCKT, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BF10, peripheral: LSIO__GPIO2, signal: 'gpio_io, 08', pin_signal: ESAI1_TX0, direction: INPUT, PULL: PULL_3}
+  - {pin_num: AW5, peripheral: LSIO__GPIO3, signal: 'gpio_io, 07', pin_signal: SPI2_SCK, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BA1, peripheral: LSIO__GPIO3, signal: 'gpio_io, 08', pin_signal: SPI2_SDO, direction: INPUT, PULL: PULL_3}
+  - {pin_num: AY4, peripheral: LSIO__GPIO3, signal: 'gpio_io, 09', pin_signal: SPI2_SDI, direction: INPUT, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ESAI1_SCKR_LSIO_GPIO2_IO06             0x00000060
+                SC_P_ESAI1_SCKT_LSIO_GPIO2_IO07             0x00000060
+                SC_P_ESAI1_TX0_LSIO_GPIO2_IO08              0x00000060
+                SC_P_SCU_GPIO0_07_LSIO_GPIO1_IO03           0x00000043
+                SC_P_SPI0_SDI_LSIO_GPIO3_IO04               0x00000020
+                SC_P_SPI2_SCK_LSIO_GPIO3_IO07               0x00000060
+                SC_P_SPI2_SDI_LSIO_GPIO3_IO09               0x00000060
+                SC_P_SPI2_SDO_LSIO_GPIO3_IO08               0x00000060
+            >;
+        };
+
+		pinctrl_emmc: emmcgrp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_emmc:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: G37, peripheral: CONN__EMMC0, signal: emmc_strobe, pin_signal: EMMC0_STROBE, PULL: PULL_2, PDRV: PDRV_1}
+  - {pin_num: H28, peripheral: CONN__EMMC0, signal: emmc_clk, pin_signal: EMMC0_CLK, PULL: PULL_2, sw_config: sw_config_3, PDRV: PDRV_1}
+  - {pin_num: J27, peripheral: CONN__EMMC0, signal: emmc_cmd, pin_signal: EMMC0_CMD, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: G29, peripheral: CONN__EMMC0, signal: 'emmc_data, 0', pin_signal: EMMC0_DATA0, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: H30, peripheral: CONN__EMMC0, signal: 'emmc_data, 1', pin_signal: EMMC0_DATA1, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: G31, peripheral: CONN__EMMC0, signal: 'emmc_data, 2', pin_signal: EMMC0_DATA2, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: H32, peripheral: CONN__EMMC0, signal: 'emmc_data, 3', pin_signal: EMMC0_DATA3, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: J33, peripheral: CONN__EMMC0, signal: 'emmc_data, 4', pin_signal: EMMC0_DATA4, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: H34, peripheral: CONN__EMMC0, signal: 'emmc_data, 5', pin_signal: EMMC0_DATA5, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: H36, peripheral: CONN__EMMC0, signal: 'emmc_data, 6', pin_signal: EMMC0_DATA6, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: G35, peripheral: CONN__EMMC0, signal: 'emmc_data, 7', pin_signal: EMMC0_DATA7, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: H38, peripheral: CONN__EMMC0, signal: emmc_reset_b, pin_signal: EMMC0_RESET_B, PULL: PULL_1, PDRV: PDRV_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_EMMC0_CLK_CONN_EMMC0_CLK               0x06000041
+                SC_P_EMMC0_CMD_CONN_EMMC0_CMD               0x00000021
+                SC_P_EMMC0_DATA0_CONN_EMMC0_DATA0           0x00000021
+                SC_P_EMMC0_DATA1_CONN_EMMC0_DATA1           0x00000021
+                SC_P_EMMC0_DATA2_CONN_EMMC0_DATA2           0x00000021
+                SC_P_EMMC0_DATA3_CONN_EMMC0_DATA3           0x00000021
+                SC_P_EMMC0_DATA4_CONN_EMMC0_DATA4           0x00000021
+                SC_P_EMMC0_DATA5_CONN_EMMC0_DATA5           0x00000021
+                SC_P_EMMC0_DATA6_CONN_EMMC0_DATA6           0x00000021
+                SC_P_EMMC0_DATA7_CONN_EMMC0_DATA7           0x00000021
+                SC_P_EMMC0_RESET_B_CONN_EMMC0_RESET_B       0x00000021
+                SC_P_EMMC0_STROBE_CONN_EMMC0_STROBE         0x00000041
+            >;
+        };
+
+		pinctrl_sdio: sdiogrp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_sdio:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: J39, peripheral: CONN__USDHC1, signal: usdhc_clk, pin_signal: USDHC1_CLK, PULL: PULL_2, sw_config: sw_config_3, PDRV: PDRV_1}
+  - {pin_num: G41, peripheral: CONN__USDHC1, signal: usdhc_cmd, pin_signal: USDHC1_CMD, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: E37, peripheral: CONN__USDHC1, signal: 'usdhc_data, 0', pin_signal: USDHC1_DATA0, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: F38, peripheral: CONN__USDHC1, signal: 'usdhc_data, 1', pin_signal: USDHC1_DATA1, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: E39, peripheral: CONN__USDHC1, signal: 'usdhc_data, 2', pin_signal: USDHC1_DATA2, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: F40, peripheral: CONN__USDHC1, signal: 'usdhc_data, 3', pin_signal: USDHC1_DATA3, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: B4, peripheral: CONN__USDHC1, signal: usdhc_vselect, pin_signal: USDHC1_VSELECT, PULL: PULL_1, PDRV: PDRV_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_USDHC1_CLK_CONN_USDHC1_CLK             0x06000041
+                SC_P_USDHC1_CMD_CONN_USDHC1_CMD             0x00000021
+                SC_P_USDHC1_DATA0_CONN_USDHC1_DATA0         0x00000021
+                SC_P_USDHC1_DATA1_CONN_USDHC1_DATA1         0x00000021
+                SC_P_USDHC1_DATA2_CONN_USDHC1_DATA2         0x00000021
+                SC_P_USDHC1_DATA3_CONN_USDHC1_DATA3         0x00000021
+                SC_P_USDHC1_VSELECT_CONN_USDHC1_VSELECT     0x00000021
+            >;
+        };
+
+		pinctrl_sdio_gpio: sdio_gpiogrp {                  /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_sdio_gpio:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: F42, peripheral: LSIO__GPIO5, signal: 'gpio_io, 21', pin_signal: USDHC1_DATA6, PULL: PULL_3}
+  - {pin_num: H42, peripheral: LSIO__GPIO5, signal: 'gpio_io, 22', pin_signal: USDHC1_DATA7, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_USDHC1_DATA6_LSIO_GPIO5_IO21           0x00000060
+                SC_P_USDHC1_DATA7_LSIO_GPIO5_IO22           0x00000060
+            >;
+        };
+
+		pinctrl_sdio_reg_vmmc: sdio_reg_vmmcgrp {          /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_sdio_reg_vmmc:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: A5, peripheral: LSIO__GPIO4, signal: 'gpio_io, 07', pin_signal: USDHC1_RESET_B}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_USDHC1_RESET_B_LSIO_GPIO4_IO07         0x00000020
+            >;
+        };
+
+		pinctrl_sdio2_wifi: sdio2_wifigrp {                /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_sdio2_wifi:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: F46, peripheral: CONN__USDHC2, signal: usdhc_clk, pin_signal: USDHC2_CLK, PULL: PULL_1, sw_config: sw_config_3, PDRV: PDRV_1}
+  - {pin_num: H44, peripheral: CONN__USDHC2, signal: usdhc_cmd, pin_signal: USDHC2_CMD, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: H48, peripheral: CONN__USDHC2, signal: 'usdhc_data, 0', pin_signal: USDHC2_DATA0, PDRV: PDRV_1}
+  - {pin_num: G45, peripheral: CONN__USDHC2, signal: 'usdhc_data, 1', pin_signal: USDHC2_DATA1, PDRV: PDRV_1}
+  - {pin_num: L45, peripheral: CONN__USDHC2, signal: 'usdhc_data, 2', pin_signal: USDHC2_DATA2, PDRV: PDRV_1}
+  - {pin_num: J45, peripheral: CONN__USDHC2, signal: 'usdhc_data, 3', pin_signal: USDHC2_DATA3, PDRV: PDRV_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_USDHC2_CLK_CONN_USDHC2_CLK             0x06000021
+                SC_P_USDHC2_CMD_CONN_USDHC2_CMD             0x00000021
+                SC_P_USDHC2_DATA0_CONN_USDHC2_DATA0         0x00000021
+                SC_P_USDHC2_DATA1_CONN_USDHC2_DATA1         0x00000021
+                SC_P_USDHC2_DATA2_CONN_USDHC2_DATA2         0x00000021
+                SC_P_USDHC2_DATA3_CONN_USDHC2_DATA3         0x00000021
+            >;
+        };
+
+		pinctrl_wifi: wifigrp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_wifi:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: D2, peripheral: LSIO__GPIO3, signal: 'gpio_io, 27', pin_signal: MLB_CLK, direction: INPUT, PULL: PULL_1}
+  - {pin_num: BG9, peripheral: AUD__ESAI0, signal: esai_fst, pin_signal: ESAI0_FST}
+  - {pin_num: AY8, peripheral: AUD__ESAI0, signal: esai_sckt, pin_signal: ESAI0_SCKT}
+  - {pin_num: BA9, peripheral: AUD__ESAI0, signal: 'esai_tx, 0', pin_signal: ESAI0_TX0}
+  - {pin_num: AU7, peripheral: AUD__ESAI0, signal: 'esai_tx5_rx, 0', pin_signal: ESAI0_TX5_RX0}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ESAI0_FST_AUD_ESAI0_FST                0x00000040
+                SC_P_ESAI0_SCKT_AUD_ESAI0_SCKT              0x00000040
+                SC_P_ESAI0_TX0_AUD_ESAI0_TX0                0x00000040
+                SC_P_ESAI0_TX5_RX0_AUD_ESAI0_TX5_RX0        0x00000040
+                SC_P_MLB_CLK_LSIO_GPIO3_IO27                0x00000020
+            >;
+        };
+
+		pinctrl_wifi_pd: wifi_pdgrp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_wifi_pd:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: E3, peripheral: LSIO__GPIO3, signal: 'gpio_io, 28', pin_signal: MLB_DATA, direction: OUTPUT, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_MLB_DATA_LSIO_GPIO3_IO28               0x00000060
+            >;
+        };
+
+		pinctrl_spi0: spi0grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_spi0:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AL9, peripheral: LSIO__GPIO3, signal: 'gpio_io, 24', pin_signal: ADC_IN6, PULL: PULL_1, DSE: DSE_7}
+  - {pin_num: AP6, peripheral: LSIO__GPIO3, signal: 'gpio_io, 25', pin_signal: ADC_IN7, PULL: PULL_1, DSE: DSE_7}
+  - {pin_num: AR9, peripheral: DMA__SPI1, signal: spi_sck, pin_signal: ADC_IN3, PULL: PULL_1, DSE: DSE_7}
+  - {pin_num: AR7, peripheral: DMA__SPI1, signal: spi_sdi, pin_signal: ADC_IN5, PULL: PULL_1, DSE: DSE_7}
+  - {pin_num: AN9, peripheral: DMA__SPI1, signal: spi_sdo, pin_signal: ADC_IN4, PULL: PULL_1, DSE: DSE_7}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ADC_IN3_DMA_SPI1_SCK                   0x00000027
+                SC_P_ADC_IN4_DMA_SPI1_SDO                   0x00000027
+                SC_P_ADC_IN5_DMA_SPI1_SDI                   0x00000027
+                SC_P_ADC_IN6_LSIO_GPIO3_IO24                0x00000027
+                SC_P_ADC_IN7_LSIO_GPIO3_IO25                0x00000027
+            >;
+        };
+
+		pinctrl_spi1: spi1grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_spi1:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BF6, peripheral: DMA__SPI3, signal: spi_sck, pin_signal: SPI3_SCK, PULL: PULL_1}
+  - {pin_num: BF2, peripheral: DMA__SPI3, signal: spi_sdo, pin_signal: SPI3_SDO, PULL: PULL_1}
+  - {pin_num: BE5, peripheral: DMA__SPI3, signal: spi_sdi, pin_signal: SPI3_SDI, PULL: PULL_1}
+  - {pin_num: BG5, peripheral: LSIO__GPIO2, signal: 'gpio_io, 20', pin_signal: SPI3_CS0, PULL: PULL_1}
+  - {pin_num: BD8, peripheral: LSIO__GPIO2, signal: 'gpio_io, 21', pin_signal: SPI3_CS1, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_SPI3_CS0_LSIO_GPIO2_IO20               0x00000020
+                SC_P_SPI3_CS1_LSIO_GPIO2_IO21               0x00000020
+                SC_P_SPI3_SCK_DMA_SPI3_SCK                  0x00000020
+                SC_P_SPI3_SDI_DMA_SPI3_SDI                  0x00000020
+                SC_P_SPI3_SDO_DMA_SPI3_SDO                  0x00000020
+            >;
+        };
+
+		pinctrl_can0: can0grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_can0:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: C5, peripheral: DMA__FLEXCAN0, signal: flexcan_rx, pin_signal: FLEXCAN0_RX, PULL: PULL_1, sw_config: sw_config_0, PDRV: PDRV_1}
+  - {pin_num: H6, peripheral: DMA__FLEXCAN0, signal: flexcan_tx, pin_signal: FLEXCAN0_TX, PULL: PULL_1, PDRV: PDRV_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_FLEXCAN0_RX_DMA_FLEXCAN0_RX            0x00000021
+                SC_P_FLEXCAN0_TX_DMA_FLEXCAN0_TX            0x00000021
+            >;
+        };
+
+		pinctrl_can1: can1grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_can1:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: E5, peripheral: DMA__FLEXCAN1, signal: flexcan_rx, pin_signal: FLEXCAN1_RX, PULL: PULL_1, PDRV: PDRV_1}
+  - {pin_num: G7, peripheral: DMA__FLEXCAN1, signal: flexcan_tx, pin_signal: FLEXCAN1_TX, PULL: PULL_1, PDRV: PDRV_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_FLEXCAN1_RX_DMA_FLEXCAN1_RX            0x00000021
+                SC_P_FLEXCAN1_TX_DMA_FLEXCAN1_TX            0x00000021
+            >;
+        };
+
+		pinctrl_tpm: tpmgrp {                              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_tpm:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AP10, peripheral: LSIO__GPIO3, signal: 'gpio_io, 18', pin_signal: ADC_IN0, direction: INPUT, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ADC_IN0_LSIO_GPIO3_IO18                0x00000023
+            >;
+        };
+
+		pinctrl_tpm_rst: tpm_rstgrp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_tpm_rst:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AN11, peripheral: LSIO__GPIO3, signal: 'gpio_io, 19', pin_signal: ADC_IN1, direction: OUTPUT, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ADC_IN1_LSIO_GPIO3_IO19                0x00000023
+            >;
+        };
+
+		pinctrl_audio_mclk: audio_mclkgrp {                /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_audio_mclk:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BD4, peripheral: AUD__ACM, signal: 'acm_mclk_out, 0', pin_signal: MCLK_OUT0, WAKEUP_CTRL: WAKEUP_CTRL_0, sw_config: sw_config_0, update_pad_ctl: update_pad_ctl_0,
+    update_mux_mode: update_mux_mode_0}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_MCLK_OUT0_AUD_ACM_MCLK_OUT0            0x00000040
+            >;
+        };
+
+		pinctrl_i2s0: i2s0grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2s0:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AV4, peripheral: AUD__SAI1, signal: sai_rxd, pin_signal: SAI1_RXD}
+  - {pin_num: AU5, peripheral: AUD__SAI1, signal: sai_txc, pin_signal: SAI1_TXC}
+  - {pin_num: AU1, peripheral: AUD__SAI1, signal: sai_txd, pin_signal: SAI1_TXD}
+  - {pin_num: AV2, peripheral: AUD__SAI1, signal: sai_txfs, pin_signal: SAI1_TXFS}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_SAI1_RXD_AUD_SAI1_RXD                  0x00000040
+                SC_P_SAI1_TXC_AUD_SAI1_TXC                  0x00000040
+                SC_P_SAI1_TXD_AUD_SAI1_TXD                  0x00000040
+                SC_P_SAI1_TXFS_AUD_SAI1_TXFS                0x00000040
+            >;
+        };
+
+		pinctrl_i2s2: i2s2grp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_i2s2:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AV6, peripheral: AUD__SAI0, signal: sai_txd, pin_signal: SAI1_RXC}
+  - {pin_num: AU3, peripheral: AUD__SAI0, signal: sai_rxd, pin_signal: SAI1_RXFS}
+  - {pin_num: BA3, peripheral: AUD__SAI0, signal: sai_txc, pin_signal: SPI0_CS1}
+  - {pin_num: AY2, peripheral: AUD__SAI0, signal: sai_txfs, pin_signal: SPI2_CS1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_SAI1_RXC_AUD_SAI0_TXD                  0x00000040
+                SC_P_SAI1_RXFS_AUD_SAI0_RXD                 0x00000040
+                SC_P_SPI0_CS1_AUD_SAI0_TXC                  0x00000040
+                SC_P_SPI2_CS1_AUD_SAI0_TXFS                 0x00000040
+            >;
+        };
+
+		pinctrl_lvds0_backlight: lvds0_backlightgrp {      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lvds0_backlight:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BD40, peripheral: LSIO__GPIO1, signal: 'gpio_io, 05', pin_signal: LVDS0_GPIO01, direction: OUTPUT}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_LVDS0_GPIO01_LSIO_GPIO1_IO05           0x00000040
+            >;
+        };
+
+		pinctrl_lvds0_power: lvds0_powergrp {              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lvds0_power:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BD38, peripheral: LSIO__GPIO1, signal: 'gpio_io, 06', pin_signal: LVDS0_I2C0_SCL, direction: OUTPUT, PULL: PULL_2}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_LVDS0_I2C0_SCL_LSIO_GPIO1_IO06         0x00000040
+            >;
+        };
+
+		pinctrl_lvds0_pwm: lvds0_pwmgrp {                  /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lvds0_pwm:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BE39, peripheral: LVDS0__PWM0, signal: pwm_out, pin_signal: LVDS0_GPIO00}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_LVDS0_GPIO00_LVDS0_PWM0_OUT            0x00000040
+            >;
+        };
+
+		pinctrl_lvds1_backlight: lvds1_backlightgrp {      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lvds1_backlight:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BH36, peripheral: LSIO__GPIO1, signal: 'gpio_io, 11', pin_signal: LVDS1_GPIO01, direction: OUTPUT}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_LVDS1_GPIO01_LSIO_GPIO1_IO11           0x00000040
+            >;
+        };
+
+		pinctrl_lvds1_power: lvds1_powergrp {              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lvds1_power:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BL35, peripheral: LSIO__GPIO1, signal: 'gpio_io, 12', pin_signal: LVDS1_I2C0_SCL, direction: OUTPUT, PULL: PULL_2}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_LVDS1_I2C0_SCL_LSIO_GPIO1_IO12         0x00000040
+            >;
+        };
+
+		pinctrl_lvds1_pwm: lvds1_pwmgrp {                  /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_lvds1_pwm:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BD34, peripheral: LVDS1__PWM0, signal: pwm_out, pin_signal: LVDS1_GPIO00}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_LVDS1_GPIO00_LVDS1_PWM0_OUT            0x00000040
+            >;
+        };
+
+		pinctrl_usb: usbgrp {                              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_usb:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: H10, peripheral: LSIO__GPIO4, signal: 'gpio_io, 06', pin_signal: USB_SS3_TC3}
+  - {pin_num: L9, peripheral: LSIO__GPIO4, signal: 'gpio_io, 04', pin_signal: USB_SS3_TC1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_USB_SS3_TC1_LSIO_GPIO4_IO04            0x00000020
+                SC_P_USB_SS3_TC3_LSIO_GPIO4_IO06            0x00000020
+            >;
+        };
+
+		pinctrl_usb_otg: usb_otggrp {                      /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_usb_otg:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: F8, peripheral: CONN__USB_OTG1, signal: usb_otg_oc, pin_signal: USB_SS3_TC2}
+  - {pin_num: J9, peripheral: CONN__USB_OTG1, signal: usb_otg_pwr, pin_signal: USB_SS3_TC0}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_USB_SS3_TC0_CONN_USB_OTG1_PWR          0x00000020
+                SC_P_USB_SS3_TC2_CONN_USB_OTG1_OC           0x00000020
+            >;
+        };
+
+		pinctrl_usb_hub_rst: usb_hub_rstgrp {              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_usb_hub_rst:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AW1, peripheral: LSIO__GPIO3, signal: 'gpio_io, 10', pin_signal: SPI2_CS0, direction: OUTPUT, PULL: PULL_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_SPI2_CS0_LSIO_GPIO3_IO10               0x00000020
+            >;
+        };
+
+		pinctrl_rtc: rtcgrp {                              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_rtc:
+- options: {callFromInitBoot: 'false', coreID: ca53_0}
+- pin_list:
+  - {pin_num: E1, peripheral: LSIO__GPIO3, signal: 'gpio_io, 26', pin_signal: MLB_SIG, direction: INPUT, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_MLB_SIG_LSIO_GPIO3_IO26                0x00000060
+            >;
+        };
+
+		pinctrl_hdmi_switch: hdmi_switchgrp {              /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_hdmi_switch:
+- options: {callFromInitBoot: 'false', coreID: ca53_0}
+- pin_list:
+  - {pin_num: D12, peripheral: LSIO__GPIO4, signal: 'gpio_io, 26', pin_signal: QSPI1A_DATA0, direction: OUTPUT, PULL: PULL_3, sw_config: sw_config_0}
+  - {pin_num: D14, peripheral: LSIO__GPIO4, signal: 'gpio_io, 25', pin_signal: QSPI1A_DATA1, direction: OUTPUT, PULL: PULL_3, sw_config: sw_config_0}
+  - {pin_num: E13, peripheral: LSIO__GPIO4, signal: 'gpio_io, 24', pin_signal: QSPI1A_DATA2, direction: OUTPUT, PULL: PULL_3, sw_config: sw_config_0}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_QSPI1A_DATA0_LSIO_GPIO4_IO26           0x00000060
+                SC_P_QSPI1A_DATA1_LSIO_GPIO4_IO25           0x00000060
+                SC_P_QSPI1A_DATA2_LSIO_GPIO4_IO24           0x00000060
+            >;
+        };
+
+		pinctrl_leds: ledsgrp {                            /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_leds:
+- options: {callFromInitBoot: 'false', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BA11, peripheral: LSIO__GPIO2, signal: 'gpio_io, 09', pin_signal: ESAI1_TX1, direction: OUTPUT, PULL: PULL_1, sw_config: sw_config_1}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ESAI1_TX1_LSIO_GPIO2_IO09              0x02000020
+            >;
+        };
+
+		pinctrl_gpio_keys: gpio_keysgrp {                  /*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_gpio_keys:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: BE11, peripheral: LSIO__GPIO2, signal: 'gpio_io, 04', pin_signal: ESAI1_FSR, direction: INPUT, PULL: PULL_3}
+  - {pin_num: BF12, peripheral: LSIO__GPIO2, signal: 'gpio_io, 05', pin_signal: ESAI1_FST, direction: INPUT, PULL: PULL_3}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ESAI1_FSR_LSIO_GPIO2_IO04              0x00000060
+                SC_P_ESAI1_FST_LSIO_GPIO2_IO05              0x00000060
+            >;
+        };
+
+		pinctrl_module_input_events: module_input_eventsgrp {/*!< Function assigned for the core: Cortex-A53[ca53_0] */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+pinctrl_module_input_events:
+- options: {callFromInitBoot: 'true', coreID: ca53_0}
+- pin_list:
+  - {pin_num: AP8, peripheral: LSIO__GPIO3, signal: 'gpio_io, 20', pin_signal: ADC_IN2, direction: INPUT, PULL: PULL_3, sw_config: sw_config_2}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+            fsl,pins = <
+                SC_P_ADC_IN2_LSIO_GPIO3_IO20                0x04000063
+            >;
+        };

@@ -445,6 +445,11 @@ void lcdif_set_mode(struct lcdif_soc *lcdif, struct videomode *vmode,
 	/* set pixel clock rate */
 	clk_disable_unprepare(lcdif->clk_pix);
 	clk_set_rate(lcdif->clk_pix, vmode->pixelclock);
+
+	if (vmode->pixelclock/1000 != clk_get_rate(lcdif->clk_pix)/1000)
+		dev_warn(lcdif->dev, "requested pix rate = %ld kHz, real pix rate = %ld kHz\n",
+				vmode->pixelclock/1000, clk_get_rate(lcdif->clk_pix)/1000);
+
 	clk_prepare_enable(lcdif->clk_pix);
 
 	/* config display timings */

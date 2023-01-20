@@ -1538,6 +1538,9 @@ err_pm_get_sync:
 err_pm_disable:
 	pm_runtime_disable(&pdev->dev);
 
+	if (sai->verid.feature & FSL_SAI_VERID_TSTMP_EN)
+		sysfs_remove_group(&pdev->dev.kobj,  fsl_sai_get_dev_attribute_group(sai->monitor_spdif));
+
 	return ret;
 }
 

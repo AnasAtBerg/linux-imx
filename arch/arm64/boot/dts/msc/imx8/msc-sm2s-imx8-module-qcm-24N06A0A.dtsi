@@ -1,0 +1,16 @@
+/** @file      msc-sm2s-imx8-module-qcm-24N06A0A.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+*/
+
+/dts-v1/;
+
+#include "msc-sm2s-imx8-module-includes.dtsi"
+
+#define MODULE_FEATURE 24N06A0A
+
+#include MODULE_DTSI()

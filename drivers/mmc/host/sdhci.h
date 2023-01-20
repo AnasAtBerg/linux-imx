@@ -465,11 +465,12 @@ struct sdhci_host {
 #define SDHCI_QUIRK2_CLOCK_DIV_ZERO_BROKEN		(1<<15)
 /* Controller has CRC in 136 bit Command Response */
 #define SDHCI_QUIRK2_RSP_136_HAS_CRC			(1<<16)
+
 /*
  * Disable HW timeout if the requested timeout is more than the maximum
  * obtainable timeout.
  */
-#define SDHCI_QUIRK2_DISABLE_HW_TIMEOUT			(1<<17)
+#define SDHCI_QUIRK2_DISABLE_HW_TIMEOUT		(1<<17)
 /*
  * 32-bit block count may not support eMMC where upper bits of CMD23 are used
  * for other purposes.  Consequently we support 16-bit block count by default.
@@ -477,6 +478,18 @@ struct sdhci_host {
  * block count.
  */
 #define SDHCI_QUIRK2_USE_32BIT_BLK_CNT			(1<<18)
+/* give some space to avoid clashes when new definitions are added in vanilla kernel */
+/* SDR104 should not be used */
+#define SDHCI_QUIRK2_BROKEN_SDR104			(1<<26)
+/* SDR50 should not be used */
+#define SDHCI_QUIRK2_BROKEN_SDR50			(1<<27)
+/* SDR25 should not be used */
+#define SDHCI_QUIRK2_BROKEN_SDR25			(1<<28)
+/* High-Speed should not be used */
+#define SDHCI_QUIRK2_BROKEN_HIGHSPEED			(1<<29)
+/* HS400 should not be used */
+#define SDHCI_QUIRK2_BROKEN_HS400			(1<<30)
+
 
 	int irq;		/* Device IRQ */
 	void __iomem *ioaddr;	/* Mapped address */

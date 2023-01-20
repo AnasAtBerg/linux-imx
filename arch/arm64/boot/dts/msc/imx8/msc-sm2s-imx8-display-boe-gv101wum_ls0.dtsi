@@ -1,0 +1,115 @@
+/*
+ * Copyright (C) 2021 AVNET Integrated, MSC Technologies GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/pinctrl/pads-imx8qm-pintool-compatible.h>
+
+/dts-v1/;
+/plugin/;
+
+#define HAS_DSI
+
+#define LVDS_DISPLAY_0_BACKLIGHT
+#define LVDS_BACKLIGHT_POST_PWM_ON_DELAY_MS  60
+#define LVDS_BACKLIGHT_PWM_OFF_DELAY_MS     200
+
+
+#include "msc-sm2s-imx8-display.dtsi"
+
+/ {
+	fragment@2000 {
+		target = <&reg_lvds0_power>;
+		__overlay__ {
+			gpio = <&lsio_gpio1 12 GPIO_ACTIVE_HIGH>; // LCD1_PWR_EN
+		};
+	};
+	fragment@2001 {
+		target-path = "/";
+		__overlay__ {
+			user_gpios {
+				GPIO9-ignore;
+				GPIO10-ignore;
+				GPIO11-ignore;
+			};
+		};
+	};
+	fragment@2002 {
+		target = <&mipi0_dsi_host>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			fsl,clock-drop-level = <2>;
+			panel@0 {
+				compatible = "boe,gv101wum-ls0";
+				reg = <0>;
+				mipi-dsi.continuous-clock;
+				backlight = <&lvds_backlight0>;
+				pp33-gpios = <&lsio_gpio1 6 GPIO_ACTIVE_HIGH>;
+#if MODULE_MES_REVISION != 20
+				enable-gpios = <&lsio_gpio1 18 GPIO_ACTIVE_LOW>;
+#else
+				enable-gpios = <&lsio_gpio0 31 GPIO_ACTIVE_LOW>;
+#endif
+				#address-cells = <1>;
+				#size-cells = <0>;
+				port@0 {
+					reg = <0>;
+					panel0_in: endpoint {
+						remote-endpoint = <&mipi0_panel_out>;
+					};
+				};
+			};
+
+			ports {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				/delete-node/ port@1;
+				port@1 {
+					reg = <1>;
+					mipi0_panel_out: endpoint {
+						remote-endpoint = <&panel0_in>;
+					};
+				};
+			};
+		};
+	};
+	fragment@2004 {
+		target = <&i2c2>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			focaltech@38 {
+				compatible = "focaltech,fts";
+				reg = <0x38>;
+#if MODULE_MES_REVISION != 20
+				focaltech,reset-gpio = <&lsio_gpio2 29 GPIO_ACTIVE_LOW>;
+				focaltech,irq-gpio = <&lsio_gpio1 17 IRQ_TYPE_EDGE_FALLING>;
+				interrupt-parent = <&lsio_gpio1>;
+				interrupts = <17 IRQ_TYPE_EDGE_FALLING>;
+#else
+				focaltech,reset-gpio = <&lsio_gpio1 0 GPIO_ACTIVE_LOW>;
+				focaltech,irq-gpio = <&lsio_gpio1 1 IRQ_TYPE_EDGE_FALLING>;
+				interrupt-parent = <&lsio_gpio1>;
+				interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
+
+#endif
+				focaltech,max-touch-number = <5>;
+				focaltech,display-coords =  <0 0 1200 1920>;
+
+				status = "okay";
+			};
+		};
+	};
+};

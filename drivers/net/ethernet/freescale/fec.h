@@ -506,6 +506,10 @@ struct bufdesc_ex {
 /* request pmqos during low power */
 #define FEC_QUIRK_HAS_PMQOS		(1 << 23)
 
+/* i.MX8QM reference manual Rev O states in chapter 14.5.5.5 to write 0111000000000000 to 31:16 even when it is reserved.
+ */
+#define FEC_QUIRK_SET_REQUIRED_BUT_UNDOCMENTED_BITS (1 << 24)
+
 struct bufdesc_prop {
 	int qid;
 	/* Address of Rx and Tx buffers */

@@ -1,0 +1,11 @@
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/usb/pd.h>
+#include <dt-bindings/net/ti-dp83867.h>
+#include <dt-bindings/pinctrl/pads-imx8qm-pintool-compatible.h>
+#include "../../freescale/imx8qm.dtsi"
+
+#define XSTR(s) STR(s)
+#define STR(s) #s
+#define EXPAND(s) s
+
+#define MODULE_DTSI() XSTR(EXPAND(msc-sm2s-imx8-module-)EXPAND(MODULE_FEATURE)EXPAND(.dtsi))

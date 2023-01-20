@@ -1,0 +1,159 @@
+/** @file      msc-sm2s-imx8-baseboard-sm2-mb-ep1-dual-csi2.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   Provides baseboard mappings that are merged at runtime with the CPU device tree.
+*/
+
+/dts-v1/;
+/plugin/;
+
+#include "msc-sm2s-imx8-baseboard-sm2-mb-ep1.dtsi"
+
+/ {
+	fragment@7 {
+		target = <&i2c_mipi_csi0>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_i2c_mipi_csi0>;
+			ov5640_mipi_0: ov5640_mipi@3c {
+					compatible = "ovti,ov5640";
+					reg = <0x3c>;
+					clocks = <&xtal24m>;
+					clock-names = "xclk";
+					csi_id = <0>;
+					mclk = <24000000>;
+					mclk_source = <0>;
+					mipi_csi;
+					status = "okay";
+					port {
+						ov5640_mipi_ep_0: endpoint {
+							remote-endpoint = <&mipi_csi0_ep>;
+							data-lanes = <1 2>;
+							clocks-lanes = <0>;
+						};
+					};
+			};
+
+		};
+	};
+
+	fragment@8 {
+		target = <&i2c_mipi_csi1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_i2c_mipi_csi1>;
+			ov5640_mipi_1: ov5640_mipi@3c {
+				compatible = "ovti,ov5640";
+				reg = <0x3c>;
+				clocks = <&xtal24m>;
+				clock-names = "xclk";
+				csi_id = <0>;
+				mclk = <24000000>;
+				mclk_source = <0>;
+				mipi_csi;
+				status = "okay";
+				port {
+					ov5640_mipi_ep_1: endpoint {
+						remote-endpoint = <&mipi_csi1_ep>;
+						data-lanes = <1 2>;
+						clocks-lanes = <0>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@9 {
+		target = <&irqsteer_csi0>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@10 {
+		target = <&irqsteer_csi1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@11 {
+		target = <&mipi_csi_0>;
+		__overlay__  {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			/delete-property/virtual-channel;
+			status = "okay";
+
+			/* Camera 0  MIPI CSI-2 (CSIS0) */
+			port@0 {
+				reg = <0>;
+				mipi_csi0_ep: endpoint {
+					remote-endpoint = <&ov5640_mipi_ep_0>;
+					data-lanes = <1 2>;
+					bus-type = <4>;
+				};
+			};
+		};
+	};
+
+	fragment@12 {
+		target = <&isi_0>;
+		__overlay__ {
+			status = "okay";
+
+			cap_device {
+				status = "okay";
+			};
+
+			m2m_device {
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@13 {
+		target = <&mipi_csi_1>;
+		__overlay__  {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			/delete-property/virtual-channel;
+			status = "okay";
+
+			/* Camera 1  MIPI CSI-2 (CSIS1) */
+			port@1 {
+				reg = <1>;
+				mipi_csi1_ep: endpoint {
+					remote-endpoint = <&ov5640_mipi_ep_1>;
+					data-lanes = <1 2>;
+					bus-type = <4>;				};
+			};
+		};
+	};
+
+	fragment@14 {
+		target = <&isi_4>;
+		__overlay__ {
+			status = "okay";
+
+			cap_device {
+				status = "okay";
+			};
+
+			m2m_device {
+				status = "okay";
+			};
+		};
+	};
+
+};

@@ -147,6 +147,10 @@
 			no-map;
 			reg = <0 0x94b00000 0 0x700000>;
 		};
+		ts_boot: ts_boot@0x95000000 {
+			no-map;
+			reg = <0 0x95000000 0 0x400000>;
+		};
 
 		/* global autoconfigured region for contiguous allocations */
 		linux,cma {
@@ -1835,6 +1839,11 @@
 
 &mu2_m0{
 	interrupts = <GIC_SPI 474 IRQ_TYPE_LEVEL_HIGH>;
+	status = "okay";
+};
+
+&mu3_m0{
+	interrupts = <GIC_SPI 475 IRQ_TYPE_LEVEL_HIGH>;
 	status = "okay";
 };
 

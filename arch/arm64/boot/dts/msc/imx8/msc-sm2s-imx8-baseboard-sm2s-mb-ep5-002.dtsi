@@ -1,0 +1,17 @@
+/** @file      msc-sm2s-imx8-baseboard-sm2s-mb-ep5-002.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   Provides baseboard mappings that are merged at runtime with the CPU device tree.
+*/
+
+#define EP5_NAME "MSC-SM2S-MB-EP5-002"
+#define EP5_NO_FEC2 // has i210 instead
+
+// undefs just for explicit documentation
+#undef EP5_FC_GPIOS_0_TO_7_FROM_MODULE
+
+#include "msc-sm2s-imx8-baseboard-sm2s-mb-ep5.dtsi"

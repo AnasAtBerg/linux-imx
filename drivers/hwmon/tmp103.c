@@ -19,6 +19,7 @@
 #include <linux/mutex.h>
 #include <linux/device.h>
 #include <linux/jiffies.h>
+#include <linux/property.h>
 #include <linux/regmap.h>
 
 #define TMP103_TEMP_REG		0x00
@@ -41,6 +42,11 @@
 #define TMP103_CONFIG_MASK	(TMP103_CONF_CR0 | TMP103_CONF_CR1 | \
 				 TMP103_CONF_M0 | TMP103_CONF_M1)
 
+struct priv {
+	struct regmap *regmap;
+	const char *label;
+};
+
 static inline int tmp103_reg_to_mc(s8 val)
 {
 	return val * 1000;
@@ -55,8 +61,9 @@ static ssize_t tmp103_temp_show(struct device *dev,
 				struct device_attribute *attr, char *buf)
 {
 	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
-	struct regmap *regmap = dev_get_drvdata(dev);
+	struct priv *priv = dev_get_drvdata(dev);
 	unsigned int regval;
+	struct regmap *regmap = priv->regmap;
 	int ret;
 
 	ret = regmap_read(regmap, sda->index, &regval);
@@ -66,12 +73,22 @@ static ssize_t tmp103_temp_show(struct device *dev,
 	return sprintf(buf, "%d\n", tmp103_reg_to_mc(regval));
 }
 
+static ssize_t tmp103_show_label(struct device *dev,
+				struct device_attribute *attr,
+				char *buf)
+{
+	struct priv *priv = dev_get_drvdata(dev);
+
+	return sprintf(buf, "%s\n", priv->label);
+}
+
 static ssize_t tmp103_temp_store(struct device *dev,
 				 struct device_attribute *attr,
 				 const char *buf, size_t count)
 {
 	struct sensor_device_attribute *sda = to_sensor_dev_attr(attr);
-	struct regmap *regmap = dev_get_drvdata(dev);
+	struct priv *priv = dev_get_drvdata(dev);
+	struct regmap *regmap = priv->regmap;
 	long val;
 	int ret;
 
@@ -89,13 +106,38 @@ static SENSOR_DEVICE_ATTR_RW(temp1_min, tmp103_temp, TMP103_TLOW_REG);
 
 static SENSOR_DEVICE_ATTR_RW(temp1_max, tmp103_temp, TMP103_THIGH_REG);
 
+static SENSOR_DEVICE_ATTR(temp1_label, S_IRUGO, tmp103_show_label, NULL, 0);
+
 static struct attribute *tmp103_attrs[] = {
 	&sensor_dev_attr_temp1_input.dev_attr.attr,
 	&sensor_dev_attr_temp1_min.dev_attr.attr,
 	&sensor_dev_attr_temp1_max.dev_attr.attr,
+	&sensor_dev_attr_temp1_label.dev_attr.attr,
 	NULL
 };
-ATTRIBUTE_GROUPS(tmp103);
+
+static umode_t tmp103_is_visible(struct kobject *kobj,
+	struct attribute *attr, int n)
+{
+	struct device *dev = kobj_to_dev(kobj);
+	struct priv *priv = dev_get_drvdata(dev);
+
+	/* show label only when provided by device tree */
+	if (attr == &sensor_dev_attr_temp1_label.dev_attr.attr && !priv->label)
+		return 0;
+
+	return attr->mode;
+}
+
+static const struct attribute_group tmp103_attr_group = {
+	.attrs = tmp103_attrs,
+	.is_visible = tmp103_is_visible,
+};
+
+static const struct attribute_group *tmp103_groups[] = {
+	&tmp103_attr_group,
+	NULL,
+};
 
 static bool tmp103_regmap_is_volatile(struct device *dev, unsigned int reg)
 {
@@ -114,13 +156,17 @@ static int tmp103_probe(struct i2c_client *client)
 	struct device *dev = &client->dev;
 	struct device *hwmon_dev;
 	struct regmap *regmap;
+	struct priv *priv;
 	int ret;
+
+	priv = devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
 
 	regmap = devm_regmap_init_i2c(client, &tmp103_regmap_config);
 	if (IS_ERR(regmap)) {
 		dev_err(dev, "failed to allocate register map\n");
 		return PTR_ERR(regmap);
 	}
+	priv->regmap = regmap;
 
 	ret = regmap_update_bits(regmap, TMP103_CONF_REG, TMP103_CONFIG_MASK,
 				 TMP103_CONFIG);
@@ -129,15 +175,20 @@ static int tmp103_probe(struct i2c_client *client)
 		return ret;
 	}
 
-	i2c_set_clientdata(client, regmap);
+	ret = device_property_read_string(&client->dev, "label", &priv->label);
+	if (ret)
+		priv->label = NULL;
+
+	i2c_set_clientdata(client, priv);
 	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
-						      regmap, tmp103_groups);
+						      priv, tmp103_groups);
 	return PTR_ERR_OR_ZERO(hwmon_dev);
 }
 
 static int __maybe_unused tmp103_suspend(struct device *dev)
 {
-	struct regmap *regmap = dev_get_drvdata(dev);
+	struct priv *priv = dev_get_drvdata(dev);
+	struct regmap *regmap = priv->regmap;
 
 	return regmap_update_bits(regmap, TMP103_CONF_REG,
 				  TMP103_CONF_SD_MASK, 0);
@@ -145,7 +196,8 @@ static int __maybe_unused tmp103_suspend(struct device *dev)
 
 static int __maybe_unused tmp103_resume(struct device *dev)
 {
-	struct regmap *regmap = dev_get_drvdata(dev);
+	struct priv *priv = dev_get_drvdata(dev);
+	struct regmap *regmap = priv->regmap;
 
 	return regmap_update_bits(regmap, TMP103_CONF_REG,
 				  TMP103_CONF_SD_MASK, TMP103_CONF_SD);

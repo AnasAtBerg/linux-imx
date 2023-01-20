@@ -19,6 +19,7 @@
 #include <linux/pm_wakeirq.h>
 #include <linux/mfd/syscon.h>
 #include <linux/regmap.h>
+#include <dt-bindings/input/snvs_pwrkey.h>
 
 #define SNVS_LPSR_REG		0x4C	/* LP Status Register */
 #define SNVS_LPCR_REG		0x38	/* LP Control Register */
@@ -26,9 +27,13 @@
 #define SNVS_HPSR_BTN		BIT(6)
 #define SNVS_LPSR_SPO		BIT(18)
 #define SNVS_LPCR_DEP_EN	BIT(5)
+#define SNVS_LPCR_ON_TIME_OFFSET	20
+#define SNVS_LPCR_ON_TIME_MASK		3
+#define SNVS_LPCR_SET_ON_TIME(X) \
+	(((X) & SNVS_LPCR_ON_TIME_MASK) << SNVS_LPCR_ON_TIME_OFFSET)
 
 #define DEBOUNCE_TIME		30
-#define REPEAT_INTERVAL		60
+#define REPEAT_INTERVAL	60
 
 struct pwrkey_drv_data {
 	struct regmap *snvs;
@@ -140,6 +145,18 @@ static void imx_snvs_pwrkey_act(void *pdata)
 	del_timer_sync(&pd->check_timer);
 }
 
+static const char* imx_snvs_on_time_to_str(u32 time)
+{
+	switch(time) {
+		case SNVS_LPCR_ON_TIME_500ms: return "500msecs";
+		case SNVS_LPCR_ON_TIME_50ms:  return " 50msecs";
+		case SNVS_LPCR_ON_TIME_100ms: return "100msecs";
+		case SNVS_LPCR_ON_TIME_0ms:   return   "0msecs";
+	}
+
+	return "invalid";
+}
+
 static int imx_snvs_pwrkey_probe(struct platform_device *pdev)
 {
 	struct pwrkey_drv_data *pdata;
@@ -147,6 +164,7 @@ static int imx_snvs_pwrkey_probe(struct platform_device *pdev)
 	struct device_node *np;
 	struct clk *clk;
 	int error;
+	u32 on_time, reg;
 
 	/* Get SNVS register Page */
 	np = pdev->dev.of_node;
@@ -210,7 +228,20 @@ static int imx_snvs_pwrkey_probe(struct platform_device *pdev)
 		}
 	}
 
-	regmap_update_bits(pdata->snvs, SNVS_LPCR_REG, SNVS_LPCR_DEP_EN, SNVS_LPCR_DEP_EN);
+	if (of_property_read_u32(np, "on-time", &on_time) == 0) {
+		if (on_time > SNVS_LPCR_ON_TIME_0ms ) {
+			dev_err(&pdev->dev, "'on-time' value out of range\n");
+			return -EINVAL;
+		}
+	}
+	else
+		on_time = SNVS_LPCR_ON_TIME_500ms;
+
+	dev_info(&pdev->dev, "power button on-time set to %s \n",
+			imx_snvs_on_time_to_str(on_time));
+
+	reg = SNVS_LPCR_DEP_EN | SNVS_LPCR_SET_ON_TIME(on_time);
+	regmap_update_bits(pdata->snvs, SNVS_LPCR_REG, reg, reg);
 
 	/* clear the unexpected interrupt before driver ready */
 	regmap_write(pdata->snvs, SNVS_LPSR_REG, SNVS_LPSR_SPO);

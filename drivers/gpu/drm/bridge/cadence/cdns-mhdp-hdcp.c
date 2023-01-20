@@ -283,7 +283,6 @@ int cdns_mhdp_hdcp_tx_is_receiver_id_valid(struct cdns_mhdp_device *mhdp,
 	for (i = 0; i < 4; i++) {
 		ret = mhdp_hdcp_mailbox_read(mhdp);
 		if (ret < 0) {
-
 			mutex_unlock(&mhdp->api_lock);
 			return ret;
 		}

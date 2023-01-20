@@ -999,11 +999,15 @@ static int lpi2c_imx_probe(struct platform_device *pdev)
 	/* Init DMA */
 	lpi2c_imx->dma_direction = DMA_NONE;
 	lpi2c_imx->dma_rx = lpi2c_imx->dma_tx = NULL;
-	ret = lpi2c_dma_init(&pdev->dev, lpi2c_imx);
-	if (ret) {
-		if (ret == -EPROBE_DEFER)
-			goto rpm_disable;
-		dev_info(&pdev->dev, "use pio mode\n");
+	if (!of_property_read_bool(pdev->dev.of_node, "no-dma" )) {
+		ret = lpi2c_dma_init(&pdev->dev, lpi2c_imx);
+		if (ret) {
+			dev_err_probe(&pdev->dev, ret, "dma setup error %d, use pio\n", ret);
+			if (ret == -EPROBE_DEFER)
+				goto rpm_disable;
+		}
+	} else {
+		dev_info(&pdev->dev,"use pio-mode\n");
 	}
 
 	init_completion(&lpi2c_imx->complete);

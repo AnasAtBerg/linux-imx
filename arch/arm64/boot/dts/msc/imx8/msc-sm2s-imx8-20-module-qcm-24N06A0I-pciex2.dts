@@ -1,0 +1,2 @@
+#define MODULE_MES_REVISION 20
+#include "msc-sm2s-imx8-module-qcm-24N06A0I-pciex2.dtsi"

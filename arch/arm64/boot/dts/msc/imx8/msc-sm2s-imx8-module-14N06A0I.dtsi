@@ -1,0 +1,30 @@
+/** @file      msc-sm2s-imx8-module-14N06A0I.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+*/
+
+/* 14N06A0I feature key decoded:
+   * 1: DRAM: 2GB
+   * 4: eMMC: 16GB
+   * N: SATA Size: no SATA SSD populated
+   * 0: Memory: no (ECC, eMMC/SATA SLC, SD Card socket) support
+   * 6: Displays: HDMI, LVDS
+   * A: Peripheral: dual gigabit ethernet, dual can, USB 3.0 2x, USB Host 2.0 2x, USB Device 1x
+   * 0: Security: no TPM
+   * I: Temperature range: industrial (-40°C...+85°C)
+*/
+
+// define module features
+#define HAS_QSPI
+#define HAS_ETH_DUAL
+#define HAS_CAN_DUAL
+#define HAS_LVDS
+#define HAS_USB3
+#define HAS_USB2
+#define HAS_USB2_DEV
+
+#include "msc-sm2s-imx8-module.dtsi"

@@ -13,6 +13,9 @@
 #include <drm/drm_crtc_helper.h>
 #include <drm/drm_encoder_slave.h>
 
+#include <linux/gpio.h>
+#include <linux/of_gpio.h>
+
 #include "cdns-mhdp-imx.h"
 #include "cdns-mhdp-phy.h"
 #include "../imx-drm.h"
@@ -60,6 +63,45 @@ static int cdns_mhdp_imx_encoder_atomic_check(struct drm_encoder *encoder,
 	}
 
 	return 0;
+}
+
+static void setup_hdmi_switch(struct device *dev)
+{
+	struct device_node *np = dev->of_node;
+	struct gpio_desc *gpio_en;
+	struct gpio_desc *gpio_sel1;
+	struct gpio_desc *gpio_sel2;
+	bool is_dp;
+	int delay;
+
+	gpio_en = devm_gpiod_get(dev, "hdmi-switch-en", GPIOD_ASIS);
+	if (IS_ERR(gpio_en)) {
+		/* Nothing to initialize */
+		return;
+	}
+
+	gpio_sel1 = devm_gpiod_get(dev, "hdmi-switch-sel1", GPIOD_ASIS);
+	gpio_sel2 = devm_gpiod_get(dev, "hdmi-switch-sel2", GPIOD_ASIS);
+	if (IS_ERR(gpio_sel1) || IS_ERR(gpio_sel2))
+		goto err;
+
+	if (of_property_read_u32(np, "hdmi-switch-on-delay", &delay)) // in microseconds
+		goto err;
+
+	is_dp = of_property_read_bool(np, "hdmi-switch-is-dp");
+	/* if is_dp is not set, port mode is hdmi */
+
+	gpiod_direction_output(gpio_sel1, 1);
+	gpiod_direction_output(gpio_sel2, is_dp ? 1 : 0);
+	gpiod_direction_output(gpio_en, 1);
+	udelay(delay);
+
+	return;
+
+err:
+	dev_warn(dev, "ignoring invalid HDMI/DP switch settings\n");
+	/* We will not abort driver loading. Return with <0 of
+	   imx_hdp_imx_bind would stop booting with a kernel panic. */
 }
 
 static const struct drm_encoder_helper_funcs cdns_mhdp_imx_encoder_helper_funcs = {
@@ -176,6 +218,8 @@ static int cdns_mhdp_imx_bind(struct device *dev, struct device *master,
 	encoder = &imx_mhdp->encoder;
 
 	encoder->possible_crtcs = drm_of_find_possible_crtcs(drm, dev->of_node);
+
+	setup_hdmi_switch(&pdev->dev);
 
 	ret = of_property_read_string(pdev->dev.of_node, "firmware-name",
 					&imx_mhdp->firmware_name);

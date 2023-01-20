@@ -46,6 +46,12 @@ config SPI_MASTER
 	  controller and the protocol drivers for the SPI slave chips
 	  that are connected.
 
+config SPI_EXPORT_BOARD_INFO
+	bool "Export spi_register_board_info symbol"
+        default SPI
+        help
+          Say "yes" here to export symbol "spi_register_board_info"
+
 if SPI_MASTER
 
 config SPI_MEM

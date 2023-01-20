@@ -755,6 +755,8 @@ static int __cdns_hdmi_probe(struct platform_device *pdev,
 
 static void __cdns_hdmi_remove(struct cdns_mhdp_device *mhdp)
 {
+	cnds_hdcp_remove_device_files(mhdp);
+
 	/* unregister cec driver */
 #ifdef CONFIG_DRM_CDNS_HDMI_CEC
 	cdns_mhdp_unregister_cec_driver(&mhdp->hdmi.cec);

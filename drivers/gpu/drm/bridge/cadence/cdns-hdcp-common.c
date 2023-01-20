@@ -968,6 +968,10 @@ ssize_t HDCPTX_Status_store(struct device *dev,
 
 void cnds_hdcp_create_device_files(struct cdns_mhdp_device *mhdp)
 {
+	/* remove the files before creating - maybe they were created by the instance before */
+	device_remove_file(mhdp->dev, &HDCPTX_do_reauth);
+	device_remove_file(mhdp->dev, &HDCPTX_Version);
+	device_remove_file(mhdp->dev, &HDCPTX_Status);
 
 	if (device_create_file(mhdp->dev, &HDCPTX_do_reauth)) {
 		DRM_ERROR("Unable to create HDCPTX_do_reauth sysfs\n");
@@ -985,6 +989,15 @@ void cnds_hdcp_create_device_files(struct cdns_mhdp_device *mhdp)
 	}
 }
 EXPORT_SYMBOL(cnds_hdcp_create_device_files);
+
+void cnds_hdcp_remove_device_files(struct cdns_mhdp_device *mhdp)
+{
+	/* remove sysfs entries to avoid errors on next call from probe */
+	device_remove_file(mhdp->dev, &HDCPTX_do_reauth);
+	device_remove_file(mhdp->dev, &HDCPTX_Version);
+	device_remove_file(mhdp->dev, &HDCPTX_Status);
+}
+EXPORT_SYMBOL(cnds_hdcp_remove_device_files);
 
 #ifdef DEBUG
 void cdns_hdcp_show_pairing(struct cdns_mhdp_device *mhdp, struct hdcp_trans_pairing_data *p)
@@ -1049,6 +1062,10 @@ static void cdns_hdcp_debugfs_init(struct cdns_mhdp_device *mhdp)
 {
 	struct dentry *d, *root;
 
+	root = debugfs_lookup("imx-hdcp", NULL);
+	if (root && !IS_ERR(root)) {
+		debugfs_remove( root );
+	}
 	root = debugfs_create_dir("imx-hdcp", NULL);
 	if (IS_ERR(root) || !root)
 		goto err;

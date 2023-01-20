@@ -1,0 +1,24 @@
+/** @file      msc-sm2s-imx8qp-module-qcp-24N06A0I.dtsi
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Markus Pietrek
+
+    @details   The i.MX8QP is the same as the i.MX8QM just with a slightly different CPU. Therefore the msc-sm2s-imx8* files
+    can be used.
+*/
+
+/dts-v1/;
+
+#include "msc-sm2s-imx8-module-includes.dtsi"
+
+#define ROOT_MODEL "MSC-SM2S-IMX8QP"
+#define ROOT_COMPATIBLE "msc,sm2s-imx8", "fsl,imx8qp", "fsl,imx8qm"
+
+#define CPU_IS_QCP
+
+#define MODULE_FEATURE 24N06A0I
+
+#include MODULE_DTSI()

@@ -1,0 +1,135 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "msc-sm2s-imx8mp-module.dtsi"
+
+&i2c6 {
+	ioexpander: gpio@20 {
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_ioexpander>;
+		compatible = "ti,tca6416";
+		reg = <0x20>;
+		interrupt-parent = <&gpio1>;
+		interrupts = <9 IRQ_TYPE_EDGE_RISING>;
+		interrupt-controller;
+		#interrupt-cells = <2>;
+		gpio-controller;
+		#gpio-cells = <2>;
+
+		/* P0.0 -> boot_sel0 */
+		boot_sel0 {
+			gpio-hog;
+			input;
+			gpios = <0 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P0.1 -> boot_sel1 */
+		boot_sel1 {
+			gpio-hog;
+			input;
+			gpios = <1 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P0.2 -> boot_sel2 */
+		boot_sel2 {
+			gpio-hog;
+			input;
+			gpios = <2 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P0.3 -> gbe0_int */
+		gbe0_int {
+			gpio-hog;
+			input;
+			gpios = <3 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P0.4 -> gbe1_int */
+		gbe1_int {
+			gpio-hog;
+			input;
+			gpios = <4 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P0.5 -> pmic_int */
+		/* P0.6 -> rtc_int */
+		/* P0.7 -> lvds_int */
+		lvds_int {
+			gpio-hog;
+			input;
+			gpios = <7 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P1.0 -> pcie_wake */
+		pcie_wake {
+			gpio-hog;
+			input;
+			gpios = <8 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P1.1 -> cam2_rst */
+		cam2_rst {
+			gpio-hog;
+			output-high;
+			gpios = <9 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P1.2 -> cam2_pwr */
+		cam2_pwr {
+			gpio-hog;
+			output-high;
+			gpios = <10 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P1.3 -> sleep */
+		sleep {
+			gpio-hog;
+			input;
+			gpios = <11 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P1.4 -> wifi_pd */
+		/* P1.5 -> tpm_int */
+		tpm_int {
+			gpio-hog;
+			input;
+			gpios = <13 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P1.6 -> wifi_int */
+		wifi_int {
+			gpio-hog;
+			input;
+			gpios = <14 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P1.7 -> pcie_rst */
+	};
+};
+
+&eqos {
+	pinctrl-0 = <&pinctrl_eqos>, <&pinctrl_eqos_rst>;
+	phy-reset-gpios = <&gpio1 3 GPIO_ACTIVE_LOW>;
+};
+
+&flexspi {
+	status = "okay";
+};
+
+&iomuxc {
+	pinctrl_eqos_rst: eqosrstgrp {
+		fsl,pins = <
+			MX8MP_IOMUXC_GPIO1_IO03__GPIO1_IO03				0x19
+		>;
+	};
+};
