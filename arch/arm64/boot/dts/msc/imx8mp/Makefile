@@ -18,6 +18,7 @@ dtb-$(CONFIG_IMX8MP) += \
 	msc-sm2s-imx8mp-14N0740I-module.dtb \
 	msc-sm2s-imx8mp-24N0600I-module.dtb \
 	msc-sm2s-imx8mp-24N0680I-module.dtb \
+	msc-sm2s-imx8mp-24N0E10I-module.dtb \ 
 	msc-sm2s-imx8mp-25N0600I-module.dtb \
 	msc-sm2s-imx8mp6-14N0600E-module.dtb \
 	msc-sm2s-imx8mp6-14N0E00I-module.dtb \
