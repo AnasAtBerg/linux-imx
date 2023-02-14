@@ -309,6 +309,12 @@
 		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
 		r2223x.eco-mode;
 	};
+
+	tmp_sensor: tmp103@71 {
+		compatible = "ti,tmp103";
+		reg = <0x71>;
+		label = "BOARD_TEMP";
+	};
 };
 
 /* I2C_PM */
