@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0
 
-dtb-$(CONFIG_ARCH_MXC) += msc-sm2s-imx93-92N0870E-module.dtb
+dtb-$(CONFIG_ARCH_MXC) += msc-sm2s-imx93-04N08A0I-module.dtb
 dtb-$(CONFIG_ARCH_MXC) += msc-sm2s-imx93-14N02C1I-module.dtb
+dtb-$(CONFIG_ARCH_MXC) += msc-sm2s-imx93-15N02C1I-module.dtb
+dtb-$(CONFIG_ARCH_MXC) += msc-sm2s-imx93-92N0870E-module.dtb
 dtb-$(CONFIG_ARCH_MXC) += overlay-baseboard-vebo.dtb
 dtb-$(CONFIG_ARCH_MXC) += overlay-baseboard-ep1.dtb
 dtb-$(CONFIG_ARCH_MXC) += overlay-baseboard-ep5.dtb

@@ -291,96 +291,6 @@
 	pinctrl-1 = <&pinctrl_lpi2c1>;
 	status = "okay";
 
-	ioexpander: gpio@22 {
-		#gpio-cells = <2>;
-		#interrupt-cells = <2>;
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_ioexpander>;
-		compatible = "ti,tca6424";
-		reg = <0x22>;
-		interrupt-parent = <&gpio2>;
-		interrupts = <15 IRQ_TYPE_EDGE_RISING>;
-		interrupt-controller;
-		gpio-controller;
-		gpio-line-names =
-				"boot_sel0", "boot_sel1", "boot_sel2", "pmic_int",
-				"tpm_int", "wifi_int", "gbe0_int", "gbe1_int",
-				"lcd0_vdd_en", "lcd0_bklt_en", "wifi_en", "gbe0_rst",
-				"gbe1_rst", "usb_rst", "charging", "batlow",
-				"gpio7", "gpio8", "gpio9", "gpio10",
-				"gpio11", "gpio12", "gpio13", "sleep";
-		status = "okay";
-
-		/* P0.0 -> boot_sel0 */
-		boot_sel0 {
-			gpio-hog;
-			input;
-			gpios = <0 GPIO_ACTIVE_HIGH>;
-		};
-
-		/* P0.1 -> boot_sel1 */
-		boot_sel1 {
-			gpio-hog;
-			input;
-			gpios = <1 GPIO_ACTIVE_HIGH>;
-		};
-
-		/* P0.2 -> boot_sel2 */
-		boot_sel2 {
-			gpio-hog;
-			input;
-			gpios = <2 GPIO_ACTIVE_HIGH>;
-		};
-
-		/* P0.3 -> pmic_int */
-		/* P0.4 -> tpm_int */
-		/* P0.5 -> wifi_int */
-		/* P0.6 -> gbe0_int */
-		/* P0.7 -> gbe1_int */
-
-		/* P1.0 -> lcd0_vdd_en */
-		/* P1.1 -> lcd0_bklt_en */
-		/* P1.2 -> wifi_en */
-		wifi_en {
-			gpio-hog;
-			output-low;
-			gpios = <10 GPIO_ACTIVE_HIGH>;
-		};
-
-		/* P1.3 -> gbe0_rst */
-		gbe0_rst {
-			gpio-hog;
-			output-high;
-			gpios = <11 GPIO_ACTIVE_HIGH>;
-		};
-
-		/* P1.4 -> gbe1_rst */
-		gbe1_rst {
-			gpio-hog;
-			output-high;
-			gpios = <12 GPIO_ACTIVE_HIGH>;
-		};
-
-		/* P1.5 -> usb_rst */
-		usb_rst {
-			gpio-hog;
-			output-low;
-			gpios = <13 GPIO_ACTIVE_LOW>;
-		};
-
-		/* P1.6 -> charging */
-		/* P1.7 -> batlow */
-
-		/* P2.0 -> gpio7 */
-		/* P2.1 -> gpio8 */
-		/* P2.2 -> gpio9 */
-		/* P2.3 -> gpio10 */
-		/* P2.4 -> gpio11 */
-		/* P2.5 -> gpio12 */
-		/* P2.6 -> gpio13 */
-		/* P2.7 -> sleep */
-	};
-
 	id_eeprom: eeprom@50 {
 		compatible = "atmel,24c64";
 		reg = <0x50>;
@@ -494,6 +404,96 @@
 	pinctrl-0 = <&pinctrl_lpi2c5>;
 	pinctrl-1 = <&pinctrl_lpi2c5>;
 	status = "okay";
+
+	ioexpander: gpio@22 {
+		#gpio-cells = <2>;
+		#interrupt-cells = <2>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_ioexpander>;
+		compatible = "ti,tca6424";
+		reg = <0x22>;
+		interrupt-parent = <&gpio2>;
+		interrupts = <15 IRQ_TYPE_EDGE_RISING>;
+		interrupt-controller;
+		gpio-controller;
+		gpio-line-names =
+				"boot_sel0", "boot_sel1", "boot_sel2", "pmic_int",
+				"tpm_int", "wifi_int", "gbe0_int", "gbe1_int",
+				"lcd0_vdd_en", "lcd0_bklt_en", "wifi_en", "gbe0_rst",
+				"gbe1_rst", "usb_rst", "charging", "batlow",
+				"gpio7", "gpio8", "gpio9", "gpio10",
+				"gpio11", "gpio12", "gpio13", "sleep";
+		status = "okay";
+
+		/* P0.0 -> boot_sel0 */
+		boot_sel0 {
+			gpio-hog;
+			input;
+			gpios = <0 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P0.1 -> boot_sel1 */
+		boot_sel1 {
+			gpio-hog;
+			input;
+			gpios = <1 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P0.2 -> boot_sel2 */
+		boot_sel2 {
+			gpio-hog;
+			input;
+			gpios = <2 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P0.3 -> pmic_int */
+		/* P0.4 -> tpm_int */
+		/* P0.5 -> wifi_int */
+		/* P0.6 -> gbe0_int */
+		/* P0.7 -> gbe1_int */
+
+		/* P1.0 -> lcd0_vdd_en */
+		/* P1.1 -> lcd0_bklt_en */
+		/* P1.2 -> wifi_en */
+		wifi_en {
+			gpio-hog;
+			output-low;
+			gpios = <10 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P1.3 -> gbe0_rst */
+		gbe0_rst {
+			gpio-hog;
+			output-high;
+			gpios = <11 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P1.4 -> gbe1_rst */
+		gbe1_rst {
+			gpio-hog;
+			output-high;
+			gpios = <12 GPIO_ACTIVE_HIGH>;
+		};
+
+		/* P1.5 -> usb_rst */
+		usb_rst {
+			gpio-hog;
+			output-low;
+			gpios = <13 GPIO_ACTIVE_LOW>;
+		};
+
+		/* P1.6 -> charging */
+		/* P1.7 -> batlow */
+
+		/* P2.0 -> gpio7 */
+		/* P2.1 -> gpio8 */
+		/* P2.2 -> gpio9 */
+		/* P2.3 -> gpio10 */
+		/* P2.4 -> gpio11 */
+		/* P2.5 -> gpio12 */
+		/* P2.6 -> gpio13 */
+		/* P2.7 -> sleep */
+	};
 };
 
 /* ser0, console */
@@ -624,7 +624,6 @@
 	pinctrl-1 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
 	pinctrl-2 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
 	cd-gpios = <&gpio3 0 GPIO_ACTIVE_LOW>;
-	wp-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
 	vmmc-supply = <&reg_usdhc2_vmmc>;
 	bus-width = <4>;
 	status = "okay";
@@ -823,7 +822,6 @@
 	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
 		fsl,pins = <
 			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
-			MX93_PAD_SD2_VSELECT__GPIO3_IO19	0x31e
 		>;
 	};
 
@@ -835,6 +833,7 @@
 			MX93_PAD_SD2_DATA1__USDHC2_DATA1		0x13fe
 			MX93_PAD_SD2_DATA2__USDHC2_DATA2		0x13fe
 			MX93_PAD_SD2_DATA3__USDHC2_DATA3		0x13fe
+			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
 		>;
 	};
 
