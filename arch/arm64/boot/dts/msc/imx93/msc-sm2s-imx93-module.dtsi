@@ -22,6 +22,11 @@
 	model = "MSC SM2S i.MX93 11X11 SoM";
 	compatible = "fsl,imx93-11x11-evk", "fsl,imx93";
 
+	aliases {
+		rtc0 = &sys_rtc;
+		rtc1 = &bbnsm_rtc;
+	};
+
 	chosen {
 		stdout-path = &lpuart1;
 	};
@@ -295,6 +300,14 @@
 		compatible = "atmel,24c64";
 		reg = <0x50>;
 		pagesize = <32>;
+	};
+
+	sys_rtc: rtc@32 {
+		compatible = "ricoh,r2223x";
+		reg = <0x32>;
+		interrupt-parent = <&ioexpander>;
+		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
+		r2223x.eco-mode;
 	};
 };
 
