@@ -218,7 +218,7 @@
 			always-on;
 		};
 
-#if defined(HAS_LVDS) || defined(HAS_DSI)
+#if defined(HAS_LVDS)
 		reg_lvds0_power: adc_lvds0_power {
 			compatible = "regulator-fixed";
 			regulator-name = "lvds0_power";

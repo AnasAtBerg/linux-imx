@@ -15,7 +15,9 @@
 /dts-v1/;
 /plugin/;
 
+/*
 #define HAS_DSI
+*/
 
 #include "msc-sm2s-imx8-display.dtsi"
 
@@ -27,16 +29,21 @@
 			#size-cells = <0>;
 			status = "okay";
 			fsl,clock-drop-level = <2>;
+
 			panel@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+
 				compatible = "raydium,rm67191";
 				reg = <0>;
+				pinctrl-0 = <&pinctrl_lvds0_power>;
+				pinctrl-names = "default";
+				reset-gpios = <&lsio_gpio1 6 GPIO_ACTIVE_LOW>;
 				dsi-lanes = <4>;
 				video-mode = <2>;
 				width-mm = <68>;
 				height-mm = <121>;
 
-				#address-cells = <1>;
-				#size-cells = <0>;
 				port@0 {
 					reg = <0>;
 					panel0_in: endpoint {
