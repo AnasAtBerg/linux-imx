@@ -872,6 +872,31 @@ static const struct panel_desc ampire_am_1280800n3tzqw_t00h = {
 	.connector_type = DRM_MODE_CONNECTOR_LVDS,
 };
 
+static const struct display_timing innolux_g156hce_l01_timing = {
+	.pixelclock = {120000000 , 141860000, 150000000 },
+	.hactive = { 1920, 1920, 1920  },
+	.hfront_porch = { 35, 38, 40 },
+	.hback_porch = { 35, 38 , 40},
+	.hsync_len = { 20, 28, 40 },
+	.vactive = { 1080, 1080, 1080 },
+	.vfront_porch = { 4, 12, 19 },
+	.vback_porch = { 4, 12, 19 },
+	.vsync_len = { 2, 6, 12 },
+	.flags = DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_VSYNC_LOW | DISPLAY_FLAGS_HSYNC_LOW,
+};
+
+static const struct panel_desc innolux_g156hce_l01 = {
+	.timings = &innolux_g156hce_l01_timing,
+	.num_timings = 1,
+	.bpc = 8,
+	.size = {
+		.width = 344,
+		.height = 194,
+	},
+	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+};
+
 static const struct display_timing ampire_am_101a01_du2511_g020_timing = {
 	.pixelclock = { 68900000, 71100000, 73400000 },
 	.hactive = { 1280, 1280, 1280 },
@@ -4640,6 +4665,9 @@ static const struct panel_desc arm_rtsm = {
 
 static const struct of_device_id platform_of_match[] = {
 	{
+		.compatible = "innolux-g156hce-l01",
+		.data = &innolux_g156hce_l01,
+	}, {
 		.compatible = "ampire,am-1280800n3tzqw-t00h",
 		.data = &ampire_am_1280800n3tzqw_t00h,
 	}, {
