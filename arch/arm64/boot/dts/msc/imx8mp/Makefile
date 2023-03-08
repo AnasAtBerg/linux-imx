@@ -38,6 +38,7 @@ dtb-$(CONFIG_IMX8MP) += \
 	overlay-lvds0-ama-101a07.dtb \
 	overlay-lvds0-ama-121a01.dtb \
 	overlay-lvds0-auo-p215hvn01.dtb \
+	overlay-lvds0-innolux-G156HCE-L01.dtb \ 
 	overlay-lvds1-ama-070a04.dtb \
 	overlay-lvds1-ama-101a01.dtb \
 	overlay-lvds1-ama-101a07.dtb \
