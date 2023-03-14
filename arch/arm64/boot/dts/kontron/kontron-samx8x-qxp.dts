@@ -50,6 +50,33 @@
 		power-domains = <&pd IMX_SC_R_MCLK_OUT_0>;
 	};
 
+        sound-mpcflex {
+                compatible = "simple-audio-card,mpcflex_max98357a";
+                simple-audio-card,name = "mpcflex-audio";
+                simple-audio-card,format = "i2s";
+                simple-audio-card,frame-master = <&cpudai>;
+                simple-audio-card,bitclock-master = <&cpudai>;
+                simple-audio-card,widgets =
+                        "Line", "Left Line Out Jack",
+                        "Line", "Right Line Out Jack";
+                simple-audio-card,routing =
+                        "Left Line Out Jack", "LINEVOUTL",
+                        "Right Line Out Jack", "LINEVOUTR";
+
+                cpudai: simple-audio-card,cpu {
+                        sound-dai = <&sai0>;
+                        dai-tdm-slot-num = <2>;
+                        dai-tdm-slot-width = <32>;
+                };
+
+                simple-audio-card,codec {
+                        sound-dai = <&max98357a>;
+                        clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
+                };
+        };
+
+
+
 };
 
 &lpuart0 {
