@@ -51,7 +51,7 @@
 	};
 
         sound-mpcflex {
-                compatible = "simple-audio-card,mpcflex_max98357a";
+                compatible = "simple-audio-card";
                 simple-audio-card,name = "mpcflex-audio";
                 simple-audio-card,format = "i2s";
                 simple-audio-card,frame-master = <&cpudai>;
