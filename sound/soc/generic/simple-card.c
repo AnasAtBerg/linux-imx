@@ -738,7 +738,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
 	if (ret < 0)
 	{
 
-		printk("simple-card: devm_snd_soc_register_card error, err = %d", err);
+		printk("simple-card: devm_snd_soc_register_card error, ret = %d", ret);
 		goto err;
 	}
 
