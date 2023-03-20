@@ -606,14 +606,23 @@ static int simple_soc_probe(struct snd_soc_card *card)
 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
 	int ret;
 
+	printk("simple-card: simple_soc_probe\n");
 	ret = asoc_simple_init_hp(card, &priv->hp_jack, PREFIX);
 	if (ret < 0)
+	{
+		printk("simple-card: simple_soc_probe: asoc_simple_init_hp fail with ret = %d\n", ret);
 		return ret;
+	}
+
 
 	ret = asoc_simple_init_mic(card, &priv->mic_jack, PREFIX);
 	if (ret < 0)
+	{
+		printk("simple-card: simple_soc_probe: asoc_simple_init_mic fail with ret = %d\n", ret);
 		return ret;
+	}
 
+	printk("simple-card: simple_soc_probe: Return 0 OK\n");
 	return 0;
 }
 
@@ -626,10 +635,15 @@ static int asoc_simple_probe(struct platform_device *pdev)
 	struct link_info li;
 	int ret;
 
+	printk("simple-card: asoc_simple_probe.\n");
+
 	/* Allocate the private data and the DAI link array */
 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
 	if (!priv)
+	{
+		printk("simple-card: ENOMEM!\n");
 		return -ENOMEM;
+	}
 
 	card = simple_priv_to_card(priv);
 	card->owner		= THIS_MODULE;
@@ -639,18 +653,28 @@ static int asoc_simple_probe(struct platform_device *pdev)
 	memset(&li, 0, sizeof(li));
 	simple_get_dais_count(priv, &li);
 	if (!li.link || !li.dais)
+	{
+		printk("simple-card: simple_get_dais_count fail, EINVAL!\n");
 		return -EINVAL;
+	}
 
 	ret = asoc_simple_init_priv(priv, &li);
 	if (ret < 0)
+	{
+		printk("simple-card: asoc_simple_init_priv fail with ret = %d", ret);
 		return ret;
+	}
 
 	if (np && of_device_is_available(np)) {
 
 		ret = simple_parse_of(priv);
 		if (ret < 0) {
 			if (ret != -EPROBE_DEFER)
+			{
+				printk("simple-card: simple_parse_of fail: parse error\n");
 				dev_err(dev, "parse error %d\n", ret);
+			}
+			printk("simple-card: simple_parse_of fail with ret = %d", ret);
 			goto err;
 		}
 
@@ -664,8 +688,10 @@ static int asoc_simple_probe(struct platform_device *pdev)
 
 		int dai_idx = 0;
 
+		printk("simple-card: continuing in asoc_simple_probe, not of_device_is_available\n");
 		cinfo = dev->platform_data;
 		if (!cinfo) {
+			printk("simple-card: continuing, not of_device_is_available\n");
 			dev_err(dev, "no info for asoc-simple-card\n");
 			return -EINVAL;
 		}
@@ -675,6 +701,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
 		    !cinfo->codec ||
 		    !cinfo->platform ||
 		    !cinfo->cpu_dai.name) {
+			printk("simple-card: insufficient asoc_simple_card_info settings, EINVAL");
 			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
 			return -EINVAL;
 		}
@@ -709,10 +736,16 @@ static int asoc_simple_probe(struct platform_device *pdev)
 
 	ret = devm_snd_soc_register_card(dev, card);
 	if (ret < 0)
-		goto err;
+	{
 
+		printk("simple-card: devm_snd_soc_register_card error, err = %d", err);
+		goto err;
+	}
+
+	printk("simple-card: asoc_simple_probe return OK");
 	return 0;
 err:
+	printk("simple-card: asoc_simple_probe exiting at err: with ret = %d", ret);
 	asoc_simple_clean_reference(card);
 
 	return ret;

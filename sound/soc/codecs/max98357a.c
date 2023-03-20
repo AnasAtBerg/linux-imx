@@ -129,7 +129,7 @@ static int max98357a_platform_probe(struct platform_device *pdev)
 			&max98357a_component_driver,
 			&max98357a_dai_driver, 1);
 
-	printk("max98357a_platform_probe: Exit with ret = %d", ret);
+	printk("max98357a_platform_probe: No errors. Exit with ret = %d", ret);
 	return ret;
 }
 
