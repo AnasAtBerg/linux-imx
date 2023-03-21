@@ -826,6 +826,9 @@
 //			<&clk IMX8QXP_AUD_ACM_AUD_PLL_CLK0_DIV>,
 //			<&clk IMX8QXP_AUD_ACM_AUD_REC_CLK0_DIV>,
 //			<&clk IMX8QXP_AUD_SAI_0_MCLK>;
+        // NEW: 
+        #sound-dai-cells = <1>;
+
 	assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
 			  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
 			  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,

@@ -41,6 +41,7 @@
         // Put audio chip in root of tree first
 	max98357a: max98357a@0 {
 		compatible = "maxim,max98357a";
+		#sound-dai-cells = <1>;
 		reg = <0x1a>;
 		clocks = <&mclkout0_lpcg 0>;
 		clock-names = "mclk";
@@ -53,20 +54,52 @@
         sound-mpcflex {
                 compatible = "simple-audio-card";
                 simple-audio-card,name = "mpcflex-audio";
-                simple-audio-card,format = "i2s";
-                simple-audio-card,frame-master = <&cpudai>;
-                simple-audio-card,bitclock-master = <&cpudai>;
+		// Not mandatory simple-audio-card,widgets = "Line\0Left Line Out Jack\0Line\0Right Line Out Jack";
+		// No mandatory simple-audio-card,routing = "Left Line Out Jack\0LINEVOUTL\0Right Line Out Jack\0LINEVOUTR";
+/* TEMP
                 simple-audio-card,widgets =
                         "Line", "Left Line Out Jack",
                         "Line", "Right Line Out Jack";
                 simple-audio-card,routing =
                         "Left Line Out Jack", "LINEVOUTL",
                         "Right Line Out Jack", "LINEVOUTR";
+*/
+		// Optional properties
+		// simple-audio-card,name
+		// simple-audio-card,widgets
+		// simple-audio-card,routing
+		// simple-audio-card,mclk-fs - if defined here then mclk-fs in dai-link subnode is ignored
+		// simple-audio-card,hp-det-gpio
+		// simple-audio-card,mic-det-gpio
+		// simple-audio-card,aux-devs
+		// simple-audio-card,pin-switches
+		//simple-audio-card,dai-link (container)
 
+		// From Documentation/devicetree/bindings/sound/simple-card.txt:
+		// If dai-link subnode is omitted and the subnode properties
+		// are directly under "sound"-node, then the subnode property and
+		// subnode names have to be prefixed with "simple-audio-card,"
+
+                // Optional DAI link properties:
+                simple-audio-card,format = "i2s";
+                simple-audio-card,frame-master = <&cpudai>;
+                simple-audio-card,bitclock-master = <&cpudai>;
+		// bitclock-inversion (bool)
+                // frame-inversion (bool)
+		// mclk-fs -- multiplication factor between strean rate and codec mclk for dai-link
+
+		// Required CPU/CODEC subnodes properties:
+		// - sound-dai
+		// Optional CPU/CODEC subnodes properties:
+		// - dai-tdm-slot-num
+		// - dai-tdm-slot-width
+		// - clocks / system-clock-frequency
+
+                // Mandatory properties for main sound node: = cpu and codec
                 cpudai: simple-audio-card,cpu {
                         sound-dai = <&sai0>;
-                        dai-tdm-slot-num = <2>;
-                        dai-tdm-slot-width = <32>;
+//                        dai-tdm-slot-num = <2>;
+//                        dai-tdm-slot-width = <32>;
                 };
 
 		link_codec: simple-audio-card,codec {
