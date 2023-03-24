@@ -322,6 +322,149 @@ static int imx_clk_init_on(struct device_node *np,
 	return 0;
 }
 
+#define IMX8MN_CLKOUT1_DIV_OFF	0
+#define IMX8MN_CLKOUT1_SEL_OFF	4
+#define IMX8MN_CLKOUT1_CKE_OFF	8
+#define IMX8MN_CLKOUT2_DIV_OFF	16
+#define IMX8MN_CLKOUT2_SEL_OFF	20
+#define IMX8MN_CLKOUT2_CKE_OFF	24
+
+static int __init imx_clockout_init(void)
+{
+	u32 val = 0, src = 0, div = 0;
+	struct device_node *np = of_find_compatible_node(NULL, NULL, "fsl,imx8mn-anatop");
+	void __iomem *anatop_base = of_iomap(np, 0);
+
+	if (WARN_ON(!anatop_base))
+		return -ENOMEM;
+
+	if (of_property_read_u32(np, "clkout1,source", &src) == 0) {
+		if (src > IMX8MN_CLK_CLKOUT_OUTPUT_SEL_OSC_32K) {
+			pr_err("i.MX8MN: invalid 'clkout1,source' value\n");
+			return -EINVAL;
+		}
+		val |= (src << IMX8MN_CLKOUT1_SEL_OFF);
+	}
+
+	if (of_property_read_u32(np, "clkout1,div", &div) == 0) {
+		if ((div > 15)) {
+			pr_err("i.MX8MN: invalid 'clkout1,div' value\n");
+			return -EINVAL;
+		}
+		val |= (div << IMX8MN_CLKOUT1_DIV_OFF);
+	}
+
+	if (of_property_read_bool(np, "clkout1,enable")) {
+		val |= (1 << IMX8MN_CLKOUT1_CKE_OFF);
+		pr_info("i.MX8MN: clkout1 active, source: 0x%x, divider: %d.\n",
+				src, div);
+	}
+
+	src = 0;
+	div = 0;
+
+	if (of_property_read_u32(np, "clkout2,source", &src) == 0) {
+		if (src > IMX8MN_CLK_CLKOUT_OUTPUT_SEL_OSC_32K) {
+			pr_err("i.MX8MN: invalid 'clkout2,source' value\n");
+			return -EINVAL;
+		}
+		val |= (src << IMX8MN_CLKOUT2_SEL_OFF);
+	}
+
+	if (of_property_read_u32(np, "clkout2,div", &div) == 0) {
+		if ((div > 15)) {
+			pr_err("i.MX8MN: invalid 'clkout2,div' value\n");
+			return -EINVAL;
+		}
+		val |= (div << IMX8MN_CLKOUT2_DIV_OFF);
+	}
+
+	if (of_property_read_bool(np, "clkout2,enable")) {
+		val |= (1 << IMX8MN_CLKOUT2_CKE_OFF);
+		pr_info("i.MX8MN: clkout2 active, source: 0x%x, divider: %d.\n",
+				src, div);
+	}
+
+	writel_relaxed(val, anatop_base + 0x128);
+
+	iounmap(anatop_base);
+
+	return 0;
+}
+
+static void __init imx8mn_video_pll1_spread_spectrum_init(struct device_node *np, void __iomem *anatop_base)
+{
+	u32 val = readl_relaxed(anatop_base + 0x2c);
+	u32 ffin, mf, mr, pre_div, m_div, mfr, mrr;
+	const char *mr_str;
+
+	pr_info("i.MX8MN: Video PLL1 spread spectrum:\n");
+
+	pre_div = (val >> 4) & 0x3f;
+	m_div = (val >> 12) & 0x3ff;
+
+	if (of_property_read_u32(np, "video-pll1-ss,ffin_MHz", &ffin)) {
+		ffin = 24;
+	}
+
+	if (of_property_read_u32(np, "video-pll1-ss,mf_kHz", &mf)) {
+		mf = 30;
+	}
+
+	if (of_property_read_u32(np, "video-pll1-ss,mr", &mr)) {
+		mr = VIDEO_PLL1_SPREAD_DEPTH_1_0_PERCENT;
+	}
+
+	mfr = (ffin * 1000) / (mf * pre_div * 32);
+	mrr =  (m_div * 64) / (25 * 100);
+
+	switch (mr)
+	{
+	case VIDEO_PLL1_SPREAD_DEPTH_0_5_PERCENT:
+		mr_str = "0.5%";
+		mrr = mrr/2;
+		break;
+	case VIDEO_PLL1_SPREAD_DEPTH_1_0_PERCENT:
+		mr_str = "1.0%";
+		mrr = mrr * 1;
+		break;
+	case VIDEO_PLL1_SPREAD_DEPTH_2_0_PERCENT:
+		mr_str = "2.0%";
+		mrr = mrr * 2;
+		break;
+	default:
+		pr_info("   invalid spread depth 'video-pll1-ss,mr' value (%d) \n", mr);
+		return;
+	}
+
+	pr_info("   ffin=%dMHz, mf=%dkHz, mr=%s, pre_div=%d, m_div=%d \n",
+			ffin, mf, mr_str, pre_div, m_div);
+	pr_info("   mfr=%d, mrr=%d\n",
+			mfr, mrr);
+
+	val = (1 << 31)
+			| ((mfr & 0xff) << 12)
+			| ((mrr & 0x3f) << 4)
+			| 0x2;
+
+	writel_relaxed(val, anatop_base + 0x34);
+}
+
+static void __init imx8mn_spread_spectrum_init(void)
+{
+	struct device_node *np =
+			of_find_compatible_node(NULL, NULL, "fsl,imx8mn-anatop");
+	void __iomem *anatop_base = of_iomap(np, 0);
+
+	if (of_property_read_bool(np, "video-pll1-ss,enable")) {
+		imx8mn_video_pll1_spread_spectrum_init(np, anatop_base);
+	}
+	else
+		pr_info("i.MX8MN: Video PLL1 spread spectrum disabled.\n");
+
+	iounmap(anatop_base);
+}
+
 static int imx8mn_clocks_probe(struct platform_device *pdev)
 {
 	struct device *dev = &pdev->dev;
@@ -607,6 +750,10 @@ static int imx8mn_clocks_probe(struct platform_device *pdev)
 	clk_set_rate(hws[IMX8MN_CLK_IPG_AUDIO_ROOT]->clk, 400000000);
 
 	imx_register_uart_clocks(4);
+
+	imx_clockout_init();
+
+	imx8mn_spread_spectrum_init();
 
 	return 0;
 
