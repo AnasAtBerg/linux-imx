@@ -233,3 +233,24 @@
 &seco_mu3: {
 	status = "disabled";
 }
+
+/* MPC: Disable Integrated Sensor Interface (ISI) which is used for image
+ * processing (cameras, etc).  It produces (non-critical) errors during boot.
+ * We don't use this functionality so we might as well disable it.
+ * This disables the associated cap_device under each isi node.
+ * dmesg error: "mxc_isi.1: mxc_isi_capture_open, No remote pad found!"
+ * (repeated for instances 1 to 3)
+ * dmesg error: "isi-capture 58100000.isi:cap_device: ISI channel[0] is busy" */
+
+&isi_0: {
+	status = "disabled";
+}
+&isi_1: {
+	status = "disabled";
+}
+&isi_2: {
+	status = "disabled";
+}
+&isi_3: {
+	status = "disabled";
+}
