@@ -219,3 +219,17 @@
 };
 */
 
+/* MPC: Disable security controller block.  We are not using it and it produces
+ * (non-critical) errors during boot, so we might as well disable it.  
+ * dmesg error: "seco_mu seco_mu1: Failed to request txdb channel"
+ * (repeated for all 3) */
+
+&seco_mu1: {
+	status = "disabled";
+}
+&seco_mu2: {
+	status = "disabled";
+}
+&seco_mu3: {
+	status = "disabled";
+}
