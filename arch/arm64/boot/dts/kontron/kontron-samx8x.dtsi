@@ -197,22 +197,6 @@
 		regulator-max-microvolt = <180000>;
 	};
 
-/*
-	sound: sound {
-		compatible = "fsl,imx-audio-wm8904";
-		cpu-dai = <&sai0>;
-		model = "imx-wm8904";
-		audio-routing =
-			"Headphone Jack", "HPOUTR",
-			"Headphone Jack", "HPOUTL",
-			"IN1L", "Line In Jack",
-			"IN1R", "Line In Jack",
-			"Mic Jack", "MICBIAS",
-			"IN2L", "Mic Jack",
-			"IN2R", "Mic Jack";
-	};
-*/
-
 	gpio-input {
 		compatible = "gpio-keys-polled";
 		pinctrl-names = "default";
@@ -289,7 +273,7 @@
 		default-brightness-level = <80>;
 	};
 
-        // We only have one display, so this should probably be deleted
+	// We only have one display, so this should probably be deleted
 	/*lvds_backlight1: lvds_backlight@1 {
 		compatible = "pwm-backlight";
 		pwms = <&pwm_mipi_lvds1 0 5000000 0>;
@@ -836,17 +820,14 @@
 	};
 };
 
-// For audio, defined in freescale (audio) dts
+// For audio.  Main definition of sai0 is in dts/freescale/imx8-ss-audio.dtsi
 &sai0 {
-//	assigned-clocks = <&clk IMX8QXP_AUD_PLL0_DIV>,
-//			<&clk IMX8QXP_AUD_ACM_AUD_PLL_CLK0_DIV>,
-//			<&clk IMX8QXP_AUD_ACM_AUD_REC_CLK0_DIV>,
-//			<&clk IMX8QXP_AUD_SAI_0_MCLK>;
+	#sound-dai-cells = <0>;
 	assigned-clocks = <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_PLL>,
 			  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_SLV_BUS>,
 			  <&clk IMX_SC_R_AUDIO_PLL_0 IMX_SC_PM_CLK_MST_BUS>,
 			  <&sai0_lpcg 0>;
-	assigned-clock-rates = <786432000>, <49152000>, <12288000>, <49152000>;
+	assigned-clock-rates = <786432000>, <49152000>, <12288000>;
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_sai0>;
 	status = "okay";
@@ -1145,7 +1126,7 @@
 		sn-sync-delay = <40>; // This seems OK, 32 also works OK.
 
 		// lvds-cha-vocm = false.  Also unnecessary if lvds-cha-cm-adjust
-                // is set explicitly (above).  Same for channel b.
+		// is set explicitly (above).  Same for channel b.
 		// do not set: lvds-cha-vocm;
 		// do not set: lvds-chb-vocm;
 
