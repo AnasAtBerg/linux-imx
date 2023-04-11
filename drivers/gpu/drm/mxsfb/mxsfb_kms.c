@@ -384,6 +384,7 @@ static enum drm_mode_status mxsfb_crtc_mode_valid(struct drm_crtc *crtc,
 					   const struct drm_display_mode *mode)
 {
 	struct mxsfb_drm_private *mxsfb = to_mxsfb_drm_private(crtc->dev);
+	struct drm_device *drm = mxsfb->drm;
 	u32 bpp;
 	u64 bw;
 
@@ -396,9 +397,15 @@ static enum drm_mode_status mxsfb_crtc_mode_valid(struct drm_crtc *crtc,
 	bw = bw * mode->hdisplay * mode->vdisplay * (bpp / 8);
 	bw = div_u64(bw, mode->htotal * mode->vtotal);
 
-	if (mxsfb->max_bw && bw > mxsfb->max_bw)
+	if (mxsfb->max_bw && (bw > mxsfb->max_bw)) {
+		dev_err(drm->dev, "The currently configured 'max-memory-bandwidth = %d' is not sufficient!\n",
+			mxsfb->max_bw);
+		dev_err(drm->dev, "Required bandwidth is %lld\n", bw);
+		dev_info(drm->dev, "clock=%dkHz, bpp=%d, hdisplay=%d, vdisplay=%d",
+			 mode->clock, bpp, mode->hdisplay, mode->vdisplay);
+		dev_info(drm->dev, "htotal=%d, vtotal=%d", mode->htotal, mode->vtotal);
 		return MODE_BAD;
-
+	}
 	return MODE_OK;
 }
 
