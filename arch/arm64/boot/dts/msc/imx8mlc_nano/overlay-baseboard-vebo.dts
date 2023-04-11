@@ -1,0 +1,142 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/imx8mn-clock.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@1100 {
+		target = <&ecspi1>;
+		__overlay__ {
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1101 {
+		target = <&ecspi2>;
+		__overlay__ {
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1102 {
+		target = <&spidev1_0>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1103 {
+		target = <&spidev1_1>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1104 {
+		target = <&spidev2_0>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1105 {
+		target = <&spidev2_1>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1106 {
+		target = <&i2c2>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			eeprom@57 {
+				compatible = "atmel,24c64";
+				reg = <0x57>;
+				pagesize = <32>;
+			};
+		};
+	};
+
+	fragment@1107 {
+		target = <&i2c3>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			eeprom@57 {
+				compatible = "atmel,24c64";
+				reg = <0x57>;
+				pagesize = <32>;
+			};
+		};
+	};
+
+	fragment@1108 {
+		target-path = "/";
+		__overlay__ {
+			da7213_sound: da7213-sound {
+				compatible = "fsl,imx-audio-da7213";
+				card-name = "imx-da7212-audio";
+				fsl,no-audmux;
+				ssi-controller = <&sai5>;
+				audio-codec = <&da7213_codec>;
+				audio-routing =
+						"Mic1", "Mic Bias 1",
+						"MIC1", "Mic1",
+						"Headphone Jack", "HPL",
+						"Headphone Jack", "HPR",
+						"Speaker", "LINE";
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@1109 {
+		target = <&i2c3>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			da7213_codec: da7212@1a {
+				compatible = "dlg,da7213";
+				reg = <0x1a>;
+				clocks = <&clkout1>;
+				clock-names = "mclk";
+				dlg,micbias1-lvl = <3000>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@1010 {
+		target = <&sai5>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1011 {
+		target = <&easrc>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

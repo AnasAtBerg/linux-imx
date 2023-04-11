@@ -1,0 +1,63 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/imx8mp-clock.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@1202 {
+		target-path = "/";
+		__overlay__ {
+			da7213_sound: da7213-sound {
+				compatible = "fsl,imx-audio-da7213";
+				card-name = "imx-da7212-audio";
+				fsl,no-audmux;
+				ssi-controller = <&sai5>;
+				audio-codec = <&da7213_codec>;
+				audio-routing =
+						"Mic1", "Mic Bias 1",
+						"MIC1", "Mic1",
+						"Headphone Jack", "HPL",
+						"Headphone Jack", "HPR",
+						"Speaker", "LINE";
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@1203 {
+		target = <&i2c3>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			da7213_codec: da7212@1a {
+				compatible = "dlg,da7213";
+				reg = <0x1a>;
+				clocks = <&clkout1>;
+				clock-names = "mclk";
+				dlg,micbias1-lvl = <3000>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@1206 {
+		target = <&sai5>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

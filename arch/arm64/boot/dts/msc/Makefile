@@ -12,6 +12,6 @@
 #
 
 subdir-y += imx8
+subdir-y += imx8mlc_nano
 subdir-y += imx8mp
 subdir-y += imx93
-

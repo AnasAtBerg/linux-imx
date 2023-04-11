@@ -1,0 +1,104 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@5200 {
+		target = <&mipi_dsi>;
+		__overlay__ {
+			status = "okay";
+			port@1 {
+				dsim_to_lvds_bridge: endpoint {
+					remote-endpoint = <&lvds_bridge_from_dsim>;
+					attach-bridge;
+				};
+			};
+		};
+	};
+
+	fragment@5201 {
+		target = <&dsi_lvds_bridge>;
+		__overlay__ {
+			ti,dsi-lanes = <4>;
+			ti,lvds-format = <0>;
+			ti,lvds-bpp = <24>;
+			ti,width-mm = <477>;
+			ti,height-mm = <268>;
+			ti,lvds-channels = <2>;
+			status = "okay";
+
+			port {
+				lvds_bridge_from_dsim: endpoint {
+					remote-endpoint = <&dsim_to_lvds_bridge>;
+				};
+			};
+
+			display-timings {
+				lvds {
+					clock-frequency = <132000000>;
+					hactive = <1920>;
+					vactive = <1080>;
+					hback-porch = <45>;
+					hfront-porch = <45>;
+					vback-porch = <12>;
+					vfront-porch = <12>;
+					hsync-len = <10>;
+					vsync-len = <4>;
+					hsync-active = <0>;
+					vsync-active = <0>;
+					de-active = <1>;
+					pixelclk-active = <0>;
+				};
+			};
+		};
+	};
+
+	fragment@5202 {
+		target = <&lcdif>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5203 {
+		target = <&pwm1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5204 {
+		target = <&lcd0_backlight>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5205 {
+		target = <&gpu>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5209 {
+		target = <&mu>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

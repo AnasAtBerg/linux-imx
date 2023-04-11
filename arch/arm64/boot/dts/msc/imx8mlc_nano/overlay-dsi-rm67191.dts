@@ -1,0 +1,92 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/clock/imx8mn-clock.h>
+
+/ {
+	fragment@5200 {
+		target = <&mipi_dsi>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			panel@0 {
+				reg = <0>;
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_lcd0_panel>;
+				compatible = "raydium,rm67191";
+				reset-gpios = <&gpio5 3 GPIO_ACTIVE_LOW>;
+				dsi-lanes = <4>;
+				video-mode = <2>;	/* 0: burst mode
+							 * 1: non-burst mode with sync event
+							 * 2: non-burst mode with sync pulse
+							 */
+				panel-width-mm = <68>;
+				panel-height-mm = <121>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@5202 {
+		target = <&lcdif>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5203 {
+		target = <&pwm1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5204 {
+		target = <&lcd0_backlight>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5205 {
+		target = <&gpu>;
+		__overlay__ {
+			assigned-clocks = <&clk IMX8MN_CLK_GPU_CORE_SRC>,
+					<&clk IMX8MN_CLK_GPU_SHADER_SRC>,
+					<&clk IMX8MN_CLK_GPU_AXI>,
+					<&clk IMX8MN_CLK_GPU_AHB>,
+					<&clk IMX8MN_GPU_PLL>,
+					<&clk IMX8MN_CLK_GPU_CORE_DIV>,
+					<&clk IMX8MN_CLK_GPU_SHADER_DIV>;
+			assigned-clock-parents = <&clk IMX8MN_GPU_PLL_OUT>,
+					<&clk IMX8MN_GPU_PLL_OUT>,
+					<&clk IMX8MN_SYS_PLL1_800M>,
+					<&clk IMX8MN_SYS_PLL1_800M>;
+			assigned-clock-rates = <0>, <0>, <800000000>, <400000000>, <1200000000>,
+					<400000000>, <400000000>;
+			status = "okay";
+		};
+	};
+
+	fragment@5209 {
+		target = <&mu>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+};

@@ -1,0 +1,138 @@
+/*
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/imx8mp-clock.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@1000 {
+		target-path = "/";
+		__overlay__ {
+			reg_vcc_3v3_audio: 3v3_audio_regulator {
+				compatible = "regulator-fixed";
+				regulator-name = "3V3_AUD";
+				regulator-min-microvolt = <3300000>;
+				regulator-max-microvolt = <3300000>;
+			};
+		};
+	};
+
+	fragment@1001 {
+		target-path = "/";
+		__overlay__ {
+			reg_vcc_1v8_audio: 1v8_audio_regulator {
+				compatible = "regulator-fixed";
+				regulator-name = "1V8_AUD";
+				regulator-min-microvolt = <1800000>;
+				regulator-max-microvolt = <1800000>;
+			};
+		};
+	};
+
+	fragment@1002 {
+		target-path = "/";
+		__overlay__ {
+			sgtl5000_sound: sgtl5000-sound {
+				compatible = "fsl,imx-audio-sgtl5000";
+				model = "imx-sgtl5000";
+				audio-cpu = <&sai5>;
+				audio-codec = <&sgtl5000_codec>;
+				audio-routing =
+						"LINE_IN", "Line In Jack",
+						"MIC_IN", "Mic Jack",
+						"Mic Jack", "Mic Bias",
+						"Headphone Jack", "HP_OUT";
+			};
+		};
+	};
+
+	fragment@1003 {
+		target = <&i2c3>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			sgtl5000_codec: sgtl5000@a {
+				compatible = "fsl,sgtl5000";
+				reg = <0x0a>;
+				clocks = <&clkout1>;
+				clock-names = "audio_mclk";
+				VDDA-supply = <&reg_vcc_3v3_audio>;
+				VDD-supply = <&reg_vcc_1v8_audio>;
+				VDDIO-supply = <&reg_vcc_1v8_audio>;
+			};
+		};
+	};
+
+	fragment@1006 {
+		target = <&sai5>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@1007 {
+		target = <&usdhc2>;
+		__overlay__ {
+			no-1-8-v;
+		};
+	};
+
+	fragment@1008 {
+		target = <&ecspi1>;
+		__overlay__ {
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1009 {
+		target = <&ecspi2>;
+		__overlay__ {
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1010 {
+		target = <&spidev1_0>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1011 {
+		target = <&spidev1_1>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1012 {
+		target = <&spidev2_0>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+
+	fragment@1013 {
+		target = <&spidev2_1>;
+		__overlay__ {
+			compatible = "jedec,spi-nor";
+			spi-max-frequency = <20000000>;
+		};
+	};
+};

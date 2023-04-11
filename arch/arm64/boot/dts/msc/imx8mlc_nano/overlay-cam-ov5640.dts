@@ -1,0 +1,86 @@
+/*
+ * Copyright (C) 2021 AVNET Integrated, MSC Technologies GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+/plugin/;
+
+#include <dt-bindings/clock/imx8mn-clock.h>
+#include <dt-bindings/gpio/gpio.h>
+
+/ {
+	fragment@9000 {
+		target = <&i2c_cam>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			ov5640_cam: ov5640_mipi@3c {
+				compatible = "ovti,ov5640";
+				reg = <0x3c>;
+				clocks = <&clk IMX8MN_CLK_CLKO1>;
+				clock-names = "xclk";
+				assigned-clocks = <&clk IMX8MN_CLK_CLKO1>;
+				assigned-clock-parents = <&clk IMX8MN_CLK_24M>;
+				assigned-clock-rates = <24000000>;
+				csi_id = <0>;
+				powerdown-gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
+				mclk = <24000000>;
+				mclk_source = <0>;
+				mipi_csi;
+				status = "okay";
+				port {
+					ov5640_ep: endpoint {
+						remote-endpoint = <&mipi1_sensor_ep>;
+						data-lanes = <1 2>;
+						clock-lanes = <0>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@9001 {
+		target = <&mipi_csi_1>;
+		__overlay__ {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			status = "okay";
+			port {
+				mipi1_sensor_ep: endpoint {
+					remote-endpoint = <&ov5640_ep>;
+					data-lanes = <2>;
+					csis-hs-settle = <13>;
+					csis-clk-settle = <2>;
+					csis-wclk;
+				};
+			};
+		};
+	};
+
+	fragment@9002 {
+		target = <&cameradev>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@9003 {
+		target = <&isi_0>;
+		__overlay__ {
+			status = "okay";
+			cap_device {
+				status = "okay";
+			};
+		};
+	};
+};
+
