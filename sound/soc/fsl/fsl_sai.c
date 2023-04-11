@@ -457,11 +457,16 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
 		 * divided into the required rate.
 		 */
 		if (ret != 0 && clk_rate / ret < 1000)
+		{
+			printk(KERN_ERR "Dropping clk_rate out of bounds: clk_rate %d",clk_rate);
 			continue;
+		}
 
 		dev_dbg(dai->dev,
 			"ratio %d for freq %dHz based on clock %ldHz\n",
 			ratio, freq, clk_rate);
+
+		printk(KERN_ERR "Deriving: ratio %d for freq %dHz based on clock %ldHz\n", ratio, freq, clk_rate);
 
 		if ((ratio % 2 == 0 && ratio >= 2 && ratio <= 512) ||
 		    (ratio == 1 && sai->verid.major >= 3 && sai->verid.minor >= 1)) {

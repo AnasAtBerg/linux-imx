@@ -35,7 +35,10 @@ static int asoc_simple_parse_platform(struct device_node *node,
 	int ret;
 
 	if (!node)
+	{
+		printk("return from %s with %d",__func__,99);
 		return 0;
+	}
 
 	/*
 	 * Get node via "sound-dai = <&phandle port>"
@@ -43,13 +46,19 @@ static int asoc_simple_parse_platform(struct device_node *node,
 	 */
 	ret = of_parse_phandle_with_args(node, DAI, CELL, 0, &args);
 	if (ret)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	/* dai_name is not required and may not exist for plat component */
 
 	dlc->of_node = args.np;
 
-	return 0;
+	{
+		printk("return from %s with %d",__func__,99);
+		return 0;
+	}
 }
 
 static int asoc_simple_parse_dai(struct device_node *node,
@@ -60,7 +69,10 @@ static int asoc_simple_parse_dai(struct device_node *node,
 	int ret;
 
 	if (!node)
+	{
+		printk("return from %s with %d",__func__,99);
 		return 0;
+	}
 
 	/*
 	 * Get node via "sound-dai = <&phandle port>"
@@ -68,7 +80,11 @@ static int asoc_simple_parse_dai(struct device_node *node,
 	 */
 	ret = of_parse_phandle_with_args(node, DAI, CELL, 0, &args);
 	if (ret)
+	{
+		printk(KERN_ERR "asoc_simple_parse_dai: Returning ret = %d, because of parsing of sound-dai and #sound-dai-cells", ret);
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	/*
 	 * FIXME
@@ -91,14 +107,20 @@ static int asoc_simple_parse_dai(struct device_node *node,
 	 */
 	ret = snd_soc_of_get_dai_name(node, &dlc->dai_name);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	dlc->of_node = args.np;
 
 	if (is_single_link)
 		*is_single_link = !args.args_count;
 
-	return 0;
+	{
+		printk("return from %s with %d",__func__,99);
+		return 0;
+	}
 }
 
 static void simple_parse_convert(struct device *dev,
@@ -461,7 +483,10 @@ static int simple_for_each_link(struct asoc_simple_priv *priv,
 			break;
 	}
 
-	return ret;
+	{
+		printk("return from %s with %d",__func__,99);
+		return ret;
+	}
 }
 
 static int simple_parse_of(struct asoc_simple_priv *priv, struct link_info *li)
@@ -471,15 +496,24 @@ static int simple_parse_of(struct asoc_simple_priv *priv, struct link_info *li)
 
 	ret = asoc_simple_parse_widgets(card, PREFIX);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	ret = asoc_simple_parse_routing(card, PREFIX);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	ret = asoc_simple_parse_pin_switches(card, PREFIX);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	/* Single/Muti DAI link(s) & New style of DT node */
 	memset(li, 0, sizeof(*li));
@@ -487,15 +521,24 @@ static int simple_parse_of(struct asoc_simple_priv *priv, struct link_info *li)
 				   simple_dai_link_of,
 				   simple_dai_link_of_dpcm);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	ret = asoc_simple_parse_card_name(card, PREFIX);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	ret = snd_soc_of_parse_aux_devs(card, PREFIX "aux-devs");
 
-	return ret;
+	{
+		printk("return from %s with %d",__func__,99);
+		return ret;
+	}
 }
 
 static int simple_count_noml(struct asoc_simple_priv *priv,
@@ -507,6 +550,7 @@ static int simple_count_noml(struct asoc_simple_priv *priv,
 		struct device *dev = simple_priv_to_dev(priv);
 
 		dev_err(dev, "too many links\n");
+		printk("return from %s with %d",__func__,99);
 		return -EINVAL;
 	}
 
@@ -516,7 +560,10 @@ static int simple_count_noml(struct asoc_simple_priv *priv,
 
 	li->link += 1;
 
-	return 0;
+	{
+		printk("return from %s with %d",__func__,99);
+		return 0;
+	}
 }
 
 static int simple_count_dpcm(struct asoc_simple_priv *priv,
@@ -528,6 +575,7 @@ static int simple_count_dpcm(struct asoc_simple_priv *priv,
 		struct device *dev = simple_priv_to_dev(priv);
 
 		dev_err(dev, "too many links\n");
+		printk("return from %s with %d",__func__,99);
 		return -EINVAL;
 	}
 
@@ -542,7 +590,10 @@ static int simple_count_dpcm(struct asoc_simple_priv *priv,
 		li->link++; /* dummy-Codec */
 	}
 
-	return 0;
+	{
+		printk("return from %s with %d",__func__,99);
+		return 0;
+	}
 }
 
 static int simple_get_dais_count(struct asoc_simple_priv *priv,
@@ -603,12 +654,16 @@ static int simple_get_dais_count(struct asoc_simple_priv *priv,
 		li->num[0].platforms	= 1;
 
 		li->link = 1;
+		printk("return from %s with %d",__func__,99);
 		return 0;
 	}
 
-	return simple_for_each_link(priv, li,
-				    simple_count_noml,
-				    simple_count_dpcm);
+	{
+		printk("return from %s with %d",__func__,99);
+		return simple_for_each_link(priv, li,
+				}
+				simple_count_noml,
+				simple_count_dpcm);
 }
 
 static int simple_soc_probe(struct snd_soc_card *card)
@@ -616,15 +671,29 @@ static int simple_soc_probe(struct snd_soc_card *card)
 	struct asoc_simple_priv *priv = snd_soc_card_get_drvdata(card);
 	int ret;
 
+	printk(KERN_ERR "simple-card: simple_soc_probe\n");
 	ret = asoc_simple_init_hp(card, &priv->hp_jack, PREFIX);
 	if (ret < 0)
+	{
+		printk(KERN_ERR "simple-card: simple_soc_probe: asoc_simple_init_hp fail with ret = %d\n", ret);
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
+
 
 	ret = asoc_simple_init_mic(card, &priv->mic_jack, PREFIX);
 	if (ret < 0)
+	{
+		printk(KERN_ERR "simple-card: simple_soc_probe: asoc_simple_init_mic fail with ret = %d\n", ret);
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
-	return 0;
+	printk(KERN_ERR "simple-card: simple_soc_probe: Return 0 OK\n");
+	{
+		printk("return from %s with %d",__func__,99);
+		return 0;
+	}
 }
 
 static int asoc_simple_probe(struct platform_device *pdev)
@@ -636,10 +705,16 @@ static int asoc_simple_probe(struct platform_device *pdev)
 	struct link_info *li;
 	int ret;
 
+	printk(KERN_ERR "simple-card: asoc_simple_probe.\n");
+
 	/* Allocate the private data and the DAI link array */
 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
 	if (!priv)
+	{
+		printk(KERN_ERR "simple-card: ENOMEM!\n");
+		printk("return from %s with %d",__func__,99);
 		return -ENOMEM;
+	}
 
 	card = simple_priv_to_card(priv);
 	card->owner		= THIS_MODULE;
@@ -649,18 +724,30 @@ static int asoc_simple_probe(struct platform_device *pdev)
 
 	li = devm_kzalloc(dev, sizeof(*li), GFP_KERNEL);
 	if (!li)
+	{
+		printk("return from %s with %d",__func__,99);
 		return -ENOMEM;
+	}
 
 	ret = simple_get_dais_count(priv, li);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	if (!li->link)
+	{
+		printk("return from %s with %d",__func__,99);
 		return -EINVAL;
+	}
 
 	ret = asoc_simple_init_priv(priv, li);
 	if (ret < 0)
+	{
+		printk("return from %s with %d",__func__,99);
 		return ret;
+	}
 
 	if (np && of_device_is_available(np)) {
 
@@ -679,9 +766,12 @@ static int asoc_simple_probe(struct platform_device *pdev)
 		struct snd_soc_dai_link *dai_link = priv->dai_link;
 		struct simple_dai_props *dai_props = priv->dai_props;
 
+		printk(KERN_ERR "simple-card: continuing in asoc_simple_probe, not of_device_is_available\n");
 		cinfo = dev->platform_data;
 		if (!cinfo) {
+			printk(KERN_ERR "simple-card: continuing, not of_device_is_available\n");
 			dev_err(dev, "no info for asoc-simple-card\n");
+			printk("return from %s with %d",__func__,99);
 			return -EINVAL;
 		}
 
@@ -691,7 +781,10 @@ static int asoc_simple_probe(struct platform_device *pdev)
 		    !cinfo->platform ||
 		    !cinfo->cpu_dai.name) {
 			dev_err(dev, "insufficient asoc_simple_card_info settings\n");
-			return -EINVAL;
+			{
+				printk("return from %s with %d",__func__,99);
+				return -EINVAL;
+			}
 		}
 
 		cpus			= dai_link->cpus;
@@ -724,11 +817,17 @@ static int asoc_simple_probe(struct platform_device *pdev)
 		goto err;
 
 	devm_kfree(dev, li);
-	return 0;
+	{
+		printk("return from %s with %d",__func__,99);
+		return 0;
+	}
 err:
 	asoc_simple_clean_reference(card);
 
-	return ret;
+	{
+		printk("return from %s with %d",__func__,99);
+		return ret;
+	}
 }
 
 static const struct of_device_id simple_of_match[] = {
