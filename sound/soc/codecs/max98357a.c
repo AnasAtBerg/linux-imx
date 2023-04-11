@@ -20,6 +20,8 @@
 #include <sound/soc-dai.h>
 #include <sound/soc-dapm.h>
 
+#define _trace_ printk(KERN_ERR "At %s : line %d\n", __FILE__,__LINE__);
+
 struct max98357a_priv {
 	struct gpio_desc *sdmode;
 	unsigned int sdmode_delay;
@@ -33,9 +35,11 @@ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
 	struct max98357a_priv *max98357a =
 		snd_soc_component_get_drvdata(component);
 
+	_trace_
 	printk(KERN_ERR "max98357a_daiops_trigger: entered\n");
 	if (!max98357a->sdmode)
 	{
+		_trace_
 		printk("return from %s with %d",__func__,0);
 		return 0;
 	}
@@ -59,6 +63,7 @@ static int max98357a_daiops_trigger(struct snd_pcm_substream *substream,
 	}
 
 	{
+		_trace_
 		printk("return from %s with %d",__func__,0);
 		return 0;
 	}
@@ -78,6 +83,7 @@ static int max98357a_sdmode_event(struct snd_soc_dapm_widget *w,
 		max98357a->sdmode_switch = 0;
 
 	{
+		_trace_
 		printk("return from %s with %d",__func__,0);
 		return 0;
 	}
@@ -137,10 +143,12 @@ static int max98357a_platform_probe(struct platform_device *pdev)
 	struct max98357a_priv *max98357a;
 	int ret;
 
+	_trace_
 	printk(KERN_ERR "called: max98357a_platform_probe\n");
 	max98357a = devm_kzalloc(&pdev->dev, sizeof(*max98357a), GFP_KERNEL);
 	if (!max98357a)
 	{
+		_trace_
 		printk("return from %s with ENOMEM %d",__func__,-ENOMEM);
 		return -ENOMEM;
 	}
@@ -149,6 +157,7 @@ static int max98357a_platform_probe(struct platform_device *pdev)
 				"sdmode", GPIOD_OUT_LOW);
 	if (IS_ERR(max98357a->sdmode))
 	{
+		_trace_
 		printk(KERN_ERR "max98357a_platform_probe: returning PTR_ERR after devm_gpiod_get_optional\n");
 		return PTR_ERR(max98357a->sdmode);
 	}
@@ -160,6 +169,7 @@ static int max98357a_platform_probe(struct platform_device *pdev)
 		dev_dbg(&pdev->dev,
 			"no optional property 'sdmode-delay' found, "
 			"default: no delay\n");
+		_trace_
 		printk(KERN_ERR "max98357a_platform_probe: no sdmode-delay found\n");
 	}
 
@@ -169,6 +179,7 @@ static int max98357a_platform_probe(struct platform_device *pdev)
 			&max98357a_component_driver,
 			&max98357a_dai_driver, 1);
 
+	_trace_
 	printk(KERN_ERR "max98357a_platform_probe: No errors. Exit with ret = %d", ret);
 	return ret;
 }
