@@ -28,6 +28,7 @@ dtb-$(CONFIG_IMX8MN) += \
 	overlay-lvds-ama-101a01.dtb \
 	overlay-lvds-ama-101a07.dtb \
 	overlay-lvds-ama-121a01.dtb \
+	overlay-lvds-auo-g101ean02.dtb \
 	overlay-lvds-auo-p215hvn01.dtb \
 	overlay-cam-ov5640.dtb
 
