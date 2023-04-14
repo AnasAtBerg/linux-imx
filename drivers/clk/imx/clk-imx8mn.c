@@ -322,76 +322,6 @@ static int imx_clk_init_on(struct device_node *np,
 	return 0;
 }
 
-#define IMX8MN_CLKOUT1_DIV_OFF	0
-#define IMX8MN_CLKOUT1_SEL_OFF	4
-#define IMX8MN_CLKOUT1_CKE_OFF	8
-#define IMX8MN_CLKOUT2_DIV_OFF	16
-#define IMX8MN_CLKOUT2_SEL_OFF	20
-#define IMX8MN_CLKOUT2_CKE_OFF	24
-
-static int __init imx_clockout_init(void)
-{
-	u32 val = 0, src = 0, div = 0;
-	struct device_node *np = of_find_compatible_node(NULL, NULL, "fsl,imx8mn-anatop");
-	void __iomem *anatop_base = of_iomap(np, 0);
-
-	if (WARN_ON(!anatop_base))
-		return -ENOMEM;
-
-	if (of_property_read_u32(np, "clkout1,source", &src) == 0) {
-		if (src > IMX8MN_CLK_CLKOUT_OUTPUT_SEL_OSC_32K) {
-			pr_err("i.MX8MN: invalid 'clkout1,source' value\n");
-			return -EINVAL;
-		}
-		val |= (src << IMX8MN_CLKOUT1_SEL_OFF);
-	}
-
-	if (of_property_read_u32(np, "clkout1,div", &div) == 0) {
-		if ((div > 15)) {
-			pr_err("i.MX8MN: invalid 'clkout1,div' value\n");
-			return -EINVAL;
-		}
-		val |= (div << IMX8MN_CLKOUT1_DIV_OFF);
-	}
-
-	if (of_property_read_bool(np, "clkout1,enable")) {
-		val |= (1 << IMX8MN_CLKOUT1_CKE_OFF);
-		pr_info("i.MX8MN: clkout1 active, source: 0x%x, divider: %d.\n",
-				src, div);
-	}
-
-	src = 0;
-	div = 0;
-
-	if (of_property_read_u32(np, "clkout2,source", &src) == 0) {
-		if (src > IMX8MN_CLK_CLKOUT_OUTPUT_SEL_OSC_32K) {
-			pr_err("i.MX8MN: invalid 'clkout2,source' value\n");
-			return -EINVAL;
-		}
-		val |= (src << IMX8MN_CLKOUT2_SEL_OFF);
-	}
-
-	if (of_property_read_u32(np, "clkout2,div", &div) == 0) {
-		if ((div > 15)) {
-			pr_err("i.MX8MN: invalid 'clkout2,div' value\n");
-			return -EINVAL;
-		}
-		val |= (div << IMX8MN_CLKOUT2_DIV_OFF);
-	}
-
-	if (of_property_read_bool(np, "clkout2,enable")) {
-		val |= (1 << IMX8MN_CLKOUT2_CKE_OFF);
-		pr_info("i.MX8MN: clkout2 active, source: 0x%x, divider: %d.\n",
-				src, div);
-	}
-
-	writel_relaxed(val, anatop_base + 0x128);
-
-	iounmap(anatop_base);
-
-	return 0;
-}
-
 static void __init imx8mn_video_pll1_spread_spectrum_init(struct device_node *np, void __iomem *anatop_base)
 {
 	u32 val = readl_relaxed(anatop_base + 0x2c);
@@ -734,15 +664,12 @@ static int imx8mn_clocks_probe(struct platform_device *pdev)
 					   hws[IMX8MN_CLK_A53_CORE]->clk,
 					   hws[IMX8MN_ARM_PLL_OUT]->clk,
 					   hws[IMX8MN_CLK_A53_DIV]->clk);
-
 	imx_check_clk_hws(hws, IMX8MN_CLK_END);
-
 	ret = of_clk_add_hw_provider(np, of_clk_hw_onecell_get, clk_hw_data);
 	if (ret < 0) {
 		dev_err(dev, "failed to register hws for i.MX8MN\n");
 		goto unregister_hws;
 	}
-
 	imx_clk_init_on(np, hws);
 
 	clk_set_parent(hws[IMX8MN_CLK_AUDIO_AHB]->clk, hws[IMX8MN_SYS_PLL1_800M]->clk);
@@ -751,15 +678,12 @@ static int imx8mn_clocks_probe(struct platform_device *pdev)
 
 	imx_register_uart_clocks(4);
 
-	imx_clockout_init();
-
 	imx8mn_spread_spectrum_init();
 
 	return 0;
 
 unregister_hws:
 	imx_unregister_hw_clocks(hws, IMX8MN_CLK_END);
-
 	return ret;
 }
 

@@ -118,7 +118,7 @@
 			da7213_codec: da7212@1a {
 				compatible = "dlg,da7213";
 				reg = <0x1a>;
-				clocks = <&clkout1>;
+				clocks = <&clk IMX8MN_CLK_CLKOUT1>;
 				clock-names = "mclk";
 				dlg,micbias1-lvl = <3000>;
 				status = "okay";

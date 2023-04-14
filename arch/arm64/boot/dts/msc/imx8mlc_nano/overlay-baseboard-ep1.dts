@@ -14,7 +14,7 @@
 /dts-v1/;
 /plugin/;
 
-#include <dt-bindings/clock/imx8mp-clock.h>
+#include <dt-bindings/clock/imx8mn-clock.h>
 #include <dt-bindings/gpio/gpio.h>
 
 / {
@@ -67,7 +67,7 @@
 			sgtl5000_codec: sgtl5000@a {
 				compatible = "fsl,sgtl5000";
 				reg = <0x0a>;
-				clocks = <&clkout1>;
+				clocks = <&clk IMX8MN_CLK_CLKOUT1>;
 				clock-names = "audio_mclk";
 				VDDA-supply = <&reg_vcc_3v3_audio>;
 				VDD-supply = <&reg_vcc_1v8_audio>;
