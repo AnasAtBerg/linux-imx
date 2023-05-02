@@ -344,6 +344,7 @@
 			fsl,pins = <
 				IMX8QXP_UART2_TX_ADMA_UART2_TX	0x06000020
 				IMX8QXP_UART2_RX_ADMA_UART2_RX	0x06000020
+				IMX8QXP_QSPI0B_SS0_B_LSIO_GPIO3_IO23    0x46000060
 			>;
 		};
 
@@ -645,9 +646,12 @@
 	};
 };
 
+// UART 0 is/was used as serial console for bootup messages and login prompt
+// and it is also RS 485 for sys A, where the console was interfering
 &lpuart0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_lpuart0>;
+	//linux,rs485-enabled-at-boot-time;
 };
 
 &lpuart1 {
@@ -655,9 +659,11 @@
 	pinctrl-0 = <&pinctrl_lpuart1>;
 };
 
+// UART 2 is RS 485 for sys B
 &lpuart2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_lpuart2>;
+	linux,rs485-enabled-at-boot-time;
 };
 
 &lpuart3 {
