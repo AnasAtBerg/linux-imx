@@ -40,6 +40,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8QM) += \
 	msc-sm2s-imx8-C0-baseboard-sm2-mb-ep1-dual-csi2-A0.dtb \
 	\
 	msc-sm2s-imx8-C0-baseboard-sm2s-mb-ep5-002-A0.dtb \
+	mel-sm2s-imx8-C0-baseboard-sm2s-mb-ep5-002-A0.dtb \
 	msc-sm2s-imx8-C0-baseboard-sm2s-mb-ep5-004-A0.dtb \
 	msc-sm2s-imx8-C0-baseboard-sm2s-mb-ep5-102-A0.dtb \
 	\
@@ -79,6 +80,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8QM) += \
 	msc-sm2s-imx8-B0-baseboard-sm2-mb-ep1-dual-csi2-A0.dtb \
 	\
 	msc-sm2s-imx8-B0-baseboard-sm2s-mb-ep5-002-A0.dtb \
+	mel-sm2s-imx8-B0-baseboard-sm2s-mb-ep5-002-A0.dtb\
 	msc-sm2s-imx8-B0-baseboard-sm2s-mb-ep5-004-A0.dtb \
 	msc-sm2s-imx8-B0-baseboard-sm2s-mb-ep5-102-A0.dtb \
 	\
@@ -119,6 +121,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8QM) += \
 	msc-sm2s-imx8-A0-baseboard-sm2-mb-ep1-dual-csi2-A0.dtb \
 	\
 	msc-sm2s-imx8-A0-baseboard-sm2s-mb-ep5-002-A0.dtb \
+	mel-sm2s-imx8-A0-baseboard-sm2s-mb-ep5-002-A0.dtb \
 	msc-sm2s-imx8-A0-baseboard-sm2s-mb-ep5-004-A0.dtb \
 	msc-sm2s-imx8-A0-baseboard-sm2s-mb-ep5-102-A0.dtb \
 	\
