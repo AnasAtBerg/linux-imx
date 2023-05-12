@@ -68,3 +68,4 @@ obj-$(CONFIG_DRM_PANEL_WIDECHIPS_WS2401) += panel-widechips-ws2401.o
 obj-$(CONFIG_DRM_PANEL_XINPENG_XPP055C272) += panel-xinpeng-xpp055c272.o
 obj-$(CONFIG_DRM_PANEL_WKS_101WX001) += panel-wks-101wx001.o
 obj-$(CONFIG_DRM_PANEL_XINLI_X078DTLT_119) += panel-xinli-x078dtlt-119.o
+obj-$(CONFIG_DRM_PANEL_XINLI_TCXD101IBLMA) += panel-xinli-tcxd101iblma.o
