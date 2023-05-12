@@ -156,9 +156,9 @@ static void sis_ctrl_reset_hard(struct i2c_client *client,
 	}
 
 	/* reset with a pulse of 100ms */
-	gpio_set_value(pdata->gpio_rst, 0);
+	gpio_set_value_cansleep(pdata->gpio_rst, 0);
 	msleep(100); /* low pulse */
-	gpio_set_value(pdata->gpio_rst, 1);
+	gpio_set_value_cansleep(pdata->gpio_rst, 1);
 	msleep(2000); /* time to reboot */
 }
 
@@ -1450,6 +1450,20 @@ static int sis_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	data->pdata = pdata;
 	i2c_set_clientdata(client, data);
 	mutex_init(&data->diag_mutex);
+
+	ret = devm_gpio_request(&client->dev, pdata->gpio_rst, "sis-rst");
+        if (ret < 0) {
+                dev_err(&client->dev, "Failed to request gpio %ld, error %d\n",
+                                pdata->gpio_int, ret);
+                return ret;
+        }
+
+        ret = gpio_direction_output(pdata->gpio_rst,1);
+        if (ret < 0) {
+                dev_err(&client->dev, "Failed to set direction for gpio %ld, error %d\n",
+                                pdata->gpio_rst, ret);
+                return ret;
+        }
 
 	ret = devm_gpio_request(&client->dev, pdata->gpio_int, "sis-int");
 	if (ret < 0) {
