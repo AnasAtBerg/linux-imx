@@ -1,0 +1,21 @@
+/** @file      msc-sm2s-imx8-module-qcm-25N0CE1I-pciex2.dtsi
+.dts
+
+    @copyright Copyright (C) 2020 by MSC Technologies GmbH
+			   Copyright 2017-2018 NXP
+    SPDX-License Identifier: GPL-2.0-or-later
+
+    @author    Achim Kanert
+
+    @details   Derived from fsl-imx8qm-mek.dts
+*/
+
+/dts-v1/;
+
+#include "msc-sm2s-imx8-module-includes.dtsi"
+
+#define HAS_PCIE_X2
+
+#define MODULE_FEATURE 25N0CE1I
+
+#include MODULE_DTSI()
