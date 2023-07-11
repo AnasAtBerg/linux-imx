@@ -43,7 +43,8 @@ dtb-$(CONFIG_IMX8MP) += \
 	overlay-lvds1-ama-101a01.dtb \
 	overlay-lvds1-ama-101a07.dtb \
 	overlay-lvds1-ama-121a01.dtb \
-	overlay-video-pll-ss.dtb
+	overlay-video-pll-ss.dtb \
+	overlay-mpcflex-custom.dtb
 
 always		:= $(dtb-y)
 subdir-y	:= $(dts-dirs)
