@@ -26,6 +26,7 @@
 	};
 
         // From baseboard-ep5 file:
+/*
 	fragment@1004 {
 		target = <&sai2>;
 		__overlay__ {
@@ -43,6 +44,7 @@
 			status = "okay";
 		};
 	};
+*/
 
 	fragment@5005 {
 		target = "/";
