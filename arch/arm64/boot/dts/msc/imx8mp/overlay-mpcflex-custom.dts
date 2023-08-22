@@ -1,124 +1,150 @@
+/*
+ * Copyright (C) 2023 Berg Propulsion
+ * Copyright (C) 2022 Avnet Embedded GmbH
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation version 2.
+ *
+ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
+ * kind, whether express or implied; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
 /dts-v1/;
 /plugin/;
 
-#include <dt-bindings/clock/imx8mp-clock.h>
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/clock/imx8mp-clock.h>
 
 / {
-	fragment@5001 {
-		target = <&uart1>;
+	fragment@4000 {
+		target-path = "/";
 		__overlay__ {
-			status = "okay";
-		};
-	};
-	fragment@5002 {
-		target = <&uart2>;
-		__overlay__ {
-			status = "okay";
-		};
-	};
+			lvds0_panel {
+				pinctrl-names = "default";
+				pinctrl-0 = <&pinctrl_lcd0_panel>;
+				compatible = "panel-lvds";
+				backlight = <&lcd0_backlight>;
+				enable-gpios =  <&gpio1 0 GPIO_ACTIVE_HIGH>;
 
-	fragment@5003 {
-		target = <&uart3>;
-		__overlay__ {
-			status = "okay";
-		};
-	};
+				label = "lvds";
+				width-mm = <476>;
+				height-mm = <268>;
+				data-mapping = "vesa-24";
 
-        // From baseboard-ep5 file:
-/*
-	fragment@1004 {
-		target = <&sai2>;
-		__overlay__ {
-			pinctrl-names = "default";
-			pinctrl-0 = <&pinctrl_sai2>;
-			assigned-clocks = <&clk IMX8MP_CLK_SAI2>;
-			assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL1_OUT>;
-			assigned-clock-rates = <12288000>;
-			clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_IPG>,
-				<&clk IMX8MP_CLK_DUMMY>,
-				<&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK1>,
-				<&clk IMX8MP_CLK_DUMMY>,
-				<&clk IMX8MP_CLK_DUMMY>;
-			clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
-			status = "okay";
-		};
-	};
-*/
+				panel-timing {
+					// On the Kontron system we did not set these 4 parameters
+					hsync-active = <0>;
+					vsync-active = <0>;
+					de-active = <1>;
+					pixelclk-active = <0>;
 
-	fragment@5005 {
-		target = "/";
-		__overlay__ {
-			sound: sound {
-				audio-codec = <&max98357a>;
-			};
-
-			// Codec chip
-			max98357a: max98357a@0 {
-				compatible = "maxim,max98357a";
-				#sound-dai-cells = <0>;
-				reg = <0x1a>;
-				// Additional, apparently not needed settings, for our usage:
-				//clocks = <&mclkout0_lpcg 0>;
-				//clock-names = "mclk";
-				//clock-frequency = <24000000>;
-				//micdet-cfg = <0x0>;    // We have no audio in (microphone)
-				//micdet-delay = <0x64>;
-				//power-domains = <&pd IMX_SC_R_MCLK_OUT_0>;
-			};
-
-			// Sound-card definition
-			sound-mpcflex {
-				compatible = "simple-audio-card";
-				simple-audio-card,name = "mpcflex-audio";
-
-				// Optional properties:
-
-				// simple-audio-card,widgets
-				// simple-audio-card,routing
-				// simple-audio-card,name
-				// simple-audio-card,widgets
-				// simple-audio-card,routing
-				// simple-audio-card,mclk-fs - if defined here then mclk-fs in dai-link subnode is ignored
-				// simple-audio-card,hp-det-gpio
-				// simple-audio-card,mic-det-gpio
-				// simple-audio-card,aux-devs
-				// simple-audio-card,pin-switches
-				// simple-audio-card,dai-link (container)
-
-				// From Documentation/devicetree/bindings/sound/simple-card.txt:
-				// If dai-link subnode is omitted and the subnode properties
-				// are directly under "sound"-node, then the subnode property and
-				// subnode names have to be prefixed with "simple-audio-card,"
-
-				// Optional DAI link properties:
-				simple-audio-card,format = "i2s";
-				simple-audio-card,frame-master = <&cpudai>;
-				simple-audio-card,bitclock-master = <&cpudai>;
-
-				// Additional optional parameters:
-
-				// bitclock-inversion (bool)
-				// frame-inversion (bool)
-				// mclk-fs -- multiplication factor between strean rate and codec mclk for dai-link
-
-				// Optional CPU/CODEC subnodes properties:
-				// - dai-tdm-slot-num
-				// - dai-tdm-slot-width
-				// - clocks / system-clock-frequency
-
-				// Mandatory properties for main sound node: = cpu and codec
-				// Required CPU/CODEC subnodes properties are:
-				// - sound-dai
-
-				cpudai: simple-audio-card,cpu {
-					sound-dai = <&sai2>;
+					// These are the parameters we have determined for the display used in the mpcflex product
+					clock-frequency = <65000000>;
+					hactive = <1024>;
+					vactive = <768>;
+					hsync-len = <30>;
+					hback-porch = <100>;
+					hfront-porch = <190>;
+					vsync-len = <5>;
+					vback-porch = <10>;
+					vfront-porch = <23>;
 				};
 
-				link_codec: simple-audio-card,codec {
-				    sound-dai = <&max98357a>;
+				port {
+					panel_lvds_in: endpoint {
+						remote-endpoint = <&lvds_out>;
+					};
 				};
 			};
+		};
+	};
+
+	// Can we remove these clock modifications and still have working display?
+	fragment@4001 {
+		target = <&lcdif2>;
+		__overlay__ {
+			assigned-clocks = <&clk IMX8MP_CLK_MEDIA_DISP2_PIX>;
+			assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_1000M>;
+			assigned-clock-rate = <1000000000>;
+			status = "okay";
+		};
+	};
+
+	// Can we remove these clock modifications and still have working display?
+	fragment@4002 {
+		target = <&ldb>;
+		__overlay__ {
+			assigned-clocks = <&clk IMX8MP_CLK_MEDIA_LDB>;
+			assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_1000M>;
+			assigned-clock-rate = <1000000000>;
+			status = "okay";
+
+			// This is most likely needed since it connects together display node above with the lvds channel
+			lvds-channel@0 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				status = "okay";
+
+				port@1 {
+					reg = <1>;
+
+					lvds_out: endpoint {
+						remote-endpoint = <&panel_lvds_in>;
+					};
+				};
+			};
+		};
+	};
+
+	fragment@4003 {
+		target = <&ldb_phy>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4004 {
+		target = <&pwm1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4005 {
+		target = <&lcd0_backlight>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4006 {
+		target = <&gpu_3d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4007 {
+		target = <&gpu_2d>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4008 {
+		target = <&ml_vipsi>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4009 {
+		target = <&mix_gpu_ml>;
+		__overlay__ {
+			status = "okay";
 		};
 	};
 };
