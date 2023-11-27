@@ -677,9 +677,11 @@
 &uart2 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart2>;
-	uart-has-rtscts;
+	//uart-has-rtscts;
+	linux,rs485-enabled-at-boot-time;
 	rts-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
-	cts-gpios = <&gpio2 7 GPIO_ACTIVE_LOW>;
+	//rts-gpios = <&gpio2 7 GPIO_ACTIVE_HIGH>;
+	//cts-gpios = <&gpio2 7 GPIO_ACTIVE_LOW>;
 	status = "okay";
 };
 
@@ -970,9 +972,11 @@
 			MX8MP_IOMUXC_UART2_RXD__UART2_DCE_RX	0x49
 			MX8MP_IOMUXC_UART2_TXD__UART2_DCE_TX	0x49
 			/* RTS# */
+			/* MX8MP_IOMUXC_SD1_DATA4__UART2_DTE_CTS	0x1c4 */
 			MX8MP_IOMUXC_SD1_DATA4__GPIO2_IO06		0x1c4
-			/* CTS# */
+			/* CTS#
 			MX8MP_IOMUXC_SD1_DATA5__GPIO2_IO07		0x1c4
+			*/
 		>;
 	};
 

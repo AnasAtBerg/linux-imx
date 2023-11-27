@@ -147,4 +147,18 @@
 			status = "okay";
 		};
 	};
+
+	fragment@4010 {
+		target = <&uart3>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4011 {
+		target = <&uart4>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
 };
