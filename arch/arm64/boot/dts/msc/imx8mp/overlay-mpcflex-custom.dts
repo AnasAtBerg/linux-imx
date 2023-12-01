@@ -198,6 +198,7 @@
 	fragment@4014 {
 		target = <&sai2>;
 		__overlay__ {
+			#sound-dai-cells = <0>;
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_sai2>;
 			assigned-clocks = <&clk IMX8MP_CLK_SAI2>;
