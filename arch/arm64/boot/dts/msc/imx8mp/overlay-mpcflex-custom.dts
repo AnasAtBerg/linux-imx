@@ -149,20 +149,39 @@
 	};
 
 	fragment@4010 {
+		target = <&gpio2>;
+		__overlay__ {
+			gpio-line-names =
+			"", "", "", "", "", "", "rs485_b_rts", "rs485_b_cts", "", "",
+			"rs485_a_rts", "rs485_a_cts", "", "", "", "", "", "", "", "",
+			"", "", "", "", "", "", "", "", "", "",
+			"", "";
+		};
+	};
+
+	fragment@4011 {
+		target = <&uart2>;
+		__overlay__ {
+			dmas = <&sdma1 24 4 0>, <&sdma1 25 4 0>;
+			dma-names = "rx", "tx";
+		};
+	};
+
+	fragment@4012 {
 		target = <&uart3>;
 		__overlay__ {
 			status = "okay";
 		};
 	};
 
-	fragment@4011 {
+	fragment@4013 {
 		target = <&uart4>;
 		__overlay__ {
 			status = "okay";
 		};
 	};
 
-	fragment@4012 {
+	fragment@4014 {
 		target-path = "/";
 		__overlay__ {
 			max98357a_sound: max98357a-sound {
@@ -185,7 +204,7 @@
 		};
 	};
 
-	fragment@4013 {
+	fragment@4015 {
 		target-path = "/";
 		__overlay__ {
 			max98357a_codec: max98357a@0 {
@@ -195,7 +214,7 @@
 		};
 	};
 
-	fragment@4014 {
+	fragment@4016 {
 		target = <&sai2>;
 		__overlay__ {
 			#sound-dai-cells = <0>;
