@@ -30,8 +30,8 @@
 				enable-gpios =  <&gpio1 0 GPIO_ACTIVE_HIGH>;
 
 				label = "lvds";
-				width-mm = <476>;
-				height-mm = <268>;
+				width-mm = <211>;
+				height-mm = <158>;
 				data-mapping = "vesa-24";
 
 				panel-timing {
@@ -42,7 +42,12 @@
 					pixelclk-active = <0>;
 
 					// These are the parameters we have determined for the display used in the mpcflex product
-					clock-frequency = <65000000>;
+					/* According to the display specs: 
+						Clock freq (min/typ/max) = 52/65/71 MHz
+						However 65MHz (typ) causes incorrect dimensions.
+					 	Trial & error found 71MHz (max) to be best fit.
+					*/
+					clock-frequency = <71428000>;
 					hactive = <1024>;
 					vactive = <768>;
 					hsync-len = <30>;
@@ -62,7 +67,6 @@
 		};
 	};
 
-	// Can we remove these clock modifications and still have working display?
 	fragment@4001 {
 		target = <&lcdif2>;
 		__overlay__ {
@@ -73,7 +77,6 @@
 		};
 	};
 
-	// Can we remove these clock modifications and still have working display?
 	fragment@4002 {
 		target = <&ldb>;
 		__overlay__ {
@@ -82,7 +85,6 @@
 			assigned-clock-rate = <1000000000>;
 			status = "okay";
 
-			// This is most likely needed since it connects together display node above with the lvds channel
 			lvds-channel@0 {
 				#address-cells = <1>;
 				#size-cells = <0>;
@@ -144,6 +146,92 @@
 	fragment@4009 {
 		target = <&mix_gpu_ml>;
 		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4010 {
+		target = <&gpio2>;
+		__overlay__ {
+			gpio-line-names =
+			"", "", "", "", "", "", "rs485_b_rts", "rs485_b_cts", "", "",
+			"rs485_a_rts", "rs485_a_cts", "", "", "", "", "", "", "", "",
+			"", "", "", "", "", "", "", "", "", "",
+			"", "";
+		};
+	};
+
+	fragment@4011 {
+		target = <&uart2>;
+		__overlay__ {
+			dmas = <&sdma1 24 4 0>, <&sdma1 25 4 0>;
+			dma-names = "rx", "tx";
+		};
+	};
+
+	fragment@4012 {
+		target = <&uart3>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4013 {
+		target = <&uart4>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@4014 {
+		target-path = "/";
+		__overlay__ {
+			max98357a_sound: max98357a-sound {
+				compatible = "simple-audio-card";
+				simple-audio-card,name = "max98357a";
+				simple-audio-card,format = "i2s";
+				simple-audio-card,bitclock-master = <&dai_cpu>;
+				simple-audio-card,frame-master = <&dai_cpu>;
+				simple-audio-card,widgets = "Speaker", "Speakers";
+				simple-audio-card,routing = "Speakers", "Speaker";
+				status = "okay";
+
+				simple-audio-card,codec {
+				    sound-dai = <&max98357a_codec>;
+				};
+				dai_cpu: simple-audio-card,cpu {
+				    sound-dai = <&sai2>;
+				};
+			};
+		};
+	};
+
+	fragment@4015 {
+		target-path = "/";
+		__overlay__ {
+			max98357a_codec: max98357a@0 {
+			    compatible = "maxim,max98357a";
+			    #sound-dai-cells = <0>;
+			};
+		};
+	};
+
+	fragment@4016 {
+		target = <&sai2>;
+		__overlay__ {
+			#sound-dai-cells = <0>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&pinctrl_sai2>;
+			assigned-clocks = <&clk IMX8MP_CLK_SAI2>;
+			assigned-clock-parents = <&clk IMX8MP_AUDIO_PLL1_OUT>;
+			assigned-clock-rates = <12288000>;
+			clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_IPG>,
+				<&clk IMX8MP_CLK_DUMMY>,
+				<&audio_blk_ctrl IMX8MP_CLK_AUDIO_BLK_CTRL_SAI2_MCLK1>,
+				<&clk IMX8MP_CLK_DUMMY>,
+				<&clk IMX8MP_CLK_DUMMY>;
+			clock-names = "bus", "mclk0", "mclk1", "mclk2", "mclk3";
+			fsl,sai-mclk-direction-output;
 			status = "okay";
 		};
 	};
